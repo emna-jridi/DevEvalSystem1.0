@@ -27,20 +27,19 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-
+import MDAlert from "components/MDAlert";
 
 function Basic() {
   const [errorMessage, setErrorMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -55,6 +54,7 @@ function Basic() {
       console.log("Authentification réussie :", response.data.accessToken)
       if (response.data && response.data.accessToken) {
         navigate("/dashboard", { replace: true});
+        localStorage.setItem('accessToken', response.data.accessToken)
       } 
     } catch (error) {
       console.error("Error during login:", error);
@@ -63,7 +63,7 @@ function Basic() {
   }
 
   return (
-    <BasicLayout image={bgImage}>
+    <BasicLayout >
       <Card>
         <MDBox
           variant="gradient"
@@ -104,7 +104,7 @@ function Basic() {
               <MDButton variant="gradient" color="info" fullWidth onClick={() => handleLogin(email, password)}>
                 sign in
               </MDButton>
-              <MDTypography variant="h6" fontWeight="regular" color="gray" mt={1}>  {errorMessage && <div>{errorMessage}</div>}</MDTypography>
+              <MDTypography variant="h6" fontWeight="regular" color="error" mt={1}>  {errorMessage &&<div>{errorMessage}</div>}</MDTypography>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">

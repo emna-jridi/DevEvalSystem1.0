@@ -8,31 +8,30 @@ const { passwordIsValid, validUserType, generateToken } = require("../Service/Au
 // Login controller
 const login = async (req, res) => {
     try {
-// Check if email and password are provided
+        // Check if email and password are provided
         if (!req.body.email || !req.body.password) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ message: "Please provide an email and password !" });
         }
- // Find user by email
+        // Find user by email
         const foundUser = await User.findOne({ email: req.body.email });
-        console.log(foundUser);
         if (!foundUser) {
 
             return res
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: "user does not exist." });
-                
+
         }
-        
-  // Validate password
+
+        // Validate password
         if (!passwordIsValid(req.body.password, foundUser.password)) {
             return res.status(StatusCodes.UNAUTHORIZED).send({
                 accessToken: null,
                 message: "Invalid Password!",
             });
         }
-// Check if user type is valid
+        // Check if user type is valid
         const userTypeIsValid = validUserType(foundUser.userType);
 
         if (!userTypeIsValid) {
@@ -40,7 +39,7 @@ const login = async (req, res) => {
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: "User does not have permission to connect." });
         }
- // Generate token and send response
+        // Generate token and send response
         const token = generateToken(foundUser.id, foundUser.userType);
         res
             .status(StatusCodes.ACCEPTED)
@@ -56,25 +55,25 @@ const login = async (req, res) => {
 // Register controller
 const register = async (req, res) => {
     try {
-// Check if user with given email already exists
+        // Check if user with given email already exists
         const foundUser = await User.findOne({ email: req.body.email });
         if (foundUser) {
             return res
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: "User already exists." });
         }
-// Check if user has permission to register
-        if (req.body.userType != ROLES.RA) {
-            return res
-                .status(StatusCodes.FORBIDDEN)
-                .json({ message: "User does not have permission to register" });
-        }
-// Create new user and save to database
+        // // Check if user has permission to register
+        // if (req.body.userType != ROLES.RA) {
+        //     return res
+        //         .status(StatusCodes.FORBIDDEN)
+        //         .json({ message: "User does not have permission to register" });
+        // }
+        // Create new user and save to database
         const user = new User({
             fullName: req.body.fullName,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
-            userType: req.body.userType,
+            userType: ROLES.RA,
         });
 
         await user.save();
@@ -87,13 +86,23 @@ const register = async (req, res) => {
             .send({ message: error.message });
     }
 };
-const logout = (req, res) => {
-    // localStorage.removeItem("accessToken");
-    // res.status(StatusCodes.OK).json({ message: "Logged out successfully" });
-  };
-  
- 
-  
+const logout = async (req, res) => {
+
+};
 
 
-module.exports = { login, register, logout }
+const adminExists= async (req, res) => {
+    try {
+        const adminUser = await User.findOne({ userType: ROLES.RA });
+        if (adminUser) {
+            return res.status(200).json({ exists: true });
+          }
+          return res.status(200).json({ exists: false });
+    } catch (error) {
+        console.error("Error checking admin user:", error);
+        return res.status(500).json({ message: "Error checking admin user." });
+    }
+}
+
+
+module.exports = { login, register, logout ,adminExists}

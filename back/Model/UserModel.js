@@ -9,8 +9,8 @@ const userSchema = new mongoose.Schema({
   ,
   email: {
     type: String,
-    required: [true, "Please provide an email"],
-    unique: true,
+    // required: [true, "Please provide an email"],
+    // unique: true,
   },
   password: {
     type: String,
@@ -28,13 +28,13 @@ const userSchema = new mongoose.Schema({
   { timestamps: true } //createdAt & updatedAt are handled automatically.
 );
 
-userSchema.pre('save', function (next) {
-  const { error } = userValidationSchema.validate(this.toObject());
-  if (error) {
-    throw new Error(`Validation error: ${error.message}`);
-  }
+// userSchema.pre('save', function (next) {
+//   const { error } = userValidationSchema.validate(this.toObject());
+//   if (error) {
+//     throw new Error(`Validation error: ${error.message}`);
+//   }
 
-  next();
-});
+//   next();
+// });
 
 module.exports = mongoose.model("user", userSchema);

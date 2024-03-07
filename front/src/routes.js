@@ -44,16 +44,10 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
-
+import handleLogout from "layouts/authentication/log-out";
+import Logout from "layouts/authentication/log-out"
 // @mui icons
 import Icon from "@mui/material/Icon";
-
-const handleLogout = () => {
-  console.log("done");
-  localStorage.removeItem('accessToken');
-  navigate("/login", { replace: true });
-
-}
 
 
 const routes = [
@@ -122,13 +116,14 @@ const routes = [
     component: <SignUp />,
   },
   {
-    type: "collapse", 
-    name: "Logout",
+    type: "collapse",
+    name: "logout",
     key: "logout",
     icon: <Icon fontSize="small">logout</Icon>,
-    route: "/logout",
-    component: <SignIn />,
-    onClick: handleLogout, 
+    route: "/authentication/log-out",
+    component: <Logout />,
+    onClick: handleLogout,
+
   },
 ];
 

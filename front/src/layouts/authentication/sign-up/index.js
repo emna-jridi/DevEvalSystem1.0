@@ -15,11 +15,12 @@ Coded by www.creative-tim.com
 /* eslint-disable */
 // react-router-dom components
 import { Link } from "react-router-dom";
-
+import { useState,   } from "react";
+import axios from "axios";
 // @mui material components
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-
+import { useNavigate} from "react-router-dom";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -33,6 +34,35 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 function Cover() {
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleRegistre = async (fullName, email, password) => {
+    try {
+      if (!fullName|| !email || !password ) {
+        setErrorMessage("Please provide an email and password.");
+        console.error("Email and password are required.");
+        return;
+      }
+      const adminCheckResponse = await axios.get('http://localhost:4000/auth/chekAdmin');
+      if (adminCheckResponse.data.exists) {
+        setErrorMessage("An admin user already exists. You cannot register.");
+        return;
+      }
+      const response = await axios.post('http://localhost:4000/auth/register', { fullName, email, password })
+      if (response) {
+        navigate("/authentication/sign-in", { replace: true });
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrorMessage("Error during login.");
+    }
+  }
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -48,84 +78,39 @@ function Cover() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-           Sign Up
+            Sign Up
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput type="text" label="Name" variant="standard" fullWidth value={fullName} onChange={(e) => setFullName(e.target.value)} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput type="email" label="Email" variant="standard" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput type="password" label="Password" variant="standard" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
             </MDBox>
+            {/* <MDBox
+                component="label"
+                htmlFor="admin"
+                display="flex"
+                alignItems="center"
+                sx={{ cursor: "pointer" }}
+              >
+                <Checkbox/>
+                <MDTypography variant="button" fontWeight="regular" color="inherit" ml={0.5}>
+                Adminastrateur
+                </MDTypography>
+              </MDBox>
+             */}
 
-            <MDBox role="radiogroup" aria-labelledby="navbar-options">
-              <MDBox
-                component="label"
-                htmlFor="light-mode"
-                display="flex"
-                alignItems="center"
-                sx={{ cursor: "pointer" }}
-              >
-                <input
-                  type="radio"
-                  id="Adminastrateur"
-                  name="theme"
-                  value=""
-                  checked="{darkMode}"
-                />
-                <MDTypography variant="button" fontWeight="regular" color="inherit" ml={0.5}>
-                  Light Mode
-                </MDTypography>
-              </MDBox>
-              <MDBox
-                component="label"
-                htmlFor="dark-mode"
-                display="flex"
-                alignItems="center"
-                sx={{ cursor: "pointer" }}
-              >
-                <input
-                  type="radio"
-                  id="dark-mode"
-                  name="theme"
-                  value="dark"
-                  checked="{darkMode}"
-                />
-                <MDTypography variant="button" fontWeight="regular" color="inherit" ml={0.5}>
-                  Dark Mode
-                </MDTypography>
-              </MDBox>
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;I agree the&nbsp;
-              </MDTypography>
-              <MDTypography
-                component="a"
-                href="#"
-                variant="button"
-                fontWeight="bold"
-                color="info"
-                textGradient
-              >
-                Terms and Conditions
-              </MDTypography>
-            </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton variant="gradient" color="info" fullWidth onClick={() => handleRegistre(fullName, email, password)}  >
+                sign up
               </MDButton>
+              <MDTypography variant="h6" fontWeight="regular" color="error" mt={1}>  {errorMessage && <div>{errorMessage}</div>}</MDTypography>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">

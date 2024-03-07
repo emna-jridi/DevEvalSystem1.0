@@ -18,7 +18,7 @@ Coded by www.creative-tim.com
  * You can add new color using this file.
  * You can customized the colors for the entire Material Dashboard 2 React using thie file.
  */
-
+/* eslint-disable */
 const colors = {
   background: {
     default: "#f0f2f5",
@@ -56,7 +56,7 @@ const colors = {
 
   info: {
     main: "#1A73E8",
-    focus: "#1662C4",
+    focus: "#1662C4"
   },
 
   success: {
@@ -70,8 +70,8 @@ const colors = {
   },
 
   error: {
-    main: "#F44335",
-    focus: "#f65f53",
+    main: "#ff0000",
+    focus: "#ff0000",
   },
 
   light: {
@@ -108,7 +108,7 @@ const colors = {
     },
 
     info: {
-      main: "#49a3f1",
+      main: "#00023D",
       state: "#1A73E8",
     },
 
