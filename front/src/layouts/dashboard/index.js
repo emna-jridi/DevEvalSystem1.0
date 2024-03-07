@@ -37,10 +37,8 @@ import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import { useState } from "react";
 
-function Dashboard({data,replace,number}) {
+function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
-  const [tokken,setTokken]=useState(data)
-  console.log("dashboard",data,replace,number);
   return (
     <DashboardLayout>
       <DashboardNavbar />

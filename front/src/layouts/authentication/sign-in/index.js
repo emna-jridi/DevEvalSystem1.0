@@ -34,20 +34,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
-const login = async (email, password) => {
-  try {
-    const response = await axios.post('http://localhost:4000/auth/login', { email, password });
-   
-    console.log("Authentification réussie :", response.data.accessToken)
-    
-   
-    return response
-  } catch (error) {
-    console.error("Erreur lors de l'authentification :", error);
-    console.log(error);
-    return { success: false, message: "Une erreur s'est produite lors de l'authentification." };
-  }
-};
+
 function Basic() {
   const [errorMessage, setErrorMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -64,19 +51,17 @@ function Basic() {
         console.error("Email and password are required.");
         return;
       }
-      const response = await login(email, password); // Assuming login function exists
+      const response = await axios.post('http://localhost:4000/auth/login', { email, password });
+      console.log("Authentification réussie :", response.data.accessToken)
       if (response.data && response.data.accessToken) {
-        console.log("handleLogin", response.data.accessToken);
-        navigate("/dashboard", { replace: true , data: response.data.accessToken},{number:5 });
-      } else {
-        setErrorMessage("Incorrect email or password.");
-      }
+        navigate("/dashboard", { replace: true});
+      } 
     } catch (error) {
       console.error("Error during login:", error);
-      setErrorMessage("An error occurred during login.");
+      setErrorMessage("Incorrect email or password.");
     }
   }
-  
+
   return (
     <BasicLayout image={bgImage}>
       <Card>
