@@ -11,8 +11,7 @@ Coded by www.creative-tim.com
  =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
+*//* eslint-disable */
 import { forwardRef } from "react";
 
 // prop-types is a library for typechecking of props
