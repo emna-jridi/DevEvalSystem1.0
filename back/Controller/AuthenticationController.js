@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const ROLES = require('../Config/ConstConfig')
 const { passwordIsValid, validUserType, generateToken } = require("../Service/AuthService");
-
+const Employee = require("../Model/EmployeeModel")
 
 // Login controller
 const login = async (req, res) => {
@@ -32,7 +32,7 @@ const login = async (req, res) => {
             });
         }
         // Check if user type is valid
-        const userTypeIsValid = validUserType(foundUser.userType);
+        const userTypeIsValid = validUserType(foundUser.role);
 
         if (!userTypeIsValid) {
             return res
@@ -40,7 +40,7 @@ const login = async (req, res) => {
                 .json({ message: "User does not have permission to connect." });
         }
         // Generate token and send response
-        const token = generateToken(foundUser.id, foundUser.userType);
+        const token = generateToken(foundUser.id, foundUser.role);
         res
             .status(StatusCodes.ACCEPTED)
             .json({ message: "User logged in successfully.", accessToken: token });
@@ -73,7 +73,7 @@ const register = async (req, res) => {
             fullName: req.body.fullName,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
-            userType: ROLES.RA,
+            role: ROLES.RA,
         });
 
         await user.save();
@@ -93,7 +93,7 @@ const logout = async (req, res) => {
 
 const adminExists= async (req, res) => {
     try {
-        const adminUser = await User.findOne({ userType: ROLES.RA });
+        const adminUser = await User.findOne({ role: ROLES.RA });
         if (adminUser) {
             return res.status(200).json({ exists: true });
           }
@@ -105,4 +105,24 @@ const adminExists= async (req, res) => {
 }
 
 
-module.exports = { login, register, logout ,adminExists}
+const emailExist = async (req, res) => {
+    try {
+      const email = req.params.email;
+      const employee = await Employee.findOne({ email });
+      if (employee) {
+        return res.json({ exists: true, type: 'employee' });
+      }
+      const agent = await User.findOne({ email });
+      if (agent) {
+        return res.json({ exists: true, type: 'agent' });
+      }
+  
+      return res.json({ exists: false });
+    } catch (error) {
+      console.error("Error checking email:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+
+module.exports = { login, register, logout ,adminExists, emailExist}

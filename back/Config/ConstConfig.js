@@ -1,7 +1,7 @@
 const ROLES = {
-    RA: 'ADMIN',
-    RTA: 'TECHNICAL AGENT',
-    RPA: 'PSYCHOTECHNICAL AGENT',
+    RA: 'ROLE_ADMIN',
+    RTA: 'ROLE_TECHNICAL_AGENT',
+    RPA: 'ROLE_PSYCHOTECHNICAL_AGENT',
   };
   
   module.exports = ROLES;

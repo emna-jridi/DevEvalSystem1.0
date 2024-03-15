@@ -11,15 +11,15 @@ const passwordIsValid = (plainPassword, hashedPassword) => {
 };
 
 // Function to validate user type
-const validUserType = (userType) => {
+const validUserType = (role) => {
   const allowedUserTypes = [ROLES.RA, ROLES.RPA, ROLES.RTA];
-  return allowedUserTypes.includes(userType);
+  return allowedUserTypes.includes(role);
 };
 
 
 // Function to generate JWT token
-const generateToken = (userId, userType) => {
-  return jwt.sign({ id: userId, userType: userType }, config.secret, {
+const generateToken = (userId, role) => {
+  return jwt.sign({ id: userId, role: role }, config.secret, {
     algorithm: "HS256",
     expiresIn: 86400,
   });
@@ -27,7 +27,7 @@ const generateToken = (userId, userType) => {
 
 
 // Middleware function to authorize user based on role
-const authorization = (role)=> async (req, res, next) => {
+const authorization = (roles)=> async (req, res, next) => {
 
   try {
   // Extract token from authorization header
@@ -40,15 +40,16 @@ const authorization = (role)=> async (req, res, next) => {
     const token = authHeader.split(" ")[1];
  // Verify and decode token
     const decoded = jwt.verify(token, Config.secret);
-    const { id, userType } = decoded;
+    const { id, role } = decoded;
     // Check if user type matches the required role
-    if (userType !== role) {
+    if (!roles.includes(role)) {
       return res
         .status(StatusCodes.FORBIDDEN)
         .json({ message: "You are not authorized to access this resource." });
     }
+
  // Set user information in request object
-    req.user = { userId: id, userType };
+    req.user = { userId: id, role };
 
 // Call next middleware
     next();
@@ -63,6 +64,7 @@ const authorizationAdmin = authorization(ROLES.RA);
 const authorizationRTA = authorization(ROLES.RTA);
 const authorizationRPA = authorization(ROLES.RPA);
 
+const authorizationAllRoles = authorization(Object.values(ROLES)); 
 module.exports = {
   passwordIsValid,
   validUserType,
@@ -70,4 +72,6 @@ module.exports = {
   authorizationAdmin,
   authorizationRTA,
   authorizationRPA ,
+  authorizationAllRoles, 
+
 };

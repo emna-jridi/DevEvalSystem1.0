@@ -21,12 +21,12 @@ Coded by www.creative-tim.com
 /* eslint-disable */
 const colors = {
   background: {
-    default: "#f0f2f5",
+    default: "#EBEEF4",
   },
 
   text: {
-    main: "#7b809a",
-    focus: "#7b809a",
+    main: "#3F435D",
+    focus: "#3F435D",
   },
 
   transparent: {
@@ -55,8 +55,8 @@ const colors = {
   },
 
   info: {
-    main: "#1A73E8",
-    focus: "#1662C4"
+    main: "#8C9EE8",
+    focus: "#8C9EE8"
   },
 
   success: {
@@ -108,8 +108,8 @@ const colors = {
     },
 
     info: {
-      main: "#00023D",
-      state: "#1A73E8",
+      main: "#5C6899",
+      state: "#5C6899",
     },
 
     success: {
@@ -133,8 +133,9 @@ const colors = {
     },
 
     dark: {
-      main: "#42424a",
-      state: "#191919",
+      main: "#191C29",
+      state: "#242733",
+      //#353A55/#59618F
     },
   },
 

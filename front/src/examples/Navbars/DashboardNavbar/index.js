@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+/* eslint-disable */
 
 import { useState, useEffect } from "react";
 
@@ -31,11 +32,13 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
-
+import axios from "axios";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
-
+import { Box, Typography } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from "react-router-dom";
 // Custom styles for DashboardNavbar
 import {
   navbar,
@@ -59,8 +62,33 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const navigate = useNavigate();
 
+  const [fullName, setFullName] = useState("")
+
+  const handleLogout = () => {
+    // Remove the authentication token
+    localStorage.removeItem('accessToken');
+    // Redirect the user to the login page
+    navigate('/authentication/sign-in');
+  };
   useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    const fetchUserDetails = async (token) => {
+      try {
+
+        const response = await axios.get('http://localhost:4000/userDetails', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setFullName(response.data.fullName);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des détails de l\'utilisateur :', error);
+      }
+    };
+    fetchUserDetails(token);
+
     // Setting the navbar type
     if (fixedNavbar) {
       setNavbarType("sticky");
@@ -72,6 +100,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     function handleTransparentNavbar() {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
+
 
     /** 
      The event listener that's calling the handleTransparentNavbar function when 
@@ -92,23 +121,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleCloseMenu = () => setOpenMenu(false);
 
   // Render the notifications menu
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
-      sx={{ mt: 2 }}
-    >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
-    </Menu>
-  );
+  // const renderMenu = () => (
+  //   <Menu
+  //     anchorEl={openMenu}
+  //     anchorReference={null}
+  //     anchorOrigin={{
+  //       vertical: "bottom",
+  //       horizontal: "left",
+  //     }}
+  //     open={Boolean(openMenu)}
+  //     onClose={handleCloseMenu}
+  //     sx={{ mt: 2 }}
+  //   >
+  //     <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
+  //     <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
+  //     <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+  //   </Menu>
+  // );
 
   // Styles for the navbar icons
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
@@ -133,17 +162,18 @@ function DashboardNavbar({ absolute, light, isMini }) {
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
+
         {isMini ? null : (
-          <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
-            <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
+          <MDBox sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            {fullName ? (
+              <MDBox sx={{ color: light ? 'white' : 'inherit', mr: 2, display: 'flex', alignItems: 'center' }}>
+                <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} /> {/* Icon */}
+                <Typography variant="body1" sx={{ fontFamily: 'Parisienne, cursive', fontWeight: 'bold' }}>Bonjour {fullName} </Typography>
+              </MDBox>
+            ) : (
+              <Typography variant="body1" sx={{ fontFamily: 'Parisienne, cursive', fontWeight: 'bold' }}>Veuillez vous connecter</Typography>
+            )}
+            <MDBox>
               <IconButton
                 size="small"
                 disableRipple
@@ -160,11 +190,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 disableRipple
                 color="inherit"
                 sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
+                onClick={handleLogout}
               >
-                <Icon sx={iconsStyle}>settings</Icon>
+                <Icon sx={iconsStyle} >logout</Icon>
               </IconButton>
-              <IconButton
+              {/* <IconButton
                 size="small"
                 disableRipple
                 color="inherit"
@@ -175,8 +205,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 onClick={handleOpenMenu}
               >
                 <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton>
-              {renderMenu()}
+              </IconButton> */}
             </MDBox>
           </MDBox>
         )}

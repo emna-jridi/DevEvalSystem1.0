@@ -7,20 +7,20 @@ const userValidationSchema = Joi.object({
     }),
 
     fullName: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30).
-    required(),
+        .alphanum()
+        .min(3)
+        .max(30).
+        required(),
 
     email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ["com", "tn"] } })
         .required(),
 
     password: Joi.string()
-    .required(),
+        .required(),
     //.pattern(new RegExp('^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};:\'"|,.<>?]{3,30}$'))
 
-    userType: Joi.string().valid(ROLES.RA, ROLES.RPA, ROLES.RTA).required(),
+    role: Joi.string().valid(ROLES.RA, ROLES.RPA, ROLES.RTA).required(),
 }).options({ abortEarly: false, allowUnknown: true });
 
 
@@ -28,20 +28,20 @@ const userValidationSchema = Joi.object({
 const empolyeeValidationSchema = Joi.object({
 
     fullName: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required(),
+        .alphanum()
+        .min(3)
+        .max(30)
+        .required(),
 
     email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ["com", "tn"] } })
         .required(),
 
     position: Joi.string()
-    .required(),
+        .required(),
 
     rank: Joi.number()
-    .required(),
+        .required(),
 
     entryDate: Joi.date()
         .iso() //iso => format 'YYYY-MM-DD'
@@ -53,70 +53,70 @@ const empolyeeValidationSchema = Joi.object({
 const projectValidationSchema = Joi.object({
 
     label: Joi.string()
-    .alphanum()
-    .min(5)
-    .max(30)
-    .required(),
+        .alphanum()
+        .min(5)
+        .max(30)
+        .required(),
 
     description: Joi.string()
-    .alphanum()
-    .min(25)
-    .max(150)
-    .required(),
+        .alphanum()
+        .min(25)
+        .max(150)
+        .required(),
 }).options({ abortEarly: false, allowUnknown: true });
 
 
 const releaseValidationSchema = Joi.object({
 
     name: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(50)
-    .required(),
+        .alphanum()
+        .min(3)
+        .max(50)
+        .required(),
 
     description: Joi.string()
-    .alphanum()
-    .min(25)
-    .max(150)
-    .required(),
+        .alphanum()
+        .min(25)
+        .max(150)
+        .required(),
 
     start_date: Joi.date()
-    .iso()
-    .required(),
+        .iso()
+        .required(),
 
     end_date: Joi.date()
-    .iso()
-    .required(),
+        .iso()
+        .required(),
 });
 
 
 const demandValidationSchema = Joi.object({
 
     title: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(50)
-    .required(),
+        .alphanum()
+        .min(3)
+        .max(50)
+        .required(),
 
     description: Joi.string()
-    .alphanum()
-    .min(25)
-    .max(150)
-    .required(),
+        .alphanum()
+        .min(25)
+        .max(150)
+        .required(),
 
     start_date: Joi.date()
-    .iso()
-    .required(),
+        .iso()
+        .required(),
 
     end_date: Joi.date()
-    .iso()
-    .required(),
+        .iso()
+        .required(),
 
     estimation: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(50)
-    .required(),
+        .alphanum()
+        .min(3)
+        .max(50)
+        .required(),
 
 })
 module.exports = {

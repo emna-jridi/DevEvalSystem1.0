@@ -19,7 +19,7 @@ const createAgent = async (req, res) => {
             fullName: req.body.fullName,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
-            userType: req.body.userType,
+            role: req.body.role,
         })
         // Saving the new Agent to the database
         await agent.save()
@@ -40,13 +40,13 @@ const createAgent = async (req, res) => {
 const getAllAgent = async (req, res) => {
     try {
         // Finding all Agents in the database
-        const agents = await Agent.find({ userType: { $in: [ROLES.RPA, ROLES.RTA] } })
+        const agents = await Agent.find({ role: { $in: [ROLES.RPA, ROLES.RTA] } })
         // Mapping the Agent data to a simpler format
         const data = agents.map((agent) => {
             return {
                 fullName: agent.fullName,
                 email: agent.email,
-                job: agent.userType,
+                role: agent.role,
                 createdAt: agent.createdAt,
                 updatedAt: agent.updatedAt,
             }
@@ -62,21 +62,24 @@ const getAllAgent = async (req, res) => {
 // Function to update an Agent
 const updateAgent = async (req, res) => {
     try {
+        // console.log(req.body.email, req.body.role, req.body.fullName, req.body.password);
         // Checking if all required properties are provided in the request body
-        if (!req.body.email || !req.body.userType || !req.body.fullName) {
-
-            return res
-                .status(StatusCodes.BAD_REQUEST)
-                .json({ message: "Please provide a full Name ,an email and a position !" });
-        }
+        // if (!req.body.email || !req.body.role || !req.body.fullName
+        //     || !req.body.password) {
+        //     return res
+        //         .status(StatusCodes.BAD_REQUEST)
+        //         .json({ message: "Please provide a full Name ,an email and role !" });
+        //  }
         // Creating an update object with data from the request body
         const update = {
+            fullName: req.body.fullName,
             email: req.body.email,
-            userType: req.body.userType,
+            role: req.body.role,
+            //password: req.body.password,
             updatedAt: new Date()
         };
         // Finding and updating the Agent with the provided email
-        const updatedAgent = await User.findOneAndUpdate(
+        const updatedAgent = await Agent.findOneAndUpdate(
             { email: req.params.email },
             update,
             { new: true }
@@ -87,7 +90,7 @@ const updateAgent = async (req, res) => {
                 .json({ message: "User not found." });
         }
         // Sending a success response with the updated Agent data    
-        res.status(StatusCodes.OK).json({ updatedAgent });
+        return res.status(StatusCodes.OK).json({ updatedAgent });
     } catch (error) {
         res
             .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -99,7 +102,7 @@ const updateAgent = async (req, res) => {
 // Function to delete an Agent
 const deleteAgent = async (req, res) => {
     try {
-// Checking if the Agent email is provided
+        // Checking if the Agent email is provided
         const agentEmail = req.params.email;
         const agent = await Agent.findOneAndDelete({ email: agentEmail })
         if (!agent) {
@@ -109,8 +112,6 @@ const deleteAgent = async (req, res) => {
 
         }
         res.status(StatusCodes.OK).json({ message: "Agent was deleted successfully!" });
-
-
     } catch (error) {
         res
             .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -118,10 +119,20 @@ const deleteAgent = async (req, res) => {
     }
 }
 
+const getUserDetails = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const userDetails = await Agent.findOne({ _id: userId })
+        res.status(StatusCodes.ACCEPTED).json(userDetails);
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
+    }
+};
 
 module.exports = {
     createAgent,
     getAllAgent,
     updateAgent,
     deleteAgent,
+    getUserDetails,
 }

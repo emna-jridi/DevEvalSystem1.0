@@ -20,10 +20,11 @@ const createEmployee = async (req, res) => {
             rank: req.body.rank,
             entryDate: req.body.entryDate,
         })
+     
         // Checking if all required properties are provided
-        if (!employee.fullName || !employee.email || !employee.position || !employee.rank || !employee.entryDate) {
-            return res.status(StatusCodes.BAD_REQUEST).json({ message: "Please provide all employee information!" });
-        }
+        // if (!employee.fullName || !employee.email || !employee.position || !employee.rank || !employee.entryDate) {
+        //     return res.status(StatusCodes.BAD_REQUEST).json({ message: "Please provide all employee information!" });
+        // }
         // Saving the new employee to the database
         await employee.save()
         // Sending a success response
@@ -67,22 +68,20 @@ const getAllEmployee = async (req, res) => {
 }
 
 // Function to update an employee
-const  updateEmpolyee = async (req, res) => {
+const updateEmpolyee = async (req, res) => {
     try {
-//verification de l'email
+        //verification de l'email
         // Checking if all required properties are provided in the request body
-        if (!req.body.email || !req.body.fullName || !req.body.position || !req.body.rank || !req.body.entryDate) {
-            return res
-                .status(StatusCodes.BAD_REQUEST)
-                .json({ message: "Please provide all employee information!" });
-        }
+        // if (!req.body.fullName || !req.body.position || !req.body.rank) {
+        //     return res
+        //         .status(StatusCodes.BAD_REQUEST)
+        //         .json({ message: "Please provide all employee information!" });
+        // }
         // Creating an update object with data from the request body
         const update = {
-            email: req.body.email,
             fullName: req.body.fullName,
             position: req.body.position,
             rank: req.body.rank,
-            entryDate: req.body.entryDate,
         }
         // Finding and updating the employee with the provided email
         const updatedEmployee = await Employee.findOneAndUpdate({ email: req.params.email },
@@ -108,14 +107,14 @@ const  updateEmpolyee = async (req, res) => {
 // Function to delete an employee
 const deleteEmployee = async (req, res) => {
     try {
- // Checking if the employee email is provided
+        // Checking if the employee email is provided
         const employeEmail = req.params.email
         if (!employeEmail) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ message: "Missing employee email." });
         }
- // Finding and deleting the employee with the provided email
+        // Finding and deleting the employee with the provided email
         const employee = await Employee.findOneAndDelete({
             email: employeEmail
         })

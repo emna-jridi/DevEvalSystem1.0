@@ -3,9 +3,9 @@ const router = express.Router()
 const { createEmployee, deleteEmployee, getAllEmployee, updateEmpolyee } = require('../Controller/EmployeeController')
 const { authorizationAdmin,  } = require("../Service/AuthService")
 
-router.route('/employee').post(authorizationAdmin, createEmployee)
+router.route('/employee').post(createEmployee)
 router.route('/employees').get(getAllEmployee)
-router.route('/employee/:email').put( updateEmpolyee)
+router.route('/employee/:email').put(updateEmpolyee)
     .delete( deleteEmployee)
 
     module.exports = router 

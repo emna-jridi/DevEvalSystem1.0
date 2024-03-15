@@ -37,19 +37,24 @@ Coded by www.creative-tim.com
 /* eslint-disable */
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
+import AgentsTables from "layouts/tables/agentTable";
+import EmployeeTables from "layouts/tables/employeeTable"
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 import handleLogout from "layouts/authentication/log-out";
 import Logout from "layouts/authentication/log-out"
-import Agent from "layouts/Agent"
+
+import CreateAgent from "layouts/tables/createAgent"
+import UpdateAgent from "layouts/tables/updateAgent"
+
+import CreateEmployee from "layouts/tables/createEmployee"
+import UpdateEmployee from "layouts/tables/updateEmployee"
+
+
 // @mui icons
 import Icon from "@mui/material/Icon";
-
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 const routes = [
   {
     type: "collapse",
@@ -59,73 +64,76 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Tables",
-  //   key: "tables",
-  //   icon: <Icon fontSize="small">table_view</Icon>,
-  //   route: "/tables",
-  //   component: <Tables />,
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "Billing",
-  //   key: "billing",
-  //   icon: <Icon fontSize="small">receipt_long</Icon>,
-  //   route: "/billing",
-  //   component: <Billing />,
-  // },
 
-  // {
-  //   type: "collapse",
-  //   name: "Notifications",
-  //   key: "notifications",
-  //   icon: <Icon fontSize="small">notifications</Icon>,
-  //   route: "/notifications",
-  //   component: <Notifications />,
-  // },
+
   {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
+   // type: "collapse",
     name: "Sign In",
     key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
+    //icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
   {
     type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
-  {
-    type: "collapse",
-    name: "Agent",
+    name: "Agents",
     key: "agent",
     icon: <Icon>business_center</Icon>,
-    route: "/tables",
-    component: <Tables />
+    route: "/tables/agentsTables",
+    component: <AgentsTables />
   },
   {
     type: "collapse",
-    name: "logout",
-    key: "logout",
-    icon: <Icon fontSize="small">logout</Icon>,
-    route: "/authentication/log-out",
-    component: <Logout />,
-    onClick: handleLogout,
-
+    name: "Employees",
+    key: "employee",
+    icon: <Icon>group</Icon>,
+    route: "/tables/employeeTables",
+    component: <EmployeeTables />
   },
+  {
+    type: "collapse",
+    name: "Statics",
+    key: "statics",
+    icon: <ShowChartIcon/>,
+   //route: "/tables/employeeTables",
+    //component: <EmployeeTables />
+  },
+
+  // {
+  //   type: "collapse",
+  //   name: "logout",
+  //   key: "logout",
+  //   icon: <Icon fontSize="small">logout</Icon>,
+  //   route: "/authentication/log-out",
+  //   component: <Logout />,
+  //   onClick: handleLogout,
+
+  // },
+{//type: "collapse",
+  name: CreateAgent, 
+  key: "createAgent",
+  component: <CreateAgent />,
+  route:'/tables/createAgent',
+},
+{//type: "collapse",
+  name: UpdateAgent, 
+  key: "updateAgent",
+  component: <UpdateAgent />,
+  route:'/tables/updateAgent',
+},
+{//type: "collapse",
+  name: CreateEmployee, 
+  key: "createEmployee",
+  component: <CreateEmployee />,
+  route:'/tables/createEmployee',
+},
+{//type: "collapse",
+  name: UpdateEmployee, 
+  key: "updateEmployee",
+  component: <UpdateEmployee />,
+  route:'/tables/updateEmployee',
+}
+
 
 
 ];

@@ -12,7 +12,7 @@ const getAllUsers = async (req, res) => {
       return {
         fullName: user.fullName,
         email: user.email,
-        job: user.userType,
+        role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };
@@ -25,27 +25,18 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserByEmail = async (req, res) => {
-  const userEmail = req.params.email;
-  const user = await User.findOne({ email: userEmail });
-  if (!user) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ message: "User not found" });
-  }
-  res.status(StatusCodes.OK).json({ user });
-};
+
 
 // Function to update a user
 const UpdateUser = async (req, res) => {
   try {
  // Checking if all required properties are provided in the request body
-    if (!req.body.email || !req.body.userType) {
+    if (!req.body.email || !req.body.role) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Please provide an email and a position !" });
     }
-    const update = { email: req.body.email, userType: req.body.userType };
+    const update = { email: req.body.email, role: req.body.role };
       // Finding and updating the employee with the provided email
     const updatedUser = await User.findOneAndUpdate(
       { email: req.params.email },
@@ -85,4 +76,4 @@ const deleteUser = async (req, res) => {
       .send({ message: error.message });
   }
 };
-module.exports = { getAllUsers, getUserByEmail, UpdateUser, deleteUser };
+module.exports = { getAllUsers, UpdateUser, deleteUser };

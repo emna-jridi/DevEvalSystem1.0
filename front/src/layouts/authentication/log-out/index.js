@@ -1,9 +1,8 @@
 /* eslint-disable */
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LogoutComponent = () => {
+const handleLogout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -13,8 +12,8 @@ const LogoutComponent = () => {
         navigate('/authentication/sign-in');
     }, []);
 
-    // This component can be empty as it will handle logout and redirection automatically
+   
     return null;
 };
 
-export default LogoutComponent;
+export default handleLogout;

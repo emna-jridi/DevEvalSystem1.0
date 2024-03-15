@@ -22,7 +22,7 @@ const employeeSchema = new mongoose.Schema({
     },
     entryDate: {
         type: Date,
-        required: [true, "Please provide the entry date  !"],
+      //  required: [true, "Please provide the entry date  !"],
     },
 
 
@@ -30,12 +30,12 @@ const employeeSchema = new mongoose.Schema({
 )
 
 //À vérifier
-employeeSchema.pre('save', function(next){
-    const {error} = empolyeeValidationSchema.validate(this.toObject());
-if (error){
-    throw new Error(`validation error: ${error.message}`)
-}
-next();
-})
+// employeeSchema.pre('save', function(next){
+//     const {error} = empolyeeValidationSchema.validate(this.toObject());
+// if (error){
+//     throw new Error(`validation error: ${error.message}`)
+// }
+// next();
+// })
 
 module.exports = mongoose.model("employee", employeeSchema)
