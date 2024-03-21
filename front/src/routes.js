@@ -37,13 +37,15 @@ Coded by www.creative-tim.com
 /* eslint-disable */
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import AgentsTables from "layouts/tables/agentTable";
+import AgentTables from "layouts/tables/agentTable";
 import EmployeeTables from "layouts/tables/employeeTable"
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
+
 import SignIn from "layouts/authentication/sign-in";
 import handleLogout from "layouts/authentication/log-out";
 import Logout from "layouts/authentication/log-out"
+import ProjectTables from "layouts/tables/projectTables/projectTable"
+import ReleaseTables from "layouts/tables/releaseTables/releaseTable"
+import DemandTables from "layouts/tables/demandTables/demandTable"
 
 import CreateAgent from "layouts/tables/createAgent"
 import UpdateAgent from "layouts/tables/updateAgent"
@@ -51,10 +53,22 @@ import UpdateAgent from "layouts/tables/updateAgent"
 import CreateEmployee from "layouts/tables/createEmployee"
 import UpdateEmployee from "layouts/tables/updateEmployee"
 
+import CreateProject from "layouts/tables/projectTables/createProject";
+import UpdateProject from "layouts/tables/projectTables/updateProject"
+import AssignTo from "layouts/tables/projectTables/assignTo"
+
+import CreateRelease from "layouts/tables/releaseTables/createRelease"
+import UpdateRelease from "layouts/tables/releaseTables/updateRelease"
+
+import CreateDemand from "layouts/tables/demandTables/createDemand"
+import UpdateDemand from "layouts/tables/demandTables/updateDemand"
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import WebIcon from '@mui/icons-material/Web';
+import SendTimeExtensionIcon from '@mui/icons-material/SendTimeExtension';
+
 const routes = [
   {
     type: "collapse",
@@ -67,7 +81,7 @@ const routes = [
 
 
   {
-   // type: "collapse",
+    // type: "collapse",
     name: "Sign In",
     key: "sign-in",
     //icon: <Icon fontSize="small">login</Icon>,
@@ -79,8 +93,8 @@ const routes = [
     name: "Agents",
     key: "agent",
     icon: <Icon>business_center</Icon>,
-    route: "/tables/agentsTables",
-    component: <AgentsTables />
+    route: "/tables/agentTable",
+    component: <AgentTables />
   },
   {
     type: "collapse",
@@ -94,8 +108,8 @@ const routes = [
     type: "collapse",
     name: "Statics",
     key: "statics",
-    icon: <ShowChartIcon/>,
-   //route: "/tables/employeeTables",
+    icon: <ShowChartIcon />,
+    //route: "/tables/employeeTables",
     //component: <EmployeeTables />
   },
 
@@ -109,33 +123,97 @@ const routes = [
   //   onClick: handleLogout,
 
   // },
-{//type: "collapse",
-  name: CreateAgent, 
-  key: "createAgent",
-  component: <CreateAgent />,
-  route:'/tables/createAgent',
-},
-{//type: "collapse",
-  name: UpdateAgent, 
-  key: "updateAgent",
-  component: <UpdateAgent />,
-  route:'/tables/updateAgent',
-},
-{//type: "collapse",
-  name: CreateEmployee, 
-  key: "createEmployee",
-  component: <CreateEmployee />,
-  route:'/tables/createEmployee',
-},
-{//type: "collapse",
-  name: UpdateEmployee, 
-  key: "updateEmployee",
-  component: <UpdateEmployee />,
-  route:'/tables/updateEmployee',
-}
+  {//type: "collapse",
+    name: CreateAgent,
+    key: "createAgent",
+    component: <CreateAgent />,
+    route: '/tables/createAgent',
+  },
+  {//type: "collapse",
+    name: CreateProject,
+    key: "createProject",
+    component: <CreateProject />,
+    route: '/tables/projectTables/createProject',
+  },
+  {//type: "collapse",
+    name: UpdateAgent,
+    key: "updateAgent",
+    component: <UpdateAgent />,
+    route: '/tables/updateAgent',
+  },
+  {//type: "collapse",
+    name: CreateEmployee,
+    key: "createEmployee",
+    component: <CreateEmployee />,
+    route: '/tables/createEmployee',
+  },
+  {//type: "collapse",
+    name: UpdateEmployee,
+    key: "updateEmployee",
+    component: <UpdateEmployee />,
+    route: '/tables/updateEmployee',
+  },
+  {//type: "collapse",
+    name: UpdateProject,
+    key: "updateProject",
+    component: <UpdateProject />,
+    route: '/tables/projectTables/updateProject',
+  },
+  {//type: "collapse",
+    name: AssignTo,
+    key: "assignTo",
+    component: <AssignTo />,
+    route: '/tables/projectTables/assignTo',
+  },
+  {//type: "collapse",
+    name: CreateRelease,
+    key: "createRelease",
+    component: <CreateRelease />,
+    route: '/tables/releaseTables/createRelease',
+  },
+  {//type: "collapse",
+    name: UpdateRelease,
+    key: "updateRelease",
+    component: <UpdateRelease />,
+    route: '/tables/releaseTables/updateRelease',
+  },
+  {
+    type: "collapse",
+    name: "Project",
+    key: "project",
+    icon: <WebIcon/>,
+    route: "/tables/projectTables/projectTable",
+    component: <ProjectTables />
+  },
+  {
+    type: "collapse",
+    name: "Release",
+    key: "release",
+    icon: <Icon>code</Icon>,
+    route: "/tables/releaseTables/releaseTable",
+    component: <ReleaseTables />
+  },
 
-
-
+  {
+    type: "collapse",
+    name: "Demand",
+    key: "demand",
+    icon:<SendTimeExtensionIcon/>,
+    route: "/tables/demandTables/demandTable",
+    component: <DemandTables />
+  },
+    {//type: "collapse",
+      name: CreateDemand,
+      key: "createDemand",
+      component: <CreateDemand />,
+      route: '/tables/demandTables/createDemand',
+    },
+    {//type: "collapse",
+      name: UpdateDemand,
+      key: "updateDemand",
+      component: <UpdateDemand />,
+      route: '/tables/demandTables/updateDemand',
+    },
 ];
 
 

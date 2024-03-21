@@ -2,6 +2,7 @@ const config = require('./Config/AppConfig')
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express();
+const cookieParser = require('cookie-parser');
 const router = require('./Router/router')
 const auth = require('./Router/AuthenticationRoute')
 const agent =  require('./Router/AgentRoute')
@@ -9,6 +10,9 @@ const employee =  require('./Router/EmployeeRoute')
 
 const cors = require('cors');
 app.use(cors());
+
+
+//app.use(cookieParser());
 
 //middleware 
 app.use(express.json())

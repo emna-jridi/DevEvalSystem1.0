@@ -55,7 +55,7 @@ const projectValidationSchema = Joi.object({
     label: Joi.string()
         .alphanum()
         .min(5)
-        .max(30)
+        .max(100)
         .required(),
 
     description: Joi.string()

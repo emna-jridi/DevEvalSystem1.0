@@ -22,7 +22,7 @@ const employeeSchema = new mongoose.Schema({
     },
     entryDate: {
         type: Date,
-      //  required: [true, "Please provide the entry date  !"],
+        required: [true, "Please provide the entry date  !"],
     },
 
 

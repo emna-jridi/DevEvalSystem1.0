@@ -21,11 +21,11 @@ import { useState } from "react";
 import { Pagination, PaginationItem, TablePagination } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-function AgentsTables() {
+function AgentTables() {
     const { columns, rows } = agentsTableData();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const entriesPerPage = 1;
+    const entriesPerPage = 5;
 
     const handleAddAgent = () => {
         navigate('/tables/createAgent');
@@ -86,17 +86,17 @@ function AgentsTables() {
                     </Grid>
                 </Grid>
                 <MDBox pt={3} display="flex" alignItems="center" justifyContent="center" textAlign="center">
-                <Pagination
-                    count={totalPages}
-                    page={currentPage}
-                    onChange={(event, page) => handlePageChange(page)}
-                    renderItem={(item) => (
-                        <PaginationItem
-                            slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                            {...item}
-                        />
-                    )}
-                />
+                    <Pagination
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={(event, page) => handlePageChange(page)}
+                        renderItem={(item) => (
+                            <PaginationItem
+                                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                                {...item}
+                            />
+                        )}
+                    />
                 </MDBox>
             </MDBox>
             <Footer />
@@ -106,4 +106,4 @@ function AgentsTables() {
 
 }
 
-export default AgentsTables
+export default AgentTables

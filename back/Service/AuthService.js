@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const Config = require("../Config/AppConfig");
 const { StatusCodes } = require("http-status-codes");
 
+
 // Function to check if the provided plain password matches the hashed password
 const passwordIsValid = (plainPassword, hashedPassword) => {
   return bcrypt.compareSync(plainPassword, hashedPassword);
@@ -26,19 +27,20 @@ const generateToken = (userId, role) => {
 };
 
 
+
 // Middleware function to authorize user based on role
-const authorization = (roles)=> async (req, res, next) => {
+const authorization = (roles) => async (req, res, next) => {
 
   try {
-  // Extract token from authorization header
+    // Extract token from authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "No token provided" });
     }
-    const token = authHeader.split(" ")[1];
- // Verify and decode token
+const token = authHeader.split(" ")[1];
+    // Verify and decode token
     const decoded = jwt.verify(token, Config.secret);
     const { id, role } = decoded;
     // Check if user type matches the required role
@@ -47,11 +49,9 @@ const authorization = (roles)=> async (req, res, next) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ message: "You are not authorized to access this resource." });
     }
-
- // Set user information in request object
+    // Set user information in request object
     req.user = { userId: id, role };
-
-// Call next middleware
+    // Call next middleware
     next();
   } catch (error) {
     console.error(error);
@@ -60,18 +60,21 @@ const authorization = (roles)=> async (req, res, next) => {
       .json({ message: "Error during the authentication." });
   }
 };
+
+
 const authorizationAdmin = authorization(ROLES.RA);
 const authorizationRTA = authorization(ROLES.RTA);
 const authorizationRPA = authorization(ROLES.RPA);
 
-const authorizationAllRoles = authorization(Object.values(ROLES)); 
+const authorizationAllRoles = authorization(Object.values(ROLES));
 module.exports = {
   passwordIsValid,
   validUserType,
   generateToken,
+ 
   authorizationAdmin,
   authorizationRTA,
-  authorizationRPA ,
-  authorizationAllRoles, 
+  authorizationRPA,
+  authorizationAllRoles,
 
 };

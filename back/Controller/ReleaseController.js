@@ -2,10 +2,15 @@ const Release = require("../Model/ReleaseModel");
 const Project = require("../Model/ProjectModel");
 const { StatusCodes } = require("http-status-codes");
 
-
 // Function to create a new Release
 const createRelease = async (req, res) => {
     try {
+        console.log(
+            req.body.name,
+            req.body.description,
+            req.body.start_date,
+            req.body.end_date
+        );
         const foundRelease = await Release.findOne({ name: req.body.name });
         // Checking if a Release with the provided name already exists
         if (foundRelease) {
@@ -22,19 +27,16 @@ const createRelease = async (req, res) => {
         });
         // Checking if all required properties are provided
         if (
-            !release.name ||
-            !release.description ||
-            !release.start_date ||
-            !release.end_date
-        ) {
-            return res
-                .status(StatusCodes.BAD_REQUEST)
-                .json({ message: "Please provide all release information!" });
+          !release.name ||  !release.description ||!release.start_date ||!release.end_date ) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ message: "Please provide all release information!" });
         }
         // Saving the new Release to the database
         await release.save();
+
         // Sending a success response
-        return res
+        res
             .status(StatusCodes.ACCEPTED)
             .json({ message: `${release.name} was registered successfully!` });
     } catch (error) {
@@ -50,13 +52,12 @@ const getAllReleases = async (req, res) => {
     try {
         // Finding all Releases in the database and  populating the 'assignedProject' field with project details
         const releases = await Release.find({}).populate(
-            'assignedProject',
-            '-_id label'
+            "assignedProject",
+            "-_id label"
         );
         // Mapping the demands data to a simpler format
         const data = releases.map((release) => {
             return {
-                id: release.id,
                 name: release.name,
                 description: release.description,
                 start_date: release.start_date,
@@ -93,6 +94,7 @@ const updateRelease = async (req, res) => {
             start_date: req.body.start_date,
             end_date: req.body.end_date,
         };
+        console.log(update);
         // Finding and updating the Release with the provided title
         const updatedRelease = await Release.findOneAndUpdate(
             { name: req.params.name },
@@ -177,10 +179,21 @@ const assignToProject = async (req, res) => {
     }
 };
 
-
-
-
-
+const releaseExists = async (req, res) => {
+    try {
+        const name = req.params.name;
+        const release = await Release.findOne({ name });
+        if (release) {
+            return res.status(StatusCodes.ACCEPTED).json({ exists: true, release });
+        }
+        return res.status(StatusCodes.ACCEPTED).json({ exists: false });
+    } catch (error) {
+        console.error("Error checking release existence:", error);
+        return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ message: "Internal server error" });
+    }
+};
 
 module.exports = {
     createRelease,
@@ -188,4 +201,5 @@ module.exports = {
     updateRelease,
     deleteRelease,
     assignToProject,
+    releaseExists,
 };

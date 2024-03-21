@@ -130,9 +130,10 @@ const deleteDemand = async (req, res) => {
                 .json({ message: "Missing Demand Title." });
         }
         // Finding and deleting the demand with the provided title
-        const demand = await Demand.findByIdAndDelete({
+        const demand = await Demand.findOneAndDelete({
             title: demandTitle,
         });
+       
         if (!demand) {
             return res
                 .status(StatusCodes.NOT_FOUND)

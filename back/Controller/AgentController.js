@@ -75,7 +75,7 @@ const updateAgent = async (req, res) => {
             fullName: req.body.fullName,
             email: req.body.email,
             role: req.body.role,
-            //password: req.body.password,
+            //Add tables for agents and employees in admin interfacepassword: req.body.password,
             updatedAt: new Date()
         };
         // Finding and updating the Agent with the provided email

@@ -30,7 +30,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 function EmployeesTables() {
     const { columns: pColumns, rows: pRows } = employeeTableData();
     const [currentPage, setCurrentPage] = useState(1);
-    const entriesPerPage = 2;
+    const entriesPerPage = 5;
     const navigate = useNavigate();
 
 

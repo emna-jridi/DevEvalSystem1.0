@@ -12,53 +12,51 @@ import MDTypography from "components/MDTypography";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
-const roles = ['ROLE_TECHNICAL_AGENT', 'ROLE_PSYCHOTECHNICAL_AGENT'];
 
-const UpdateAgent = () => {
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [role, setRole] = useState('');
+
+const UpdateRelease = () => {
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [start_date, setstart_date] = useState(new Date());
+    const [end_date, setEnd_date] = useState(new Date());
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
         if (location.state) {
+            const { name, description, start_date, end_date } = location.state;
+            setName(name);
+            setDescription(description);
+            setstart_date(start_date);
+            setEnd_date(end_date)
 
-            setEmail(location.state);
         }
-
     }, [location]);
 
-
-    const handleRoleChange = (event) => {
-        setRole(event.target.value);
-    };
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
     const handleSubmit = async () => {
         try {
-            if (!fullName || !email || !role) {
-                setError('All fields are required.');
+            if (!name || !description || !start_date || !end_date) {
+                setError("All fields are required.");
                 return;
             }
-            const namePattern = /^[A-Za-z\s]+$/;
-            if (!namePattern.test(fullName)) {
-                setError('Please enter a valid full name.');
-                return;
-            }
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                setError('Please enter a valid email address.');
-                return;
-            }
-            await axios.put(`http://localhost:4000/agent/${email}`, { fullName, email, role });
-            navigate('/tables/agentTables');
+            await axios.put(`http://localhost:4000/release/${name}`, { name, description, start_date, end_date },);
+            console.log("done");
+            navigate('/tables/releaseTables/releaseTable');
         } catch (error) {
             console.error("Error adding agent:", error);
         }
     };
     const handleCancel = () => {
-        navigate('/tables/agentTable');
+        navigate('/tables/releaseTables/releaseTable');
     };
     return (
         <PageLayout>
@@ -84,42 +82,46 @@ const UpdateAgent = () => {
                         padding: '10px',
                         borderRadius: '4px',
                     }}
-                >Update Agent</MDTypography>
+                >Update Release</MDTypography>
                 <form onSubmit={handleSubmit}>
                     <FormControl fullWidth margin="normal">
                         <TextField
-                            label="Full Name"
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            label="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             variant="outlined"
                         />
                     </FormControl>
                     <FormControl fullWidth margin="normal">
                         <TextField
-                            label="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            label="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                             variant="outlined"
                         />
                     </FormControl>
-
-                    <FormControl component="fieldset" margin="normal">
-                        <InputLabel htmlFor="role" sx={{
-                            fontWeight: 'bold',
-                            fontSize: '1.1rem',
-                        }}>Role :</InputLabel>
-                        <br />
-                        <RadioGroup aria-label="role" name="role" value={role} onChange={handleRoleChange}>
-                            {roles.map((role) => (
-                                <FormControlLabel
-                                    key={role}
-                                    value={role}
-                                    control={<Radio />}
-                                    label={role.split('_').join(' ')}
-                                />
-                            ))}
-                        </RadioGroup>
+                    <FormControl fullWidth margin="normal">
+                        <TextField
+                            label="Start Date"
+                            type="date"
+                            value={formatDate(start_date)}
+                            onChange={(e) => setstart_date(new Date(e.target.value))}
+                            fullWidth
+                            style={{ marginTop: '8px' }}
+                        />
                     </FormControl>
+                    <FormControl fullWidth margin="normal">
+                        <TextField
+                            label="End Date"
+                            type="date"
+                            value={formatDate(end_date)}
+                            onChange={(e) => setEnd_date(new Date(e.target.value))}
+                            fullWidth
+                            style={{ marginTop: '8px' }}
+                        />
+                    </FormControl>
+
+
                     {error && <MDTypography variant="body2" color="error">{error}</MDTypography>}
                     <MDBox mt={2} display="flex" justifyContent="flex-end"  >
                         <Button sx={{
@@ -150,4 +152,4 @@ const UpdateAgent = () => {
 
 
 
-export default UpdateAgent;
+export default UpdateRelease;

@@ -2,8 +2,9 @@ const User = require("../Model/UserModel");
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const ROLES = require('../Config/ConstConfig')
-const { passwordIsValid, validUserType, generateToken } = require("../Service/AuthService");
+const { passwordIsValid, validUserType, generateToken,  } = require("../Service/AuthService");
 const Employee = require("../Model/EmployeeModel")
+const cookieParser = require('cookie-parser');
 
 // Login controller
 const login = async (req, res) => {
@@ -40,10 +41,14 @@ const login = async (req, res) => {
                 .json({ message: "User does not have permission to connect." });
         }
         // Generate token and send response
-        const token = generateToken(foundUser.id, foundUser.role);
+        const accessToken = generateToken(foundUser.id, foundUser.role);
+        //const refreshToken = generateRefreshToken(foundUser.id, foundUser.role)
+       // res.cookie('accessToken', accessToken, { maxAge: 86400  })
+        //res.cookie('refreshToken', refreshToken, { maxAge: 604800, httpOnly: true, secure: true, sameSite: 'strict' })
+
         res
             .status(StatusCodes.ACCEPTED)
-            .json({ message: "User logged in successfully.", accessToken: token });
+            .json({ message: "User logged in successfully.", accessToken: accessToken });
     } catch (error) {
         console.error(error);
         res
@@ -88,16 +93,21 @@ const register = async (req, res) => {
 };
 const logout = async (req, res) => {
 
+        return res
+          .clearCookie("access_token")
+          .status(200)
+          .json({ message: "Successfully logged out " });
+    
 };
 
 
-const adminExists= async (req, res) => {
+const adminExists = async (req, res) => {
     try {
         const adminUser = await User.findOne({ role: ROLES.RA });
         if (adminUser) {
-            return res.status(200).json({ exists: true });
-          }
-          return res.status(200).json({ exists: false });
+            return res.json({ exists: true });
+        }
+        return res.status(200).json({ exists: false });
     } catch (error) {
         console.error("Error checking admin user:", error);
         return res.status(500).json({ message: "Error checking admin user." });
@@ -107,22 +117,22 @@ const adminExists= async (req, res) => {
 
 const emailExist = async (req, res) => {
     try {
-      const email = req.params.email;
-      const employee = await Employee.findOne({ email });
-      if (employee) {
-        return res.json({ exists: true, type: 'employee' });
-      }
-      const agent = await User.findOne({ email });
-      if (agent) {
-        return res.json({ exists: true, type: 'agent' });
-      }
-  
-      return res.json({ exists: false });
+        const email = req.params.email;
+        const employee = await Employee.findOne({ email });
+        if (employee) {
+            return res.json({ exists: true, type: 'employee' });
+        }
+        const agent = await User.findOne({ email });
+        if (agent) {
+            return res.json({ exists: true, type: 'agent' });
+        }
+
+        return res.json({ exists: false });
     } catch (error) {
-      console.error("Error checking email:", error);
-      res.status(500).json({ message: "Internal server error" });
+        console.error("Error checking email:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-  };
+};
 
 
-module.exports = { login, register, logout ,adminExists, emailExist}
+module.exports = { login, register, logout, adminExists, emailExist }

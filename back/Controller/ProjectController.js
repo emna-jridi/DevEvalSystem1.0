@@ -7,6 +7,7 @@ const { StatusCodes } = require("http-status-codes");
 // Function to create a new demand
 const createProject = async (req, res) => {
     try {
+        console.log(req.body.label);
         const foundProject = await Project.findOne({ label: req.body.label });
         // Checking if a project with the provided label already exists
         if (foundProject) {
@@ -19,6 +20,7 @@ const createProject = async (req, res) => {
             label: req.body.label,
             description: req.body.description,
         });
+       
         // Checking if all required properties are provided
         if (!project.label || !project.description) {
             return res
@@ -133,7 +135,7 @@ const assignToEmployee = async (req, res) => {
     try {
         employeeEmail = req.body.email;
         projectLabel = req.params.label;
-         // Finding release with provided email
+        // Finding release with provided email
         const employee = await Employee.findOne({ email: employeeEmail });
         if (!employee) {
             return res
@@ -154,7 +156,7 @@ const assignToEmployee = async (req, res) => {
                 email: employee.email,
             },
         };
-         //Finding and updating the project
+        //Finding and updating the project
         await Project.findOneAndUpdate({ label: projectLabel }, update, {
             new: true,
         });
@@ -169,10 +171,27 @@ const assignToEmployee = async (req, res) => {
     }
 };
 
+
+const projectExists = async (req, res) => {
+    try {
+        const label = req.params.label;
+        const project = await Project.findOne({ label });
+        if (project) {
+            return res.status(StatusCodes.ACCEPTED).json({ exists: true, project });
+        }
+        return res.status(StatusCodes.ACCEPTED).json({ exists: false });
+    } catch (error) {
+        console.error("Error checking project existence:", error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+    }
+}
+
+
 module.exports = {
     createProject,
     getAllProject,
     updateProject,
     deleteProject,
     assignToEmployee,
+    projectExists,
 };

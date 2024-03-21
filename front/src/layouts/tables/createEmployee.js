@@ -4,8 +4,8 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { FormControl, RadioGroup, FormControlLabel, Radio, Button, TextField, InputLabel } from '@mui/material';
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import PageLayout from 'examples/LayoutContainers/PageLayout';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import colors from "assets/theme/base/colors";
@@ -52,11 +52,11 @@ const createEmployee = () => {
 
             }
             const response = await axios.get(`http://localhost:4000/auth/emailExist/${email}`);
-        if (response.data.exists) {
-          console.log(response.data.exists);
-          setError('This email already exists. Please use a different email address.');
-          return;
-        }
+            if (response.data.exists) {
+                console.log(response.data.exists);
+                setError('This email already exists. Please use a different email address.');
+                return;
+            }
             await axios.post("http://localhost:4000/employee", { fullName, email, position, rank, entryDate });
             navigate('/tables/employeeTables');
         } catch (error) {
@@ -67,20 +67,26 @@ const createEmployee = () => {
         navigate('/tables/employeeTables');
     };
     return (
-        <DashboardLayout>
+        <PageLayout>
             <DashboardNavbar />
             <MDBox
                 sx={{
                     backgroundColor: '#fff',
                     padding: '20px',
                     borderRadius: '8px',
-                    maxWidth: '400px',
                     margin: '0 auto',
                     marginTop: '50px',
+                    marginBottom: '20px',
                     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                    width: '100%',
                 }}
             >
-                <MDTypography variant="h5" align="center" mb={3}>Add New Employee</MDTypography>
+                <MDTypography variant="h5" align="center" mb={3} sx={{
+                    backgroundColor: '#313852',
+                    color: '#FFFFFF',
+                    padding: '10px',
+                    borderRadius: '4px',
+                }} >Add New Employee</MDTypography>
                 <form onSubmit={handleSubmit}>
                     <FormControl fullWidth margin="normal">
                         <TextField
@@ -113,7 +119,10 @@ const createEmployee = () => {
                         />
                     </FormControl>
                     <FormControl component="fieldset" margin="normal">
-                        <InputLabel htmlFor="position">Position</InputLabel>
+                        <InputLabel htmlFor="position" sx={{
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem',
+                        }}>Position : </InputLabel>
                         <br />
                         <RadioGroup aria-label="position" style={{ color: '#15192B' }} name="position" value={position} onChange={handlePositionChange}>
                             {positions.map((position) => (
@@ -127,13 +136,30 @@ const createEmployee = () => {
                         </RadioGroup>
                     </FormControl>
                     {error && <MDTypography variant="body2" color="error">{error}</MDTypography>}
-                    <MDBox mt={2} display="flex">
-                        <Button style={{ backgroundColor: '#ccc', color: '#333', marginRight: '8px' }} onClick={handleCancel}>Cancel</Button>
-                        <Button style={{ backgroundColor: '#15192B', color: '#fff', marginLeft: '8px' }} onClick={handleSubmit}>Add</Button>
+                    <MDBox mt={2} display="flex" justifyContent="flex-end">
+                        <Button sx={{
+                            backgroundColor: '#ccc',
+                            color: '#333',
+                            marginRight: '8px',
+                            '&:hover': {
+                                backgroundColor: '#999',
+                                color: '#fff',
+
+                            },
+                        }} onClick={handleCancel}>Cancel</Button>
+                        <Button sx={{
+                            backgroundColor: '#15192B',
+                            color: '#fff',
+                            marginLeft: '8px',
+                            '&:hover': {
+                                backgroundColor: '#3A4B8A',
+                                color: '#fff',
+                            },
+                        }} onClick={handleSubmit}>Add</Button>
                     </MDBox>
                 </form>
             </MDBox>
-        </DashboardLayout>
+        </PageLayout>
     );
 };
 
