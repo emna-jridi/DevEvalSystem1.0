@@ -5,7 +5,7 @@ const { createAgent, getAllAgent, updateAgent, deleteAgent, getUserDetails } = r
 
 
 router.route('/Agent').post(createAgent)
-router.route('/Agents').get( authorizationAdmin,getAllAgent)
+router.route('/Agents').get( getAllAgent)
 router.route('/agent/:email').put(updateAgent).delete(deleteAgent)
 router.route('/userDetails').get(authorizationAllRoles,getUserDetails)
 

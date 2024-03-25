@@ -24,10 +24,9 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import { Link } from "react-router-dom";
 import Icon from "@mui/material/Icon";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export default function Data() {
-
   const [rows, setRows] = useState([]);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
@@ -39,10 +38,9 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedEmail(email);
   };
-  const handleMenuAction = (action, selectedEmail) => {
+  const handleMenuAction = (action, selectedEmail, fullName, email, role, state) => {
     if (action === "update") {
-      navigate('/tables/updateAgent', {state: selectedEmail} );
-      
+      navigate("/agents/edit", { state: { fullName, email, role , state} });
     } else if (action === "delete") {
       handleDeleteAgent(selectedEmail);
     }
@@ -54,17 +52,15 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/Agents`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`http://localhost:4000/Agents`,);
         const donneesReponse = response.data.agents;
+        console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
           return {
             Agent: <Agent fullName={donnee.fullName} />,
             Email: <Email email={donnee.email} />,
             Role: <Role role={donnee.role} />,
+            State: <State state={donnee.state} />,
             Action: (
               <MDBox key={index}>
                 <IconButton onClick={(event) => handleOpenMenu(event, donnee.email)}>
@@ -72,18 +68,44 @@ export default function Data() {
                 </IconButton>
                 <Menu
                   anchorEl={openMenu}
-                  open={Boolean(openMenu && selectedEmail === donnee.email )}
+                  open={Boolean(openMenu && selectedEmail === donnee.email)}
                   onClose={handleCloseMenu}
                 >
-                  <MenuItem onClick={() => handleMenuAction("update", donnee.email)}>Update</MenuItem>
-                  <MenuItem onClick={() => handleMenuAction("delete", donnee.email)}>Delete</MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      handleMenuAction(
+                        "update",
+                        selectedEmail,
+                        donnee.fullName,
+                        donnee.email,
+                        donnee.role,
+                        donnee.state
+                      )
+                    }
+                  >
+                    Update
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      handleMenuAction(
+                        "delete",
+                        selectedEmail,
+                        donnee.fullName,
+                        donnee.email,
+                        donnee.role,
+                        donnee.state
+                    
+                      )
+                    }
+                  >
+                    Delete
+                  </MenuItem>
                 </Menu>
               </MDBox>
             ),
           };
         });
         setRows(tableau);
-       
       } catch (error) {
         console.log(error);
       }
@@ -91,8 +113,6 @@ export default function Data() {
     fetchData();
   }, [openMenu, selectedEmail]);
 
-
- 
   const handleDeleteAgent = async (email) => {
     try {
       await axios.delete(`http://localhost:4000/agent/${email}`);
@@ -104,7 +124,6 @@ export default function Data() {
     }
   };
   const Agent = ({ fullName }) => (
-
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
         {fullName}
@@ -123,12 +142,18 @@ export default function Data() {
       <MDTypography variant="caption">{role}</MDTypography>
     </MDBox>
   );
+  const State = ({ state }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{state ? 'Active' : 'Inactive'}</MDTypography>
+    </MDBox>
+  );;
 
   return {
     columns: [
       { Header: "Agent", accessor: "Agent", width: "30%", align: "left" },
       { Header: "Email", accessor: "Email", width: "30%", align: "left" },
-      { Header: "Role", accessor: "Role", width: "20%", align: "left" },
+      { Header: "Role", accessor: "Role", width: "22%", align: "left" },
+      { Header: "State", accessor: "State", width: "10%", align: "left" },
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,

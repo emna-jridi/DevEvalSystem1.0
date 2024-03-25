@@ -38,37 +38,43 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import AgentTables from "layouts/tables/agentTable";
-import EmployeeTables from "layouts/tables/employeeTable"
+import EmployeeTables from "layouts/tables/employeeTable";
 
 import SignIn from "layouts/authentication/sign-in";
 import handleLogout from "layouts/authentication/log-out";
-import Logout from "layouts/authentication/log-out"
-import ProjectTables from "layouts/tables/projectTables/projectTable"
-import ReleaseTables from "layouts/tables/releaseTables/releaseTable"
-import DemandTables from "layouts/tables/demandTables/demandTable"
+import Logout from "layouts/authentication/log-out";
+import ProjectTables from "layouts/tables/projectTables/projectTable";
+import ReleaseTables from "layouts/tables/releaseTables/releaseTable";
+import DemandTables from "layouts/tables/demandTables/demandTable";
+import Reset from "layouts/authentication/reset-password/cover"
+import NewPassword from "layouts/authentication/reset-password/cover/newPassword";
+import CreateAgent from "layouts/tables/createAgent";
+import UpdateAgent from "layouts/tables/updateAgent";
 
-import CreateAgent from "layouts/tables/createAgent"
-import UpdateAgent from "layouts/tables/updateAgent"
-
-import CreateEmployee from "layouts/tables/createEmployee"
-import UpdateEmployee from "layouts/tables/updateEmployee"
+import CreateEmployee from "layouts/tables/createEmployee";
+import UpdateEmployee from "layouts/tables/updateEmployee";
 
 import CreateProject from "layouts/tables/projectTables/createProject";
-import UpdateProject from "layouts/tables/projectTables/updateProject"
-import AssignTo from "layouts/tables/projectTables/assignTo"
+import UpdateProject from "layouts/tables/projectTables/updateProject";
+import AssignTo from "layouts/tables/projectTables/assignTo";
 
-import CreateRelease from "layouts/tables/releaseTables/createRelease"
-import UpdateRelease from "layouts/tables/releaseTables/updateRelease"
+import CreateRelease from "layouts/tables/releaseTables/createRelease";
+import UpdateRelease from "layouts/tables/releaseTables/updateRelease";
 
-import CreateDemand from "layouts/tables/demandTables/createDemand"
-import UpdateDemand from "layouts/tables/demandTables/updateDemand"
+import CreateDemand from "layouts/tables/demandTables/createDemand";
+import UpdateDemand from "layouts/tables/demandTables/updateDemand";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import WebIcon from '@mui/icons-material/Web';
-import SendTimeExtensionIcon from '@mui/icons-material/SendTimeExtension';
+import ShowChartIcon from "@mui/icons-material/ShowChart";
+import WebIcon from "@mui/icons-material/Web";
+import SendTimeExtensionIcon from "@mui/icons-material/SendTimeExtension";
 
+const ROLES = {
+  RA: "ROLE_ADMIN",
+  RTA: "ROLE_TECHNICAL_AGENT",
+  RPA: "ROLE_PSYCHOTECHNICAL_AGENT",
+};
 const routes = [
   {
     type: "collapse",
@@ -78,7 +84,6 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
-
 
   {
     // type: "collapse",
@@ -93,22 +98,25 @@ const routes = [
     name: "Agents",
     key: "agent",
     icon: <Icon>business_center</Icon>,
-    route: "/tables/agentTable",
-    component: <AgentTables />
+    route: "/Agents",
+    allowedRoles: [ROLES.RA],
+    component: <AgentTables />,
   },
   {
     type: "collapse",
     name: "Employees",
     key: "employee",
     icon: <Icon>group</Icon>,
-    route: "/tables/employeeTables",
-    component: <EmployeeTables />
+    route: "/Employees",
+    allowedRoles: [ROLES.RA, ROLES.RPA, ROLES.RTA],
+    component: <EmployeeTables />,
   },
   {
     type: "collapse",
     name: "Statics",
     key: "statics",
     icon: <ShowChartIcon />,
+    allowedRoles: [],
     //route: "/tables/employeeTables",
     //component: <EmployeeTables />
   },
@@ -123,98 +131,128 @@ const routes = [
   //   onClick: handleLogout,
 
   // },
-  {//type: "collapse",
+  {
+    //type: "collapse",
     name: CreateAgent,
     key: "createAgent",
     component: <CreateAgent />,
-    route: '/tables/createAgent',
+    route: "/agents/create",
   },
-  {//type: "collapse",
-    name: CreateProject,
-    key: "createProject",
-    component: <CreateProject />,
-    route: '/tables/projectTables/createProject',
-  },
-  {//type: "collapse",
+  {
+    //type: "collapse",
     name: UpdateAgent,
     key: "updateAgent",
     component: <UpdateAgent />,
-    route: '/tables/updateAgent',
+    route: "/agents/edit",
   },
-  {//type: "collapse",
+
+ 
+  {
+    //type: "collapse",
     name: CreateEmployee,
     key: "createEmployee",
     component: <CreateEmployee />,
-    route: '/tables/createEmployee',
+    route: "/employees/create",
   },
-  {//type: "collapse",
+  {
+    //type: "collapse",
     name: UpdateEmployee,
     key: "updateEmployee",
     component: <UpdateEmployee />,
-    route: '/tables/updateEmployee',
+    route: "/employees/edit",
   },
-  {//type: "collapse",
+  {
+    //type: "collapse",
+    name: CreateProject,
+    key: "createProject",
+    component: <CreateProject />,
+    route: "/project/create",
+  },
+  {
+    //type: "collapse",
     name: UpdateProject,
     key: "updateProject",
     component: <UpdateProject />,
-    route: '/tables/projectTables/updateProject',
+    route: "/project/edit",
   },
-  {//type: "collapse",
+  {
+    //type: "collapse",
     name: AssignTo,
     key: "assignTo",
     component: <AssignTo />,
-    route: '/tables/projectTables/assignTo',
+    route: "/tables/projectTables/assignTo",
   },
-  {//type: "collapse",
+  {
+    //type: "collapse",
     name: CreateRelease,
     key: "createRelease",
     component: <CreateRelease />,
-    route: '/tables/releaseTables/createRelease',
+    route: "/release/create",
   },
-  {//type: "collapse",
+  {
+    //type: "collapse",
     name: UpdateRelease,
     key: "updateRelease",
     component: <UpdateRelease />,
-    route: '/tables/releaseTables/updateRelease',
+    route: "/release/edit",
   },
   {
     type: "collapse",
-    name: "Project",
+    name: "Projects",
     key: "project",
-    icon: <WebIcon/>,
-    route: "/tables/projectTables/projectTable",
-    component: <ProjectTables />
+    icon: <WebIcon />,
+    route: "/Project",
+    allowedRoles: [ROLES.RA, ROLES.RTA],
+    component: <ProjectTables />,
   },
   {
     type: "collapse",
-    name: "Release",
+    name: "Releases",
     key: "release",
     icon: <Icon>code</Icon>,
-    route: "/tables/releaseTables/releaseTable",
-    component: <ReleaseTables />
+    route: "/release",
+    allowedRoles: [ROLES.RTA],
+    component: <ReleaseTables />,
   },
 
   {
     type: "collapse",
-    name: "Demand",
+    name: "Demands",
     key: "demand",
-    icon:<SendTimeExtensionIcon/>,
-    route: "/tables/demandTables/demandTable",
-    component: <DemandTables />
+    icon: <SendTimeExtensionIcon />,
+    route: "/demand",
+    allowedRoles: [ROLES.RTA],
+    component: <DemandTables />,
   },
-    {//type: "collapse",
-      name: CreateDemand,
-      key: "createDemand",
-      component: <CreateDemand />,
-      route: '/tables/demandTables/createDemand',
-    },
-    {//type: "collapse",
-      name: UpdateDemand,
-      key: "updateDemand",
-      component: <UpdateDemand />,
-      route: '/tables/demandTables/updateDemand',
-    },
+  {
+    //type: "collapse",
+    name: CreateDemand,
+    key: "createDemand",
+    component: <CreateDemand />,
+    route: "/demand/create",
+  },
+  {
+    //type: "collapse",
+    name: UpdateDemand,
+    key: "updateDemand",
+    component: <UpdateDemand />,
+    route: "/demand/edit",
+  },
+  {
+    
+    name: "ForgotPassword",
+    key: "rest",
+    route: "/authentication/reset-password",
+    allowedRoles: [ROLES.RTA, ROLES.RA , ROLES.RPA],
+    component: <Reset />,
+  },
+  {
+    name: "NewPassword",
+    key: "newPassword",
+    route: "/Newpassword/:token",
+    allowedRoles: [ROLES.RTA, ROLES.RA , ROLES.RPA],
+    component: <NewPassword />,
+  },
 ];
-
 
 export default routes;

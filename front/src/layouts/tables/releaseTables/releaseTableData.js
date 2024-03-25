@@ -21,12 +21,13 @@ export default function Data() {
   };
   const handleMenuAction = (action,selectedName, name, description, start_date,end_date ) => {
     if (action === "update") {
-      navigate("/tables/releaseTables/updateRelease", { state: { name, description , start_date , end_date  } });
+      navigate("/release/edit", { state: { name, description , start_date , end_date  } });
     } else if (action === "delete") {
       handleDeleteRelease(selectedName);
-    }else if (action === "assignTo"){
-        navigate("/tables/projectTables/assignTo")
     }
+    // else if (action === "assignTo"){
+    //     navigate("/tables/projectTables/assignTo")
+    // }
   };
   const handleCloseMenu = () => {
     setOpenMenu(null);
@@ -43,6 +44,7 @@ export default function Data() {
             Description: <Description description={donnee.description} />,
             StartDate : <StartDate  startDate= {donnee.start_date}/>,
             EndDate : <EndDate  endDate= {donnee.end_date}/>,
+            AssignedTo:<AssignedTo AssignedTo= {donnee.assignedProject}/>,
             Action: (
               <MDBox key={index}>
                 <IconButton onClick={(event) => handleOpenMenu(event, donnee.name)}>
@@ -63,7 +65,7 @@ export default function Data() {
                   <MenuItem onClick={() => handleMenuAction("delete", selectedName, donnee.name)}>
                     Delete
                   </MenuItem>
-                  <MenuItem onClick={() => handleMenuAction("assignTo", selectedName, donnee.name)}> Assign To </MenuItem>
+                  {/* <MenuItem onClick={() => handleMenuAction("assignTo", selectedName, donnee.name)}> Assign To </MenuItem> */}
                 </Menu>
               </MDBox>
             ),
@@ -117,13 +119,19 @@ export default function Data() {
         <MDTypography variant="caption">{formatDate(endDate)}</MDTypography>
       </MDBox>
     );
+    const AssignedTo = ({ AssignedTo }) => (
+      <MDBox display="flex" alignItems="center" lineHeight={1}>
+        <MDTypography variant="caption">{AssignedTo}</MDTypography>
+      </MDBox>
+    );
 
   return {
     columns: [
       { Header: "Release", accessor: "Release", width: "20%", align: "left" },
       { Header: "Description", accessor: "Description", width: "30%", align: "left" },
-       { Header: "Start At", accessor: "StartDate", width: "20%", align: "left" },
-       { Header: "End At", accessor: "EndDate", width: "20%", align: "left" },
+       { Header: "Start At", accessor: "StartDate", width: "15%", align: "left" },
+       { Header: "End At", accessor: "EndDate", width: "15%", align: "left" },
+       { Header: "Assigned To", accessor: "AssignedTo", width: "20%", align: "left" },
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,

@@ -82,6 +82,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
             Authorization: `Bearer ${token}`,
           },
         });
+
         setFullName(response.data.fullName);
       } catch (error) {
         console.error('Erreur lors de la récupération des détails de l\'utilisateur :', error);
@@ -168,10 +169,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
             {fullName ? (
               <MDBox sx={{ color: light ? 'white' : 'inherit', mr: 2, display: 'flex', alignItems: 'center' }}>
                 <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} /> {/* Icon */}
-                <Typography variant="body1" sx={{ fontFamily: 'Parisienne, cursive', fontWeight: 'bold' }}>Bonjour {fullName} </Typography>
+                <Typography variant="body1" sx={{  fontWeight: 'bold' }}>Bonjour {fullName.split(' ')[0]}  </Typography>
               </MDBox>
             ) : (
-              <Typography variant="body1" sx={{ fontFamily: 'Parisienne, cursive', fontWeight: 'bold' }}>Veuillez vous connecter</Typography>
+              <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} />
             )}
             <MDBox>
               <IconButton

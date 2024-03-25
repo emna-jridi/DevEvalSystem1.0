@@ -109,6 +109,7 @@ const deleteEmployee = async (req, res) => {
     try {
         // Checking if the employee email is provided
         const employeEmail = req.params.email
+        console.log(employeEmail);
         if (!employeEmail) {
             return res
                 .status(StatusCodes.BAD_REQUEST)

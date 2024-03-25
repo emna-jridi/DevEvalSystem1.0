@@ -5,45 +5,45 @@ const { StatusCodes } = require("http-status-codes");
 // Function to create a new Release
 const createRelease = async (req, res) => {
     try {
-        console.log(
-            req.body.name,
-            req.body.description,
-            req.body.start_date,
-            req.body.end_date
-        );
-        const foundRelease = await Release.findOne({ name: req.body.name });
-        // Checking if a Release with the provided name already exists
-        if (foundRelease) {
-            return res.status(StatusCodes.UNAUTHORIZED).json({
-                message: `${foundRelease.name}already exists.`,
-            });
+        const { name, description, start_date, end_date } = req.body;
+
+        // Check if the release already exists
+        const existingRelease = await Release.findOne({ name });
+        if (existingRelease) {
+            return res.status(StatusCodes.UNAUTHORIZED).json({ message: `${existingRelease.name} already exists.` });
         }
-        // Creating a new Release instance with data from the request body
+
+        // Check if all required fields are provided
+        if (!name || !description || !start_date || !end_date || !req.body.assignedProject || !req.body.assignedProject.label) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: "Please provide all release information including the assigned project!" });
+        }
+
+        // Find the project with the provided label
+        const projectFound = await Project.findOne({ label: req.body.assignedProject.label });
+        if (!projectFound) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: `Project with label ${req.body.assignedProject.label} not found` });
+        }
+
+        // Create the new release with the assigned project
         const release = new Release({
-            name: req.body.name,
-            description: req.body.description,
-            start_date: req.body.start_date,
-            end_date: req.body.end_date,
+            name,
+            description,
+            start_date,
+            end_date,
+            assignedProject: {
+                id: projectFound._id,
+                label: projectFound.label,
+            },
         });
-        // Checking if all required properties are provided
-        if (
-          !release.name ||  !release.description ||!release.start_date ||!release.end_date ) {
-          return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({ message: "Please provide all release information!" });
-        }
-        // Saving the new Release to the database
+
+        // Save the release
         await release.save();
 
-        // Sending a success response
-        res
-            .status(StatusCodes.ACCEPTED)
-            .json({ message: `${release.name} was registered successfully!` });
+        // Send a success response
+        return res.status(StatusCodes.ACCEPTED).json({ message: `${release.name} was registered successfully and assigned to project ${projectFound.label}!` });
     } catch (error) {
-        // Sending an internal server error response if an error occurs
-        res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .send({ message: error.message });
+        // Send an internal server error response if an error occurs
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
 };
 
@@ -62,9 +62,10 @@ const getAllReleases = async (req, res) => {
                 description: release.description,
                 start_date: release.start_date,
                 end_date: release.end_date,
-                assignedProject: release.assignedProject,
+                assignedProject: release.assignedProject.label,
             };
         });
+        console.log(data);
         return res.status(StatusCodes.ACCEPTED).json({ Releases: data });
     } catch (error) {
         res
@@ -81,18 +82,23 @@ const updateRelease = async (req, res) => {
             !req.body.name ||
             !req.body.description ||
             !req.body.start_date ||
-            !req.body.end_date
+            !req.body.end_date||!req.body.assignedProject ||!req.body.assignedProject.label
         ) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ message: "Please provide all Release information!" });
         }
+        const projectFound = await Project.findOne({ label: req.body.assignedProject.label });
         // Creating an update object with data from the request body
         const update = {
             name: req.body.name,
             description: req.body.description,
             start_date: req.body.start_date,
             end_date: req.body.end_date,
+            assignedProject: {
+                id: projectFound._id,
+                label: projectFound.label,
+            },
         };
         console.log(update);
         // Finding and updating the Release with the provided title
@@ -150,13 +156,7 @@ const assignToProject = async (req, res) => {
                 .json({ message: `Project with label ${projectLabel} not found` });
         }
         //finding release with provided name
-        releaseFound = await Release.findOne({ name: releaseName });
-        //cheking if the Release already assigned
-        if (releaseFound.assignedProject.id) {
-            return res.status(StatusCodes.UNAUTHORIZED).json({
-                message: `${releaseName} already assigned`,
-            });
-        }
+       // releaseFound = await Release.findOne({ name: releaseName });
         // Creating an update object
         const update = {
             assignedProject: {

@@ -31,9 +31,9 @@ export default function data() {
   const token = localStorage.getItem("accessToken");
 
 
-  const handleMenuAction = (action) => {
+  const handleMenuAction = (action, selectedEmail, email, fullName, position,rank ,entryDate,) => {
     if (action === "update") {
-      navigate('/tables/updateEmployee',{state: selectedEmail} );
+      navigate('/employees/edit',{state:{ email, fullName, position,rank ,entryDate}} );
     } else if (action === "delete") {
       handleDeleteEmployee(selectedEmail);
     }
@@ -70,8 +70,8 @@ export default function data() {
                 open={Boolean(openMenu && selectedEmail === donnee.email)}
                 onClose={handleCloseMenu}
               >
-                <MenuItem onClick={() => handleMenuAction("update")}>Update</MenuItem>
-                <MenuItem onClick={() => handleMenuAction("delete")}>Delete</MenuItem>
+                <MenuItem onClick={() => handleMenuAction("update",selectedEmail, donnee.email,donnee.fullName,donnee.position  ,donnee.rank , donnee.entryDate)}>Update</MenuItem>
+                <MenuItem onClick={() => handleMenuAction("delete" ,selectedEmail, donnee.email,donnee.fullName,donnee.position ,  donnee.rank , donnee.entryDate)}>Delete</MenuItem>
               </Menu>
             </MDBox>
           ),

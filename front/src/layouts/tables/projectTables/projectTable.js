@@ -27,10 +27,10 @@ function ProjectTables() {
   const { columns, rows } = projectTableData();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const entriesPerPage = 5;
+  const entriesPerPage = 10;
 
   const handleAddAgent = () => {
-    navigate("/tables/projectTables/createProject");
+    navigate("/project/create");
   };
 
   const totalEntries = rows.length;

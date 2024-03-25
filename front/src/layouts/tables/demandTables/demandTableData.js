@@ -26,9 +26,9 @@ export default function Data() {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-  const handleMenuAction = (action, selectedTitle, title, description) => {
+  const handleMenuAction = (action, selectedTitle, title, description, start_date, end_date, estimation) => {
     if (action === "update") {
-      navigate("/tables/demandTables/updateDemand", { state: { title, description } });
+      navigate("/demand/edit", { state: { title, description, start_date, end_date, estimation } });
     } else if (action === "delete") {
       handleDeleteProject(selectedTitle);
     }
@@ -61,7 +61,8 @@ export default function Data() {
                 >
                   <MenuItem
                     onClick={() =>
-                      handleMenuAction("update", selectedTitle, donnee.title, donnee.description)
+                      handleMenuAction("update", selectedTitle, donnee.title, donnee.description 
+                   , donnee.start_date, donnee.end_date, donnee.estimation)
                     }
                   >
                     Update
@@ -125,12 +126,12 @@ export default function Data() {
 
   return {
     columns: [
-      { Header: "Demand", accessor: "Demand", width: "30%", align: "left" },
-      { Header: "Description", accessor: "Description", width: "30%", align: "left" },
-      { Header: "Start At", accessor: "StartDate", width: "20%", align: "left" },
-      { Header: "End At", accessor: "EndDate", width: "20%", align: "left" },
-      { Header: "Estimation", accessor: "Estimation", width: "20%", align: "left" },
-      { Header: "Action", accessor: "Action", width: "10%", align: "center" },
+      { Header: "Demand", accessor: "Demand", width: "20%", align: "left" },
+      { Header: "Description", accessor: "Description", width: "33%", align: "left" },
+      { Header: "Start At", accessor: "StartDate", width: "15%", align: "center"},
+      { Header: "End At", accessor: "EndDate", width: "15%", align: "center" },
+      { Header: "Estimation (H)", accessor: "Estimation", width: "20%", align: "center" },
+      { Header: "Action", accessor: "Action", width: "15%", align: "center" },
     ],
     rows,
   };

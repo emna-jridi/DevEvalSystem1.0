@@ -36,12 +36,11 @@ import MDAlert from "components/MDAlert";
 
 function Basic() {
   const [errorMessage, setErrorMessage] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); 
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const handleLogin = async (email, password) => {
     try {
@@ -52,13 +51,21 @@ function Basic() {
       }
       const response = await axios.post('http://localhost:4000/auth/login', { email, password });
       console.log("Authentification réussie :", response.data.accessToken)
+
+
       if (response.data && response.data.accessToken) {
         navigate("/dashboard", { replace: true});
         localStorage.setItem('accessToken', response.data.accessToken)
       } 
+      
     } catch (error) {
       console.error("Error during login:", error);
       setErrorMessage("Incorrect email or password.");
+      if (error.response && error.response.status === 401) {
+      setErrorMessage("An error occurred while attempting to login.");
+    } else {
+      setErrorMessage("An error occurred while attempting to login. ");
+    }
     }
   }
 
@@ -88,16 +95,15 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput type="password" label="Password" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
             </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
+            <MDBox display="flex" alignItems="center" justifyContent="flex-end" ml={-1}>
               <MDTypography
-                variant="button"
+                 variant="h6"
                 fontWeight="regular"
                 color="text"
-                onClick={handleSetRememberMe}
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
+                mt={1}
+              
               >
-                &nbsp;&nbsp;Remember me
+              <Link to="/authentication/reset-password" >Forgot Password ?</Link> 
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
@@ -107,19 +113,7 @@ function Basic() {
               <MDTypography variant="h6" fontWeight="regular" color="error" mt={1}>  {errorMessage &&<div>{errorMessage}</div>}</MDTypography>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
-                Don&apos;t have an account?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/authentication/sign-up"
-                  variant="button"
-                  color="info"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Sign up
-                </MDTypography>
-              </MDTypography>
+             
             </MDBox>
           </MDBox>
         </MDBox>

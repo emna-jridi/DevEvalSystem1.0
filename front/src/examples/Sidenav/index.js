@@ -14,14 +14,14 @@ Coded by www.creative-tim.com
 */
 /* eslint-disable */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
+import axios from "axios";
 // @mui material components
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -51,9 +51,11 @@ import {
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
+  const [role , setRole] = useState("");
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
 
+  const token = localStorage.getItem('accessToken');
   let textColor = "white";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
@@ -65,6 +67,22 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
   useEffect(() => {
+
+
+    const fetchUserDetails = async (token) => {
+      try {
+  
+        const response = await axios.get('http://localhost:4000/userDetails', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setRole(response.data.role);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des détails de l\'utilisateur :', error);
+      }
+    };
+    fetchUserDetails(token);
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
@@ -82,12 +100,16 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
     // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleMiniSidenav);
-  }, [dispatch, location]);
+  }, [dispatch, location, token ]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route,allowedRoles }) => {
     let returnValue;
 
+    const isAllowed = allowedRoles ? allowedRoles.includes(role) : true;
+    if (!isAllowed) {
+      return null;
+    }
     if (type === "collapse") {
       returnValue = href ? (
         <Link
@@ -196,6 +218,7 @@ Sidenav.propTypes = {
   brand: PropTypes.string,
   brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  role: PropTypes.string.isRequired,
 };
 
 export default Sidenav;

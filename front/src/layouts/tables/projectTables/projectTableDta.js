@@ -21,7 +21,7 @@ export default function Data() {
   };
   const handleMenuAction = (action, selectedLabel, label, description) => {
     if (action === "update") {
-      navigate("/tables/projectTables/updateProject", { state: { label, description } });
+      navigate("/project/edit", { state: { label, description } });
     } else if (action === "delete") {
       handleDeleteProject(selectedLabel);
     }

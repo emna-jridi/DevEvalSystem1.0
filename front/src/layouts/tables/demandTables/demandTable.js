@@ -30,7 +30,7 @@ function DemandTables() {
   const entriesPerPage = 5;
 
   const handleAddRelease = () => {
-    navigate("/tables/demandTables/createDemand");
+    navigate("/demand/create");
   };
 
   const totalEntries = rows.length;

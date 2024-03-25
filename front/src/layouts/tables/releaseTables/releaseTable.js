@@ -27,10 +27,10 @@ function ReleaseTables() {
   const { columns, rows } = releaseTableData();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const entriesPerPage = 5;
+  const entriesPerPage = 10;
 
   const handleAddRelease = () => {
-    navigate("/tables/releaseTables/createRelease");
+    navigate("/release/create");
   };
 
   const totalEntries = rows.length;

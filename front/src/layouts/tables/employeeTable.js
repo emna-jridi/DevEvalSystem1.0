@@ -30,12 +30,12 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 function EmployeesTables() {
     const { columns: pColumns, rows: pRows } = employeeTableData();
     const [currentPage, setCurrentPage] = useState(1);
-    const entriesPerPage = 5;
+    const entriesPerPage = 10;
     const navigate = useNavigate();
 
 
     const handleAddEmployee = () => {
-        navigate('/tables/createEmployee');
+        navigate('/employees/create');
     };
     const totalEntries = pRows.length;
     const totalPages = Math.ceil(totalEntries / entriesPerPage);
