@@ -89,7 +89,6 @@ const CreateRelease = () => {
     try {
       const response = await axios.get(`http://localhost:4000/projects`);
       const projectsData = response.data.Projects.map((project) => project.label);
-      console.log(projectsData);
       setProjects(projectsData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -136,6 +135,8 @@ const CreateRelease = () => {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
+                      rows={4}
+                      multiline 
                     />
                   </FormControl>
                   <MDBox display="flex" width="100%">
@@ -161,9 +162,10 @@ const CreateRelease = () => {
                     </FormControl>
                   </MDBox>
                   <FormControl fullWidth margin="normal">
-                    <MDBox mb={2}>
+                    {/* <MDBox mb={2}>
                       <MDTypography variant="h6"> Project :</MDTypography>
-                    </MDBox>
+                    </MDBox> */}
+                    <InputLabel >Project</InputLabel>
                     <Select
                       labelId="project-label"
                       id="project"

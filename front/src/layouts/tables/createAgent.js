@@ -142,7 +142,7 @@ const CreateAgent = () => {
                   </FormControl>
 
                   <FormControl component="fieldset">
-                    <MDTypography variant="h6"> State :</MDTypography>
+                  <MDTypography variant="caption" fontSize={13.5} pt={2}> State :</MDTypography>
                     <RadioGroup
                       row
                       aria-label="status"
@@ -155,9 +155,7 @@ const CreateAgent = () => {
                     </RadioGroup>
                   </FormControl>
                   <FormControl fullWidth margin="normal">
-                    <MDBox mb={2}>
-                      <MDTypography variant="h6"> Role :</MDTypography>
-                    </MDBox>
+                    <InputLabel >Role</InputLabel>
                     <Select
                       labelId="role-label"
                       id="role"

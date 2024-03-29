@@ -30,7 +30,7 @@ function ProjectTables() {
   const entriesPerPage = 10;
 
   const handleAddAgent = () => {
-    navigate("/project/create");
+    navigate("/projects/create");
   };
 
   const totalEntries = rows.length;

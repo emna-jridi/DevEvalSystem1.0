@@ -79,7 +79,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         });
         setRole(response.data.role);
       } catch (error) {
-        console.error('Erreur lors de la récupération des détails de l\'utilisateur :', error);
+        console.error('Error :', error);
       }
     };
     fetchUserDetails(token);

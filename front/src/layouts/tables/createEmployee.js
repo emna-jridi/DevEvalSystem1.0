@@ -11,16 +11,50 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import colors from "assets/theme/base/colors";
 import { useNavigate } from "react-router-dom";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+import CurrencyInput from "react-currency-input-field";
 
+const CustomInput = React.forwardRef((props, ref) => {
+  return (
+    <TextField
+      {...props}
+      ref={ref}
+      fullWidth
+      inputProps={{
+        style: {
+          height: "3rem",
+          padding: "0.5rem",
+          fontSize: "1rem",
+          borderRadius: "0.25rem",
+          border: "1px solid #BDBDBD",
+        },
+      }}
+    />
+  );
+});
 const positions = ["Developer", "Tester"];
 const createEmployee = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [civilState, setCivilState] = useState("");
+  const [dependents, setDependents] = useState(0);
+  const [contract, setContract] = useState("");
   const [position, setPosition] = useState("");
+  const [entryDate, setEntryDate] = useState(formatDate(new Date()));
+  const [salary, setSalary] = useState("");
+  const [RIB, setRIB] = useState("");
+  const [cnssNumber, setCnssNumber] = useState("");
+  const [emergencyNumber, setEmergencyNumber] = useState("");
+  const [hierarchicalSuperior, setHierarchicalSuperior] = useState("");
+  const [leaveBalance, setLeaveBalance] = useState(0);
+  const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
   const [rank, setRank] = useState(0);
-  const [entryDate, setEntryDate] = useState(new Date());
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const civilStates = ["Single", "Married", "Divorced", "Widowed"];
+  const contractTypes = ["CDI", "CDD", "Stage", "Internship", "Freelance", "Seasonal Contract"];
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -29,7 +63,7 @@ const createEmployee = () => {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-
+ 
   const handlePositionChange = (event) => {
     setPosition(event.target.value);
   };
@@ -50,17 +84,43 @@ const createEmployee = () => {
         setError("Please enter a valid full name.");
         return;
       }
+      const phonePattern = /^\d{8}$/; // Regular expression to match exactly 8 digits
+      if (!phoneNumber.match(/^\d+$/)) {
+          setError("Phone number should only contain digits.");
+          return;
+      }
+      if (!phonePattern.test(phoneNumber)) {
+          setError("Please enter a valid 8-digit phone number.");
+          return;
+      }
+      const salaryPattern = /^\d+(\.\d{1,3})?$/; 
+      if (!salaryPattern.test(salary)) {
+          setError("Please enter a valid salary.");
+          return;
+      }
       const response = await axios.get(`http://localhost:4000/auth/emailExist/${email}`);
       if (response.data.exists) {
         setError("This email already exists. Please use a different email address.");
         return;
       }
+
       await axios.post("http://localhost:4000/employee", {
         fullName,
         email,
+        phoneNumber,
+        civilState,
+        dependents,
+        contract,
         position,
-        rank,
         entryDate,
+        salary,
+        RIB,
+        cnssNumber,
+        emergencyNumber,
+        hierarchicalSuperior,
+        leaveBalance,
+        lastNegotiationDate,
+        rank,
       });
       navigate("/employees");
     } catch (error) {
@@ -91,7 +151,7 @@ const createEmployee = () => {
                 justifyContent="space-between"
               >
                 <MDTypography variant="h6" color="white">
-                Create Employee
+                  Create Employee
                 </MDTypography>
               </MDBox>
 
@@ -105,6 +165,7 @@ const createEmployee = () => {
                       variant="outlined"
                     />
                   </FormControl>
+
                   <FormControl fullWidth margin="normal">
                     <TextField
                       label="Email"
@@ -115,14 +176,111 @@ const createEmployee = () => {
                   </FormControl>
                   <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      {/* <PhoneInput
+                        defaultCountry="TN"
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                        inputComponent={CustomInput}
+                        countryCodeEditable={false}
+                        inputStyle={{ width: "100%" }}
+                      /> */}
                       <TextField
-                        label="Rank"
+                      label="Phone Number"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      variant="outlined"
+                    />
+                      {/* <PhoneInput
+                        defaultCountry="TN"
+                        placeholder="Enter phone number"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        inputComponent={CustomInput}
+                        countryCodeEditable={false}
+                        inputStyle={{ width: "100%" }}
+                        //enableSearch={false}
+                       // enableAreaCodesList={false}
+                      /> */}
+                    </FormControl>
+
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel>Civil State</InputLabel>
+                      <Select
+                        value={civilState}
+                        onChange={(e) => setCivilState(e.target.value)}
+                        label="Civil State"
+                        sx={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1rem",
+                          paddingTop: "14px",
+                        }}
+                      >
+                        {civilStates.map((state) => (
+                          <MenuItem key={state} value={state}>
+                            {state}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Dependents"
                         type="number"
-                        value={rank}
-                        onChange={(e) => setRank(e.target.value)}
+                        value={dependents}
+                        onChange={(e) => setDependents(e.target.value)}
                         variant="outlined"
                       />
                     </FormControl>
+
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel>Contract Type</InputLabel>
+                      <Select
+                        value={contract}
+                        onChange={(e) => setContract(e.target.value)}
+                        label="Contract Type"
+                        sx={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1rem",
+                          paddingTop: "14px",
+                        }}
+                      >
+                        {contractTypes.map((type) => (
+                          <MenuItem key={type} value={type}>
+                            {type}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </MDBox>
+
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <InputLabel>Position </InputLabel>
+                      <Select
+                        id="position"
+                        value={position}
+                        onChange={handlePositionChange}
+                        label="Position"
+                        alignItems="center"
+                        sx={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1.22rem",
+                          paddingTop: "14px",
+                        }}
+                      >
+                        {positions.map((position) => (
+                          <MenuItem key={position} value={position}>
+                            {position}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+
                     <FormControl fullWidth margin="normal">
                       <TextField
                         label="Entry Date"
@@ -133,31 +291,118 @@ const createEmployee = () => {
                       />
                     </FormControl>
                   </MDBox>
+
                   <FormControl fullWidth margin="normal">
-                    <MDBox mb={2}>
-                      <MDTypography variant="h6">Position :</MDTypography>
-                    </MDBox>
-                    <Select
-                      id="position"
-                      value={position}
-                      onChange={handlePositionChange}
-                      label="Position"
-                      alignItems="center"
+                    {/*         
+                    <CurrencyInput
+                      name="salary"
+                      placeholder="Enter salary"
+                      value={salary}
+                      onValueChange={(value) => setSalary(value)}
+                      allowDecimals={true}
+                      decimalsLimit={2}
+                      prefix="TND "
                       sx={{
                         color: "#15192B",
                         width: "100%",
-                        fontSize: "1.1rem",
+                        fontSize: "1rem",
                         paddingTop: "14px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        height: "56px",
                       }}
-                    >
-                      {positions.map((position) => (
-                        <MenuItem key={position} value={position}>
-                          {position}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    /> */}
+                    <TextField
+                      label="Salary"
+                      value={salary}
+                      onChange={(e) => setSalary(e.target.value)}
+                      variant="outlined"
+                    />
                   </FormControl>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="RIB"
+                        value={RIB}
+                        onChange={(e) => setRIB(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
 
+                    <FormControl fullWidth margin="normal" >
+                      <TextField
+                        label="Cnss Number"
+                        type="number"
+                        value={cnssNumber}
+                        onChange={(e) => setCnssNumber(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      {/* <PhoneInput
+                        placeholder="Enter Emergency Number"
+                        value={emergencyNumber}
+                        onChange={setEmergencyNumber}
+                        inputClassName="custom-input-class"
+                        style={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1.1rem",
+                          paddingTop: "14px",
+                        }}
+                        country="TN"
+                        international={false}
+                        defaultCountry="TN"
+                      /> */}
+                      <TextField
+                        label="Emergency Number"
+                        value={emergencyNumber}
+                        onChange={(e) => setEmergencyNumber(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Hierarchical Superior"
+                        value={hierarchicalSuperior}
+                        onChange={(e) => setHierarchicalSuperior(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Leave Balance"
+                        type="number"
+                        value={leaveBalance}
+                        onChange={(e) => setLeaveBalance(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Last Negotiation : 
+                        "
+                        type="date"
+                        value={formatDate(lastNegotiationDate)}
+                        onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
+                        fullWidth
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                    <TextField
+                      label="Rank"
+                      type="number"
+                      value={rank}
+                      onChange={(e) => setRank(e.target.value)}
+                      variant="outlined"
+                    />
+                  </FormControl>
                   {error && (
                     <MDTypography variant="body2" color="error">
                       {error}

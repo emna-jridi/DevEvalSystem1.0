@@ -38,7 +38,6 @@ const UpdateAgent = () => {
   useEffect(() => {
     if (location.state) {
       const { email, fullName , role , state} = location.state;
-      console.log(location.state);
       setFullName(fullName);
       setEmail(email);
       setRole(role);
@@ -121,7 +120,7 @@ const UpdateAgent = () => {
                     />
                   </FormControl>
                   <FormControl component="fieldset">
-                    <MDTypography variant="h6"> State :</MDTypography>
+                   <MDTypography variant="caption" fontSize={13.5} pt={2}> State :</MDTypography>
                     <RadioGroup
                       row
                       aria-label="status"
@@ -134,9 +133,7 @@ const UpdateAgent = () => {
                     </RadioGroup>
                   </FormControl>
                   <FormControl fullWidth margin="normal">
-                    <MDBox mb={2}>
-                      <MDTypography variant="h6"> Role :</MDTypography>
-                    </MDBox>
+                  <InputLabel >Role</InputLabel>
                     <Select
                       labelId="role-label"
                       id="role"

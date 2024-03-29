@@ -44,13 +44,13 @@ const UpdateProject = () => {
         return;
       }
       await axios.put(`http://localhost:4000/project/${label}`, { label, description });
-      navigate("/project");
+      navigate("/projects");
     } catch (error) {
       console.error("Error adding agent:", error);
     }
   };
   const handleCancel = () => {
-    navigate("/project");
+    navigate("/projects");
   };
   return (
     <DashboardLayout>
@@ -96,6 +96,8 @@ const UpdateProject = () => {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
+                      rows={4}
+                      multiline 
                     />
                   </FormControl>
 

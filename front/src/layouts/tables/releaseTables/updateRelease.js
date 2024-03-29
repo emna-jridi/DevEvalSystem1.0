@@ -35,11 +35,12 @@ const UpdateRelease = () => {
 
   useEffect(() => {
     if (location.state) {
-      const { name, description, start_date, end_date } = location.state;
+      const { name, description, start_date, end_date, project  } = location.state;
       setName(name);
       setDescription(description);
       setstart_date(start_date);
       setEnd_date(end_date);
+      setSelectedProject(project);
     }
     fetchData();
   }, [location]);
@@ -134,6 +135,8 @@ const UpdateRelease = () => {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
+                      rows={4}
+                      multiline 
                     />
                   </FormControl>
                   <MDBox display="flex" width="100%">
@@ -159,9 +162,7 @@ const UpdateRelease = () => {
                     </FormControl>
                   </MDBox>
                   <FormControl fullWidth margin="normal">
-                    <MDBox mb={2}>
-                      <MDTypography variant="h6"> Project :</MDTypography>
-                    </MDBox>
+                  <InputLabel >Project</InputLabel>
                     <Select
                       labelId="project-label"
                       id="project"

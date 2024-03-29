@@ -6,12 +6,14 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "../data/AlertDialog";
 
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedLabel, setSelectedLabel] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const token = localStorage.getItem("accessToken");
 
@@ -21,9 +23,9 @@ export default function Data() {
   };
   const handleMenuAction = (action, selectedLabel, label, description) => {
     if (action === "update") {
-      navigate("/project/edit", { state: { label, description } });
+      navigate("/projects/edit", { state: { label, description } });
     } else if (action === "delete") {
-      handleDeleteProject(selectedLabel);
+      setOpenConfirmation(true);
     }
   };
   const handleCloseMenu = () => {
@@ -57,9 +59,7 @@ export default function Data() {
                   >
                     Update
                   </MenuItem>
-                  <MenuItem onClick={() => handleMenuAction("delete", selectedLabel, donnee.label, donnee.description)}>
-                    Delete
-                  </MenuItem>
+                  <AlertDialog handleDelete={() => handleDeleteProject(selectedLabel)} />
                 </Menu>
               </MDBox>
             ),
@@ -111,5 +111,8 @@ export default function Data() {
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,
+    confirmationDialog: (
+      <AlertDialog open={openConfirmation} handleClose={() => setOpenConfirmation(false)} />
+    ),
   };
 }

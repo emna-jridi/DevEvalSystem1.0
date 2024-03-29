@@ -5,15 +5,7 @@ import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import {
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Button,
-  TextField,
-  InputLabel,
-} from "@mui/material";
+import { FormControl, Button, TextField, MenuItem, Select, InputLabel } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -24,31 +16,98 @@ import { useLocation } from "react-router-dom";
 const UpdateDemand = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [start_date, setstart_date] = useState(new Date());
-  const [end_date, setEnd_date] = useState(new Date());
+  const [start_date, setstart_date] = useState(new Date("2024-01-01")); 
+  const [end_date, setEnd_date] = useState(new Date("2024-01-31")); 
+ 
   const [estimation, setEstimation] = useState(0);
   const [error, setError] = useState("");
+  const [releases, setReleases] = useState([]);
+  const [selectedRelease, setSelectedRelease] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    console.log(location.state);
     if (location.state) {
-      const { title, description, start_date, end_date, estimation } = location.state;
+      const { title, description, start_date, end_date, estimation, releaseName } = location.state;
       setTitle(title);
       setDescription(description);
       setstart_date(start_date);
       setEnd_date(end_date);
-      setEstimation(estimation);
+      setEstimation(estimation)
+      setSelectedRelease(releaseName);
+      console.log( estimation);
     }
-  }, [location]);
+    calculateEstimation();
+    fetchData();
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
+  }, [location,start_date, end_date ]);
+
+  // useEffect(() => {
+  //   calculateEstimation();
+  // }, [start_date, end_date,]);
+  // Function to calculate the estimation based on start and end dates
+const calculateEstimation = () => {
+  if (start_date > end_date) {
+    console.error("Invalid dates: Start date cannot be after end date.");
+    return;
   }
+  // Calculate number of milliseconds in one day
+  const oneDay = 24 * 60 * 60 * 1000;
+  // Calculate difference in days, rounded to the nearest integer
+  const diffInDays = Math.round(Math.abs((start_date - end_date) / oneDay));
+  // Counter for working days
+  let workingDays = 0;
+
+  for (let i = 0; i <= diffInDays; i++) {
+    const currentDate = new Date(start_date);
+    currentDate.setDate(currentDate.getDate() + i);
+    // Check if the day is not a weekend (Saturday or Sunday)
+    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+      workingDays++;
+    }
+  } const estimationHours = workingDays * 8;
+  setEstimation(estimationHours);
+};
+
+ 
+
+  const handleStartDateChange = (e) => {
+    const newStartDate = new Date(e.target.value);
+    setstart_date(newStartDate);
+    calculateEstimation();
+  };
+  
+  const handleEndDateChange = (e) => {
+    const newEndDate = new Date(e.target.value);
+    setEnd_date(newEndDate);
+    calculateEstimation();
+  };  
+
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:4000/releases`);
+      const releasesData = response.data.Releases.map((release) => release.name);
+
+      setReleases(releasesData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleReleaseChange = (event) => {
+    setSelectedRelease(event.target.value);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -60,13 +119,21 @@ const UpdateDemand = () => {
         setError("End date must be after the start date.");
         return;
       }
-
+console.log(  title,
+  description,
+  start_date,
+  end_date,
+  estimation,
+  selectedRelease,);
       await axios.put(`http://localhost:4000/demand/${title}`, {
         title,
         description,
         start_date,
         end_date,
         estimation,
+        release: {
+          name: selectedRelease,
+        },
       });
       navigate("/demand");
     } catch (error) {
@@ -116,6 +183,8 @@ const UpdateDemand = () => {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
+                      rows={4}
+                      multiline
                     />
                   </FormControl>
                   <MDBox display="flex" width="100%">
@@ -124,7 +193,7 @@ const UpdateDemand = () => {
                         label="Start Date"
                         type="date"
                         value={formatDate(start_date)}
-                        onChange={(e) => setstart_date(new Date(e.target.value))}
+                        onChange={handleStartDateChange}
                         fullWidth
                         style={{ marginTop: "8px" }}
                       />
@@ -134,7 +203,7 @@ const UpdateDemand = () => {
                         label="End Date"
                         type="date"
                         value={formatDate(end_date)}
-                        onChange={(e) => setEnd_date(new Date(e.target.value))}
+                        onChange={handleEndDateChange}
                         fullWidth
                         style={{ marginTop: "8px" }}
                       />
@@ -148,10 +217,33 @@ const UpdateDemand = () => {
                       value={estimation}
                       onChange={(e) => setEstimation(e.target.value)}
                       fullWidth
+                   
                       style={{ marginTop: "8px" }}
                     />
                   </FormControl>
-
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Release</InputLabel>
+                    <Select
+                      labelId="release-label"
+                      id="release"
+                      value={selectedRelease}
+                      onChange={handleReleaseChange}
+                      label="Release"
+                      sx={{
+                        color: "#15192B",
+                        width: "100%",
+                        fontSize: "1.1rem",
+                        paddingTop: "14px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {releases.map((release) => (
+                        <MenuItem key={release} value={release}>
+                          {release}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   {error && (
                     <MDTypography variant="body2" color="error">
                       {error}

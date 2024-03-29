@@ -4,11 +4,7 @@ import Card from "@mui/material/Card";
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import {
-  FormControl,
-  Button,
-  TextField,
-} from "@mui/material";
+import { FormControl, Button, TextField, MenuItem, Select, InputLabel } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -22,8 +18,52 @@ const createDemand = () => {
   const [start_date, setstart_date] = useState(new Date());
   const [end_date, setEnd_date] = useState(new Date());
   const [estimation, setEstimation] = useState(0);
+  const [releases, setReleases] = useState([]);
+  const [selectedRelease, setSelectedRelease] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchData();
+    calculateEstimation();
+  }, [start_date, end_date]);
+
+  // Function to calculate the estimation based on start and end dates
+  const calculateEstimation = () => {
+    if (start_date > end_date) {
+      console.error("Invalid dates: Start date cannot be after end date.");
+      return;
+    }
+    // Calculate number of milliseconds in one day
+    const oneDay = 24 * 60 * 60 * 1000;
+    // Calculate difference in days, rounded to the nearest integer
+    const diffInDays = Math.round(Math.abs((start_date - end_date) / oneDay));
+    // Counter for working days
+    let workingDays = 0;
+
+    for (let i = 0; i <= diffInDays; i++) {
+      const currentDate = new Date(start_date);
+      currentDate.setDate(currentDate.getDate() + i);
+      // Check if the day is not a weekend (Saturday or Sunday)
+      if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+        workingDays++;
+      }
+    }
+    const estimationHours = workingDays * 8;
+    setEstimation(estimationHours);
+  };
+
+  const handleStartDateChange = (e) => {
+    const newStartDate = new Date(e.target.value);
+    setstart_date(newStartDate);
+    calculateEstimation();
+  };
+
+  const handleEndDateChange = (e) => {
+    const newEndDate = new Date(e.target.value);
+    setEnd_date(newEndDate);
+    calculateEstimation();
+  };
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -33,8 +73,8 @@ const createDemand = () => {
     return `${year}-${month}-${day}`;
   }
 
-  const handlePositionChange = (event) => {
-    setPosition(event.target.value);
+  const handleReleaseChange = (event) => {
+    setSelectedRelease(event.target.value);
   };
   const handleSubmit = async () => {
     try {
@@ -52,15 +92,30 @@ const createDemand = () => {
         start_date,
         end_date,
         estimation,
+        release: {
+          name: selectedRelease,
+        },
       });
       navigate("/demand");
     } catch (error) {
-      console.error("Error adding employee:", error);
+      console.error("Error adding demand:", error);
     }
   };
   const handleCancel = () => {
     navigate("/demand");
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:4000/releases`);
+      const releasesData = response.data.Releases.map((release) => release.name);
+
+      setReleases(releasesData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -101,6 +156,8 @@ const createDemand = () => {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
+                      rows={4}
+                      multiline
                     />
                   </FormControl>
                   <MDBox display="flex" width="100%">
@@ -109,7 +166,7 @@ const createDemand = () => {
                         label="Start Date"
                         type="date"
                         value={formatDate(start_date)}
-                        onChange={(e) => setstart_date(new Date(e.target.value))}
+                        onChange={handleStartDateChange}
                         fullWidth
                         style={{ marginTop: "8px" }}
                       />
@@ -119,7 +176,7 @@ const createDemand = () => {
                         label="End Date"
                         type="date"
                         value={formatDate(end_date)}
-                        onChange={(e) => setEnd_date(new Date(e.target.value))}
+                        onChange={handleEndDateChange}
                         fullWidth
                         style={{ marginTop: "8px" }}
                       />
@@ -131,10 +188,34 @@ const createDemand = () => {
                       value={estimation}
                       type="number"
                       inputProps={{ min: 0 }}
-                      onChange={(e) => setEstimation(e.target.value)}
+                      onChange={(e) => setEstimation(e.target.value)} // Allow manual overriding
                       fullWidth
                       style={{ marginTop: "8px" }}
+                      disabled // Disable manual editing if automatic calculation is desired
                     />
+                  </FormControl>
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Release</InputLabel>
+                    <Select
+                      labelId="release-label"
+                      id="release"
+                      value={selectedRelease}
+                      onChange={handleReleaseChange}
+                      label="Release"
+                      sx={{
+                        color: "#15192B",
+                        width: "100%",
+                        fontSize: "1.1rem",
+                        paddingTop: "14px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {releases.map((release) => (
+                        <MenuItem key={release} value={release}>
+                          {release}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </FormControl>
 
                   {error && (

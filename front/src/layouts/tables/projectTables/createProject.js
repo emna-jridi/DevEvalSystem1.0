@@ -19,6 +19,28 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 
+
+const styles = `
+.textarea-style {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+   font-family: inherit; 
+  color: #495057;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.textarea-style:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+`;
+
 const CreateProject = () => {
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
@@ -40,19 +62,16 @@ const CreateProject = () => {
         return;
       }
 
-      await axios.post(
-        "http://localhost:4000/project",
-        { label, description },
-      );
+      await axios.post("http://localhost:4000/project", { label, description });
 
-      navigate("/project");
+      navigate("/projects");
     } catch (error) {
       console.error("Error adding Project :", error);
       setError("Error adding Project");
     }
   };
   const handleCancel = () => {
-    navigate("/project");
+    navigate("/projects");
   };
 
   return (
@@ -76,7 +95,7 @@ const CreateProject = () => {
                 justifyContent="space-between"
               >
                 <MDTypography variant="h6" color="white">
-                Create Project
+                  Create Project
                 </MDTypography>
               </MDBox>
               <MDBox pt={3} px={1.5}>
@@ -90,13 +109,14 @@ const CreateProject = () => {
                     />
                   </FormControl>
                   <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+          <textarea
+            className="textarea-style"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Description"
+            rows={4}
+          />
+        </FormControl>
 
                   {error && (
                     <MDTypography variant="body2" color="error">
@@ -144,3 +164,6 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
+const styleElement = document.createElement("style");
+styleElement.innerHTML = styles;
+document.head.appendChild(styleElement);

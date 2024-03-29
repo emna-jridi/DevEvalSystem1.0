@@ -15,6 +15,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 /* eslint-disable */
+
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -25,12 +26,15 @@ import MDBadge from "components/MDBadge";
 import { Link } from "react-router-dom";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "./AlertDialog";
 
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [confirmationData, setConfirmationData] = useState({});
 
   const token = localStorage.getItem("accessToken");
 
@@ -40,9 +44,9 @@ export default function Data() {
   };
   const handleMenuAction = (action, selectedEmail, fullName, email, role, state) => {
     if (action === "update") {
-      navigate("/agents/edit", { state: { fullName, email, role , state} });
+      navigate("/agents/edit", { state: { fullName, email, role, state } });
     } else if (action === "delete") {
-      handleDeleteAgent(selectedEmail);
+      setOpenConfirmation(true);
     }
   };
   const handleCloseMenu = () => {
@@ -52,7 +56,7 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/Agents`,);
+        const response = await axios.get(`http://localhost:4000/Agents`);
         const donneesReponse = response.data.agents;
         console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
@@ -85,21 +89,7 @@ export default function Data() {
                   >
                     Update
                   </MenuItem>
-                  <MenuItem
-                    onClick={() =>
-                      handleMenuAction(
-                        "delete",
-                        selectedEmail,
-                        donnee.fullName,
-                        donnee.email,
-                        donnee.role,
-                        donnee.state
-                    
-                      )
-                    }
-                  >
-                    Delete
-                  </MenuItem>
+                  <AlertDialog handleDelete={() => handleConfirmDelete (selectedEmail)} />
                 </Menu>
               </MDBox>
             ),
@@ -113,12 +103,13 @@ export default function Data() {
     fetchData();
   }, [openMenu, selectedEmail]);
 
-  const handleDeleteAgent = async (email) => {
+  const handleConfirmDelete  = async (email) => {
     try {
       await axios.delete(`http://localhost:4000/agent/${email}`);
       const updatedRows = rows.filter((row) => row.Email === email);
       setRows(updatedRows);
       handleCloseMenu();
+      setOpenConfirmation(false);
     } catch (error) {
       console.log(error);
     }
@@ -144,9 +135,9 @@ export default function Data() {
   );
   const State = ({ state }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography variant="caption">{state ? 'Active' : 'Inactive'}</MDTypography>
+      <MDTypography variant="caption">{state ? "Active" : "Inactive"}</MDTypography>
     </MDBox>
-  );;
+  );
 
   return {
     columns: [
@@ -157,5 +148,15 @@ export default function Data() {
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,
+  
+    confirmationDialog: (
+      <AlertDialog
+        open={openConfirmation}
+        handleClose={() => setOpenConfirmation(false)}
+        handleAgree={handleConfirmDelete}
+        title="Confirm Delete"
+        description="Are you sure you want to delete this item?"
+      />
+    ),
   };
 }

@@ -6,12 +6,14 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "../data/AlertDialog";
 
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const token = localStorage.getItem("accessToken");
 
@@ -26,11 +28,21 @@ export default function Data() {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-  const handleMenuAction = (action, selectedTitle, title, description, start_date, end_date, estimation) => {
+  const handleMenuAction = (
+    action,
+    selectedTitle,
+    title,
+    description,
+    start_date,
+    end_date,
+    estimation,
+    releaseName
+  ) => {
     if (action === "update") {
-      navigate("/demand/edit", { state: { title, description, start_date, end_date, estimation } });
+      navigate("/demand/edit", { state: { title, description, start_date, end_date, estimation , releaseName } });
+      
     } else if (action === "delete") {
-      handleDeleteProject(selectedTitle);
+      setOpenConfirmation(true);
     }
   };
   const handleCloseMenu = () => {
@@ -42,6 +54,7 @@ export default function Data() {
       try {
         const response = await axios.get(`http://localhost:4000/demands`);
         const donneesReponse = response.data.Demands;
+        console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
           return {
             Demand: <Demand title={donnee.title} />,
@@ -49,6 +62,8 @@ export default function Data() {
             StartDate: <StartDate startDate={donnee.start_date} />,
             EndDate: <EndDate endDate={donnee.end_date} />,
             Estimation: <Estimation estimation={donnee.estimation} />,
+            Release: <Release release={donnee.release.name} />,
+            Project: <Project project={donnee.release.assignedProject.label} />,  
             Action: (
               <MDBox key={index}>
                 <IconButton onClick={(event) => handleOpenMenu(event, donnee.title)}>
@@ -61,15 +76,21 @@ export default function Data() {
                 >
                   <MenuItem
                     onClick={() =>
-                      handleMenuAction("update", selectedTitle, donnee.title, donnee.description 
-                   , donnee.start_date, donnee.end_date, donnee.estimation)
+                      handleMenuAction(
+                        "update",
+                        selectedTitle,
+                        donnee.title,
+                        donnee.description,
+                        donnee.start_date,
+                        donnee.end_date,
+                        donnee.estimation,
+                        donnee.release.name,
+                      )
                     }
                   >
                     Update
                   </MenuItem>
-                  <MenuItem onClick={() => handleMenuAction("delete", selectedTitle, donnee.title)}>
-                    Delete
-                  </MenuItem>
+                  <AlertDialog handleDelete={() => handleDeleteDemand(selectedTitle)} />
                 </Menu>
               </MDBox>
             ),
@@ -83,7 +104,7 @@ export default function Data() {
     fetchData();
   }, [openMenu, selectedTitle]);
 
-  const handleDeleteProject = async (title) => {
+  const handleDeleteDemand = async (title) => {
     try {
       await axios.delete(`http://localhost:4000/demand/${title}`);
       const updatedRows = rows.filter((row) => row.Demand.props.title === title);
@@ -123,16 +144,31 @@ export default function Data() {
       <MDTypography variant="caption">{estimation}</MDTypography>
     </MDBox>
   );
+  const Release = ({ release }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{release}</MDTypography>
+    </MDBox>
+  );
 
+  const Project = ({ project }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{project}</MDTypography>
+    </MDBox>
+  );
   return {
     columns: [
       { Header: "Demand", accessor: "Demand", width: "20%", align: "left" },
-      { Header: "Description", accessor: "Description", width: "33%", align: "left" },
-      { Header: "Start At", accessor: "StartDate", width: "15%", align: "center"},
-      { Header: "End At", accessor: "EndDate", width: "15%", align: "center" },
-      { Header: "Estimation (H)", accessor: "Estimation", width: "20%", align: "center" },
+      { Header: "Description", accessor: "Description", width: "28%", align: "left" },
+      { Header: "Start At", accessor: "StartDate", width: "12%", align: "center" },
+      { Header: "End At", accessor: "EndDate", width: "12%", align: "center" },
+      { Header: "Estimation (H)", accessor: "Estimation", width: "15%", align: "center" },
+      { Header: " Release", accessor: "Release", width: "20%", align: "center" },
+      { Header: "Project", accessor: "Project", width: "20%", align: "center" },
       { Header: "Action", accessor: "Action", width: "15%", align: "center" },
     ],
     rows,
+    confirmationDialog: (
+      <AlertDialog open={openConfirmation} handleClose={() => setOpenConfirmation(false)} />
+    ),
   };
 }

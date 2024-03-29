@@ -63,7 +63,7 @@ import UpdateRelease from "layouts/tables/releaseTables/updateRelease";
 
 import CreateDemand from "layouts/tables/demandTables/createDemand";
 import UpdateDemand from "layouts/tables/demandTables/updateDemand";
-
+//import ConfirmDialog from "layouts/tables/confirmationDialog";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
@@ -166,14 +166,14 @@ const routes = [
     name: CreateProject,
     key: "createProject",
     component: <CreateProject />,
-    route: "/project/create",
+    route: "/projects/create",
   },
   {
     //type: "collapse",
     name: UpdateProject,
     key: "updateProject",
     component: <UpdateProject />,
-    route: "/project/edit",
+    route: "/projects/edit",
   },
   {
     //type: "collapse",
@@ -201,7 +201,7 @@ const routes = [
     name: "Projects",
     key: "project",
     icon: <WebIcon />,
-    route: "/Project",
+    route: "/projects",
     allowedRoles: [ROLES.RA, ROLES.RTA],
     component: <ProjectTables />,
   },

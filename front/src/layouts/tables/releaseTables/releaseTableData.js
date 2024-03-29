@@ -6,12 +6,14 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "../data/AlertDialog";
 
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedName, setSelectedName] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const token = localStorage.getItem("accessToken");
 
@@ -19,15 +21,13 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedName(name);
   };
-  const handleMenuAction = (action,selectedName, name, description, start_date,end_date ) => {
+  const handleMenuAction = (action,selectedName, name, description, start_date,end_date, project ) => {
     if (action === "update") {
-      navigate("/release/edit", { state: { name, description , start_date , end_date  } });
+      navigate("/release/edit", { state: { name, description , start_date , end_date,project  } });
     } else if (action === "delete") {
-      handleDeleteRelease(selectedName);
+      setOpenConfirmation(true);
     }
-    // else if (action === "assignTo"){
-    //     navigate("/tables/projectTables/assignTo")
-    // }
+   
   };
   const handleCloseMenu = () => {
     setOpenMenu(null);
@@ -57,14 +57,12 @@ export default function Data() {
                 >
                   <MenuItem
                     onClick={() =>
-                      handleMenuAction("update", selectedName, donnee.name, donnee.description , donnee.start_date, donnee.end_date)
+                      handleMenuAction("update", selectedName, donnee.name, donnee.description , donnee.start_date, donnee.end_date ,donnee.assignedProject)
                     }
                   >
                     Update
                   </MenuItem>
-                  <MenuItem onClick={() => handleMenuAction("delete", selectedName, donnee.name)}>
-                    Delete
-                  </MenuItem>
+                  <AlertDialog handleDelete={() => handleDeleteRelease(selectedName)} />
                   {/* <MenuItem onClick={() => handleMenuAction("assignTo", selectedName, donnee.name)}> Assign To </MenuItem> */}
                 </Menu>
               </MDBox>
@@ -131,9 +129,12 @@ export default function Data() {
       { Header: "Description", accessor: "Description", width: "30%", align: "left" },
        { Header: "Start At", accessor: "StartDate", width: "15%", align: "left" },
        { Header: "End At", accessor: "EndDate", width: "15%", align: "left" },
-       { Header: "Assigned To", accessor: "AssignedTo", width: "20%", align: "left" },
+       { Header: "Project", accessor: "AssignedTo", width: "20%", align: "center" },
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,
+    confirmationDialog: (
+      <AlertDialog open={openConfirmation} handleClose={() => setOpenConfirmation(false)} />
+    ),
   };
 }

@@ -8,7 +8,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
+import axios from "axios";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -29,14 +29,37 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 function EmployeesTables() {
     const { columns: pColumns, rows: pRows } = employeeTableData();
+    const [role , setRole] = useState("")
+
     const [currentPage, setCurrentPage] = useState(1);
     const entriesPerPage = 10;
     const navigate = useNavigate();
 
-
+    const ROLES = {
+        RA: "ROLE_ADMIN",
+        RTA: "ROLE_TECHNICAL_AGENT",
+        RPA: "ROLE_PSYCHOTECHNICAL_AGENT",
+      };
+    const token = localStorage.getItem('accessToken');
     const handleAddEmployee = () => {
         navigate('/employees/create');
     };
+
+    const fetchUserDetails = async (token) => {
+        try {
+    
+          const response = await axios.get('http://localhost:4000/userDetails', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setRole(response.data.role);
+        } catch (error) {
+          console.error('ERROR :', error);
+        }
+      };
+      fetchUserDetails(token);
+    
     const totalEntries = pRows.length;
     const totalPages = Math.ceil(totalEntries / entriesPerPage);
     const getCurrentPageEntries = () => {
@@ -71,9 +94,11 @@ function EmployeesTables() {
                                 <MDTypography variant="h6" color="white">
                                     Employees Table
                                 </MDTypography>
-                                <IconButton onClick={handleAddEmployee} color="white">
-                                    <Icon fontSize="medium">person_add</Icon>
-                                </IconButton>
+                                {(role === ROLES.RPA ||role === ROLES.RA  )&& (
+                        <IconButton onClick={handleAddEmployee} color="white">
+                            <Icon fontSize="medium">person_add</Icon>
+                        </IconButton>
+                    )}
                             </MDBox>
                             <MDBox pt={3}>
                                 <DataTable
