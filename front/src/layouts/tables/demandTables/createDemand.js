@@ -86,7 +86,7 @@ const createDemand = () => {
         setError("End date must be after the start date.");
         return;
       }
-      await axios.post("http://localhost:4000/demand", {
+      await axios.post("demand", {
         title,
         description,
         start_date,
@@ -107,7 +107,7 @@ const createDemand = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/releases`);
+      const response = await axios.get(`releases`);
       const releasesData = response.data.Releases.map((release) => release.name);
 
       setReleases(releasesData);

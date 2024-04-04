@@ -44,6 +44,7 @@ const getAllAgent = async (req, res) => {
     // Mapping the Agent data to a simpler format
     const data = agents.map((agent) => {
       return {
+        id : agent._id, 
         fullName: agent.fullName,
         email: agent.email,
         role: agent.role,
@@ -63,14 +64,14 @@ const getAllAgent = async (req, res) => {
 // Function to update an Agent
 const updateAgent = async (req, res) => {
   try {
-    // console.log(req.body.email, req.body.role, req.body.fullName, req.body.password);
-    // Checking if all required properties are provided in the request body
-    // if (!req.body.email || !req.body.role || !req.body.fullName
-    //     || !req.body.password) {
-    //     return res
-    //         .status(StatusCodes.BAD_REQUEST)
-    //         .json({ message: "Please provide a full Name ,an email and role !" });
-    //  }
+    
+   // Checking if all required properties are provided in the request body
+    if (!req.body.email || !req.body.role || !req.body.fullName
+     ) {
+        return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ message: "Please provide a full Name ,an email and role !" });
+     }
     // Creating an update object with data from the request body
     const update = {
       fullName: req.body.fullName,
@@ -82,11 +83,12 @@ const updateAgent = async (req, res) => {
       updatedAt: new Date(),
     };
     // Finding and updating the Agent with the provided email
-    const updatedAgent = await Agent.findOneAndUpdate(
-      { email: req.params.email },
+    const updatedAgent = await Agent.findByIdAndUpdate(
+      req.params.id,
       update,
       { new: true }
     );
+
     if (!updatedAgent) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -104,9 +106,11 @@ const updateAgent = async (req, res) => {
 // Function to delete an Agent
 const deleteAgent = async (req, res) => {
   try {
+
     // Checking if the Agent email is provided
-    const agentEmail = req.params.email;
-    const agent = await Agent.findOneAndDelete({ email: agentEmail });
+    const agentId = req.params.id;
+  
+    const agent = await Agent.findByIdAndDelete(agentId);
     if (!agent) {
       return res
         .status(StatusCodes.NOT_FOUND)

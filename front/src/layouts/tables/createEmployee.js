@@ -98,13 +98,13 @@ const createEmployee = () => {
           setError("Please enter a valid salary.");
           return;
       }
-      const response = await axios.get(`http://localhost:4000/auth/emailExist/${email}`);
+      const response = await axios.get(`auth/emailExist/${email}`);
       if (response.data.exists) {
         setError("This email already exists. Please use a different email address.");
         return;
       }
 
-      await axios.post("http://localhost:4000/employee", {
+      await axios.post("employee", {
         fullName,
         email,
         phoneNumber,

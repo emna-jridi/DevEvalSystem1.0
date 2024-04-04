@@ -29,15 +29,17 @@ const roles = ["ROLE_TECHNICAL_AGENT", "ROLE_PSYCHOTECHNICAL_AGENT"];
 const UpdateAgent = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("ROLE_TECHNICAL_AGENT"); 
+  const [role, setRole] = useState("ROLE_TECHNICAL_AGENT");
   const [error, setError] = useState("");
+  const [id, setId] = useState("");
   const [state, setState] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.state) {
-      const { email, fullName , role , state} = location.state;
+      const { id, email, fullName, role, state } = location.state;
+      setId(id);
       setFullName(fullName);
       setEmail(email);
       setRole(role);
@@ -54,7 +56,7 @@ const UpdateAgent = () => {
 
   const handleSubmit = async () => {
     try {
-      if (!fullName || !email || !role ) {
+      if (!fullName || !email || !role) {
         setError("All fields are required.");
         return;
       }
@@ -68,7 +70,7 @@ const UpdateAgent = () => {
         setError("Please enter a valid email address.");
         return;
       }
-      await axios.put(`http://localhost:4000/agent/${email}`, { fullName, email, role, state });
+      await axios.put(`agent/${id}`, { fullName, email, role, state });
       navigate("/agents");
     } catch (error) {
       console.error("Error adding agent:", error);
@@ -120,7 +122,10 @@ const UpdateAgent = () => {
                     />
                   </FormControl>
                   <FormControl component="fieldset">
-                   <MDTypography variant="caption" fontSize={13.5} pt={2}> State :</MDTypography>
+                    <MDTypography variant="caption" fontSize={13.5} pt={2}>
+                      {" "}
+                      State :
+                    </MDTypography>
                     <RadioGroup
                       row
                       aria-label="status"
@@ -133,7 +138,7 @@ const UpdateAgent = () => {
                     </RadioGroup>
                   </FormControl>
                   <FormControl fullWidth margin="normal">
-                  <InputLabel >Role</InputLabel>
+                    <InputLabel>Role</InputLabel>
                     <Select
                       labelId="role-label"
                       id="role"

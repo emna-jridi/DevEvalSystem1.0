@@ -77,7 +77,7 @@ const getAllDemand = async (req, res) => {
     // Mapping the demands data to the desired format
     const data = demands.map((demand) => {
       return {
-        _id: demand._id,
+        id: demand._id,
         title: demand.title,
         description: demand.description,
         start_date: demand.start_date,
@@ -105,13 +105,7 @@ const getAllDemand = async (req, res) => {
 };
 const updateDemand = async (req, res) => {
   try {
-    const demandTitle = req.params.title;
-    if (!demandTitle) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "Missing Demand Title." });
-    }
-
+ 
     if (
       !req.body.title ||
       !req.body.description ||
@@ -148,7 +142,7 @@ const updateDemand = async (req, res) => {
       },
     };
 
-    // Mise à jour de la version si nécessaire
+
     if (new Date(releaseFound.end_date) < new Date(update.end_date)) {
       const releaseUpdated = await Release.findOneAndUpdate(
         { name: req.body.release.name },
@@ -162,9 +156,9 @@ const updateDemand = async (req, res) => {
       }
     }
 
-    // Mise à jour de la demande
-    const updatedDemand = await Demand.findOneAndUpdate(
-      { title: demandTitle },
+
+    const updatedDemand = await Demand.findByIdAndUpdate(
+      req.params.id,
       update,
       { new: true }
     );
@@ -187,16 +181,14 @@ const updateDemand = async (req, res) => {
 const deleteDemand = async (req, res) => {
   try {
     // Checking if the demand title is provided
-    const demandTitle = req.params.title;
-    if (!demandTitle) {
+    const demandId = req.params.id;
+    if (!demandId) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Missing Demand Title." });
     }
     // Finding and deleting the demand with the provided title
-    const demand = await Demand.findOneAndDelete({
-      title: demandTitle,
-    });
+    const demand = await Demand.findByIdAndDelete(req.params.id);
 
     if (!demand) {
       return res

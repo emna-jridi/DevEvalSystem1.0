@@ -35,7 +35,7 @@ function Cover() {
   const handleResetPassword = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:4000/auth/forgotPassword", { email });
+      const response = await axios.post("auth/forgotPassword", { email });
       if (response.status === 200) {
         alert("Password reset instructions have been sent to your email.");
       }

@@ -27,6 +27,7 @@ function DemandTables() {
   const { columns, rows } = demandTableData();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  
   const entriesPerPage = 5;
 
   const handleAddRelease = () => {

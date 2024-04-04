@@ -5,7 +5,7 @@ const { authorizationAdmin,  } = require("../Service/AuthService")
 
 router.route('/employee').post(createEmployee)
 router.route('/employees').get(getAllEmployee)
-router.route('/employee/:email').put(updateEmpolyee)
+router.route('/employee/:id').put(updateEmpolyee)
     .delete( deleteEmployee)
 
     module.exports = router 

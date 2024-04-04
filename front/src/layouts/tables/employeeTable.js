@@ -48,7 +48,7 @@ function EmployeesTables() {
     const fetchUserDetails = async (token) => {
         try {
     
-          const response = await axios.get('http://localhost:4000/userDetails', {
+          const response = await axios.get('userDetails', {
             headers: {
               Authorization: `Bearer ${token}`,
             },

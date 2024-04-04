@@ -58,13 +58,13 @@ const CreateRelease = () => {
         setError("End date must be after the start date.");
         return;
       }
-      const response = await axios.get(`http://localhost:4000/releaseExists/${name}`);
+      const response = await axios.get(`releaseExists/${name}`);
       if (response.data.exists === true) {
         setError("This release already exists.");
         return;
       }
 
-      await axios.post("http://localhost:4000/release", {
+      await axios.post("release", {
         name,
         description,
         start_date,
@@ -87,7 +87,7 @@ const CreateRelease = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/projects`);
+      const response = await axios.get(`projects`);
       const projectsData = response.data.Projects.map((project) => project.label);
       setProjects(projectsData);
     } catch (error) {

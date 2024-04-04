@@ -49,7 +49,7 @@ function Basic() {
         console.error("Email and password are required.");
         return;
       }
-      const response = await axios.post('http://localhost:4000/auth/login', { email, password });
+      const response = await axios.post('auth/login', { email, password });
       console.log("Authentification réussie :", response.data.accessToken)
 
 

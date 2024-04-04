@@ -9,23 +9,22 @@ const { createDemand, getAllDemand, updateDemand, deleteDemand, assignToRelease 
 //Project Crud 
 router.route('/project').post(createProject)
 router.route('/projects').get(getAllProject)
-router.route('/project/:label').put(updateProject)
+router.route('/project/:id').put(updateProject)
     .delete(deleteProject)
-    .post(assignToEmployee)
+  
 router.route('/projectExists/:label').get(projectExists)
 
 //Release Crud 
 router.route('/release').post(createRelease)
 router.route('/releases').get(getAllReleases)
-router.route('/release/:name').put(updateRelease)
+router.route('/release/:id').put(updateRelease)
     .delete(deleteRelease)
-    .post(assignToProject)
 router.route('/releaseExists/:name').get(releaseExists)
 
 //demand crud 
 router.route('/demand').post(createDemand)
 router.route('/demands').get(getAllDemand)
-router.route('/demand/:title').put(updateDemand).delete(deleteDemand).post(assignToRelease)
+router.route('/demand/:id').put(updateDemand).delete(updateDemand)
 
 
 module.exports = router 

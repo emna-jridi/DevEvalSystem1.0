@@ -28,92 +28,93 @@ import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
 
-export default function Data() {
-  const [rows, setRows] = useState([]);
-  const [selectedEmail, setSelectedEmail] = useState(null);
-  const [openMenu, setOpenMenu] = useState(null);
-  const navigate = useNavigate();
-  const [openConfirmation, setOpenConfirmation] = useState(false);
-  const [confirmationData, setConfirmationData] = useState({});
+  export default function Data() {
+    const [rows, setRows] = useState([]);
+    const [selectedEmail, setSelectedEmail] = useState(null);
+    const [openMenu, setOpenMenu] = useState(null);
+    const navigate = useNavigate();
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+    const [confirmationData, setConfirmationData] = useState({});
 
-  const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("accessToken");
 
-  const handleOpenMenu = (event, email) => {
-    setOpenMenu(event.currentTarget);
-    setSelectedEmail(email);
-  };
-  const handleMenuAction = (action, selectedEmail, fullName, email, role, state) => {
-    if (action === "update") {
-      navigate("/agents/edit", { state: { fullName, email, role, state } });
-    } else if (action === "delete") {
-      setOpenConfirmation(true);
-    }
-  };
-  const handleCloseMenu = () => {
-    setOpenMenu(null);
-    setSelectedEmail(null);
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/Agents`);
-        const donneesReponse = response.data.agents;
-        console.log(donneesReponse);
-        const tableau = donneesReponse.map((donnee, index) => {
-          return {
-            Agent: <Agent fullName={donnee.fullName} />,
-            Email: <Email email={donnee.email} />,
-            Role: <Role role={donnee.role} />,
-            State: <State state={donnee.state} />,
-            Action: (
-              <MDBox key={index}>
-                <IconButton onClick={(event) => handleOpenMenu(event, donnee.email)}>
-                  <Icon fontSize="small">settings</Icon>
-                </IconButton>
-                <Menu
-                  anchorEl={openMenu}
-                  open={Boolean(openMenu && selectedEmail === donnee.email)}
-                  onClose={handleCloseMenu}
-                >
-                  <MenuItem
-                    onClick={() =>
-                      handleMenuAction(
-                        "update",
-                        selectedEmail,
-                        donnee.fullName,
-                        donnee.email,
-                        donnee.role,
-                        donnee.state
-                      )
-                    }
+    const handleOpenMenu = (event, email) => {
+      setOpenMenu(event.currentTarget);
+      setSelectedEmail(email);
+    };
+    const handleMenuAction = (action, selectedEmail, id,fullName, email, role, state) => {
+      if (action === "update") {
+        navigate("/agents/edit", { state: { id, fullName, email, role, state } });
+      } else if (action === "delete") {
+        setOpenConfirmation(true);
+      }
+    };
+    const handleCloseMenu = () => {
+      setOpenMenu(null);
+      setSelectedEmail(null);
+    };
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`Agents`);
+          const donneesReponse = response.data.agents;
+          const tableau = donneesReponse.map((donnee, index) => {
+            return {
+              id: donnee.id,
+              Agent: <Agent fullName={donnee.fullName} />,
+              Email: <Email email={donnee.email} />,
+              Role: <Role role={donnee.role} />,
+              State: <State state={donnee.state} />,
+              Action: (
+                <MDBox key={index}>
+                  <IconButton onClick={(event) => handleOpenMenu(event, donnee.email)}>
+                    <Icon fontSize="small">settings</Icon>
+                  </IconButton>
+                  <Menu
+                    anchorEl={openMenu}
+                    open={Boolean(openMenu && selectedEmail === donnee.email)}
+                    onClose={handleCloseMenu}
                   >
-                    Update
-                  </MenuItem>
-                  <AlertDialog handleDelete={() => handleConfirmDelete (selectedEmail)} />
-                </Menu>
-              </MDBox>
-            ),
-          };
-        });
-        setRows(tableau);
+                    <MenuItem
+                      onClick={() =>
+                        handleMenuAction(
+                          "update",
+                          selectedEmail,
+                          donnee.id,
+                          donnee.fullName,
+                          donnee.email,
+                          donnee.role,
+                          donnee.state
+                        )
+                      }
+                    >
+                      Update
+                    </MenuItem>
+                    <AlertDialog handleDelete={() => handleConfirmDelete (  donnee.id)} />
+                  </Menu>
+                </MDBox>
+              ),
+            };
+          });
+          setRows(tableau);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }, [openMenu, selectedEmail]);
+
+    const handleConfirmDelete  = async ( id ) => {
+      try {
+        await axios.delete(`agent/${id}`);
+        const updatedRows = rows.filter((row) => row.id !== id);
+        setRows(updatedRows);
+        handleCloseMenu();
+        setOpenConfirmation(false);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
-  }, [openMenu, selectedEmail]);
-
-  const handleConfirmDelete  = async (email) => {
-    try {
-      await axios.delete(`http://localhost:4000/agent/${email}`);
-      const updatedRows = rows.filter((row) => row.Email === email);
-      setRows(updatedRows);
-      handleCloseMenu();
-      setOpenConfirmation(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const Agent = ({ fullName }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>

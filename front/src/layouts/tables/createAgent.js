@@ -63,12 +63,12 @@ const CreateAgent = () => {
         setError("Passwords do not match.");
         return;
       }
-      const response = await axios.get(`http://localhost:4000/auth/emailExist/${email}`);
+      const response = await axios.get(`auth/emailExist/${email}`);
       if (response.data.exists) {
         setError("This email already exists. Please use a different email address.");
         return;
       }
-      await axios.post("http://localhost:4000/Agent", { fullName, email, role, password, state });
+      await axios.post("Agent", { fullName, email, role, password, state });
       navigate("/agents");
     } catch (error) {
       console.error("Error adding agent:", error);

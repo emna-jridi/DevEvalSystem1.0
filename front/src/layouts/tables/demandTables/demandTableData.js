@@ -31,6 +31,7 @@ export default function Data() {
   const handleMenuAction = (
     action,
     selectedTitle,
+    id, 
     title,
     description,
     start_date,
@@ -39,7 +40,7 @@ export default function Data() {
     releaseName
   ) => {
     if (action === "update") {
-      navigate("/demand/edit", { state: { title, description, start_date, end_date, estimation , releaseName } });
+      navigate("/demand/edit", { state: { id,title, description, start_date, end_date, estimation , releaseName } });
       
     } else if (action === "delete") {
       setOpenConfirmation(true);
@@ -52,11 +53,12 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/demands`);
+        const response = await axios.get(`demands`);
         const donneesReponse = response.data.Demands;
         console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
           return {
+            id : donnee.id, 
             Demand: <Demand title={donnee.title} />,
             Description: <Description description={donnee.description} />,
             StartDate: <StartDate startDate={donnee.start_date} />,
@@ -79,6 +81,7 @@ export default function Data() {
                       handleMenuAction(
                         "update",
                         selectedTitle,
+                        donnee.id,
                         donnee.title,
                         donnee.description,
                         donnee.start_date,
@@ -90,7 +93,7 @@ export default function Data() {
                   >
                     Update
                   </MenuItem>
-                  <AlertDialog handleDelete={() => handleDeleteDemand(selectedTitle)} />
+                  <AlertDialog handleDelete={() => handleDeleteDemand(donnee.id)} />
                 </Menu>
               </MDBox>
             ),
@@ -104,10 +107,10 @@ export default function Data() {
     fetchData();
   }, [openMenu, selectedTitle]);
 
-  const handleDeleteDemand = async (title) => {
+  const handleDeleteDemand = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/demand/${title}`);
-      const updatedRows = rows.filter((row) => row.Demand.props.title === title);
+      await axios.delete(`demand/${id}`);
+      const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
       handleCloseMenu();
     } catch (error) {

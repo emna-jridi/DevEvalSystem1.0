@@ -20,10 +20,12 @@ import App from "App";
 
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
+import axios from "axios";
+import { from } from "stylis";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
-
+axios.defaults.baseURL = "http://localhost:4000/";
 root.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>

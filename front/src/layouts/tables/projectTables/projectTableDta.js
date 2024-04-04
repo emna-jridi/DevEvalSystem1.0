@@ -21,9 +21,9 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedLabel(label);
   };
-  const handleMenuAction = (action, selectedLabel, label, description) => {
+  const handleMenuAction = (action, selectedLabel, id, label, description) => {
     if (action === "update") {
-      navigate("/projects/edit", { state: { label, description } });
+      navigate("/projects/edit", { state: { id, label, description } });
     } else if (action === "delete") {
       setOpenConfirmation(true);
     }
@@ -35,11 +35,12 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/projects`);
+        const response = await axios.get(`projects`);
         const donneesReponse = response.data.Projects;
 
         const tableau = donneesReponse.map((donnee, index) => {
           return {
+            id: donnee.id,
             Project: <Project label={donnee.label} />,
             Description: <Description description={donnee.description} />,
             Action: (
@@ -54,12 +55,18 @@ export default function Data() {
                 >
                   <MenuItem
                     onClick={() =>
-                      handleMenuAction("update", selectedLabel, donnee.label, donnee.description)
+                      handleMenuAction(
+                        "update",
+                        selectedLabel,
+                        donnee.id,
+                        donnee.label,
+                        donnee.description
+                      )
                     }
                   >
                     Update
                   </MenuItem>
-                  <AlertDialog handleDelete={() => handleDeleteProject(selectedLabel)} />
+                  <AlertDialog handleDelete={() => handleDeleteProject(donnee.id)} />
                 </Menu>
               </MDBox>
             ),
@@ -73,10 +80,11 @@ export default function Data() {
     fetchData();
   }, [openMenu, selectedLabel]);
 
-  const handleDeleteProject = async (label) => {
+  const handleDeleteProject = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/project/${label}`);
-      const updatedRows = rows.filter((row) => row.Project.props.label === label);
+      await axios.delete(`project/${id}`);
+      const updatedRows = rows.filter((row) => row.id !== id);
+
       setRows(updatedRows);
       handleCloseMenu();
     } catch (error) {

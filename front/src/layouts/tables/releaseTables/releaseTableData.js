@@ -21,9 +21,9 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedName(name);
   };
-  const handleMenuAction = (action,selectedName, name, description, start_date,end_date, project ) => {
+  const handleMenuAction = (action,selectedName,id, name, description, start_date,end_date, project ) => {
     if (action === "update") {
-      navigate("/release/edit", { state: { name, description , start_date , end_date,project  } });
+      navigate("/release/edit", { state: { id, name, description , start_date , end_date,project  } });
     } else if (action === "delete") {
       setOpenConfirmation(true);
     }
@@ -36,10 +36,11 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/releases`);
-        const donneesReponse = response.data.Releases;
+        const response = await axios.get(`releases`);
+        const donneesReponse = response.data.Releases;                   
         const tableau = donneesReponse.map((donnee, index) => {
           return {
+            id : donnee.id,
             Release: <Release name={donnee.name} />,
             Description: <Description description={donnee.description} />,
             StartDate : <StartDate  startDate= {donnee.start_date}/>,
@@ -57,13 +58,14 @@ export default function Data() {
                 >
                   <MenuItem
                     onClick={() =>
-                      handleMenuAction("update", selectedName, donnee.name, donnee.description , donnee.start_date, donnee.end_date ,donnee.assignedProject)
+                      handleMenuAction("update", selectedName,donnee.id
+                , donnee.name, donnee.description , donnee.start_date, donnee.end_date ,donnee.assignedProject)
                     }
                   >
                     Update
                   </MenuItem>
-                  <AlertDialog handleDelete={() => handleDeleteRelease(selectedName)} />
-                  {/* <MenuItem onClick={() => handleMenuAction("assignTo", selectedName, donnee.name)}> Assign To </MenuItem> */}
+                  <AlertDialog handleDelete={() => handleDeleteRelease(donnee.id)} />
+        
                 </Menu>
               </MDBox>
             ),
@@ -82,10 +84,10 @@ export default function Data() {
     return formattedDate;
   };
 
-  const handleDeleteRelease = async (name) => {
+  const handleDeleteRelease = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/release/${name}`);
-      const updatedRows = rows.filter((row) => row.Release.props.name === name);
+      await axios.delete(`release/${id}`);
+      const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
       handleCloseMenu();
     } catch (error) {

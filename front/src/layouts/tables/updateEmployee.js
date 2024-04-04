@@ -34,6 +34,7 @@ const updateEmployee = () => {
   const [leaveBalance, setLeaveBalance] = useState(0);
   const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
   const [rank, setRank] = useState(0);
+  const [id, setId] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const civilStates = ["Single", "Married", "Divorced", "Widowed"];
@@ -52,9 +53,9 @@ const updateEmployee = () => {
     console.log(location.state);
     if (location.state) {
       const {
+        id,
         fullName,
         email,
-
         phoneNumber,
         civilState,
         dependents,
@@ -70,6 +71,7 @@ const updateEmployee = () => {
         lastNegotiationDate,
         rank,
       } = location.state;
+      setId(id);
       setFullName(fullName);
       setEmail(email);
       setPhoneNumber(phoneNumber);
@@ -87,6 +89,7 @@ const updateEmployee = () => {
       setLastNegotiationDate(lastNegotiationDate);
       setRank(rank);
     }
+    console.log(location.state);
     // console.log(fullName, email, position,rank, entryDate);
   }, [location]);
 
@@ -110,7 +113,7 @@ const updateEmployee = () => {
         setError("Please enter a valid full name.");
         return;
       }
-      await axios.put(`http://localhost:4000/employee/${email}`, {
+      await axios.put(`employee/${id}`, {
         fullName,
         email,
         phoneNumber,

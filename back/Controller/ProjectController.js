@@ -53,6 +53,7 @@ const getAllProject = async (req, res) => {
         // Mapping the project data to a simpler format
         const data = projects.map((project) => {
             return {
+                id : project._id, 
                 label: project.label,
                 description: project.description,
                 assignedEmployee: project.assignedEmployee,
@@ -75,14 +76,15 @@ const updateProject = async (req, res) => {
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ message: "Please provide all project information!" });
         }
+        console.log(req.params.id);
         // Creating an update object with data from the request body
         const update = {
             label: req.body.label,
             description: req.body.description,
         };
         // Finding and updating the project with the provided email
-        const updatedProject = await Project.findOneAndUpdate(
-            { label: req.params.label },
+        const updatedProject = await Project.findByIdAndUpdate(
+            req.params.id,
             update,
             { new: true }
         );
@@ -104,16 +106,14 @@ const updateProject = async (req, res) => {
 const deleteProject = async (req, res) => {
     try {
         // Checking if the project email is provided
-        const projectLabel = req.params.label;
-        if (!projectLabel) {
+        const projectId = req.params.id;
+        if (!projectId) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ message: "Missing project label." });
         }
         // Finding and deleting the project with the provided label
-        const project = await Project.findOneAndDelete({
-            label: projectLabel,
-        });
+        const project = await Project.findByIdAndDelete(projectId);
 
         if (!project) {
             return res

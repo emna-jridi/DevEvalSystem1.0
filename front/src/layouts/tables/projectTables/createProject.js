@@ -56,13 +56,13 @@ const CreateProject = () => {
         return;
       }
 
-      const response = await axios.get(`http://localhost:4000/projectExists/${label}`);
+      const response = await axios.get(`projectExists/${label}`);
       if (response.data.exists === true) {
         setError("This project already exists.");
         return;
       }
 
-      await axios.post("http://localhost:4000/project", { label, description });
+      await axios.post("project", { label, description });
 
       navigate("/projects");
     } catch (error) {

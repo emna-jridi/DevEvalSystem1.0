@@ -28,6 +28,7 @@ const UpdateRelease = () => {
   const [start_date, setstart_date] = useState(new Date());
   const [end_date, setEnd_date] = useState(new Date());
   const [projects, setProjects] = useState([]);
+  const [id, setId] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -35,7 +36,8 @@ const UpdateRelease = () => {
 
   useEffect(() => {
     if (location.state) {
-      const { name, description, start_date, end_date, project  } = location.state;
+      const {id ,  name, description, start_date, end_date, project  } = location.state;
+      setId(id);
       setName(name);
       setDescription(description);
       setstart_date(start_date);
@@ -48,9 +50,9 @@ const UpdateRelease = () => {
   
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/projects`);
+      const response = await axios.get(`projects`);
       const projectsData = response.data.Projects.map((project) => project.label);
-      console.log(projectsData);
+ 
       setProjects(projectsData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -77,7 +79,7 @@ const UpdateRelease = () => {
         setError("End date must be after the start date.");
         return;
       }
-      await axios.put(`http://localhost:4000/release/${name}`, {
+      await axios.put(`release/${id}`, {
         name,
         description,
         start_date,

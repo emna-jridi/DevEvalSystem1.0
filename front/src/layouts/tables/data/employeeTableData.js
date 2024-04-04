@@ -32,32 +32,29 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
+import CustomizedDialogs from "../demandTables/CustomizedDialogs";
 
-export default function data() {
+export default function Data() {
   const [rows, setRows] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [role , setRole] = useState("")
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const token = localStorage.getItem('accessToken');
-
-
-
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const token = localStorage.getItem("accessToken");
 
   const fetchUserDetails = async (token) => {
     try {
-
-      const response = await axios.get('http://localhost:4000/userDetails', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get("userDetails", {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setRole(response.data.role);
     } catch (error) {
-      console.error('ERROR :', error);
+      console.error("ERROR :", error);
     }
   };
+
   fetchUserDetails(token);
 
   const ROLES = {
@@ -65,6 +62,7 @@ export default function data() {
     RTA: "ROLE_TECHNICAL_AGENT",
     RPA: "ROLE_PSYCHOTECHNICAL_AGENT",
   };
+
   function formatPhoneNumber(phoneNumber) {
     phoneNumber = phoneNumber.toString();
     if (phoneNumber.startsWith("216")) {
@@ -74,35 +72,27 @@ export default function data() {
   }
 
   let columns = [
-    { Header: "Employee", accessor: "Employee", width: "30%", align: "left" },
+    { Header: "Employee", accessor: "Employee", width: "25%", align: "left" },
     { Header: "Email", accessor: "Email", align: "left" },
     { Header: "Phone Number", accessor: "PhoneNumber", align: "center" },
     { Header: "Position", accessor: "Position", align: "center" },
     { Header: "Employed At", accessor: "EmployedAt", align: "center" },
     { Header: "Emergency Number", accessor: "EmergencyNumber", align: "center" },
     { Header: "Rank", accessor: "Rank", align: "center" },
-
   ];
 
   if (role === ROLES.RTA) {
-      }
-    else {
-      columns.push(
-        { Header: "Civil State", accessor: "CivilState", align: "center" },
-        { Header: "Dependents", accessor: "Dependents", align: "center" },
-        { Header: "Contract", accessor: "Contract", align: "center" },
-        { Header: "Salary", accessor: "Salary", align: "center" },
-        { Header: "RIB", accessor: "RIB", align: "center" },
-        { Header: "Cnss Number", accessor: "CnssNumber", align: "center" },
-        { Header: "Leave Balance", accessor: "LeaveBalance", align: "center" },
-        { Header: "Last Negotiation", accessor: "LastNegotiationDate", align: "center" },
-        { Header: "Action", accessor: "Action", width: "10%", align: "center" },
-      )
-    }
+  } else {
+    columns.push(
+      { Header: "More", accessor: "More", align: "center" },
+      { Header: "Action", accessor: "Action", width: "10%", align: "center" }
+    );
+  }
 
   const handleMenuAction = (
     action,
     email,
+    id,
     fullName,
     phoneNumber,
     civilState,
@@ -123,6 +113,7 @@ export default function data() {
       navigate("/employees/edit", {
         state: {
           email,
+          id,
           fullName,
           phoneNumber,
           civilState,
@@ -142,13 +133,15 @@ export default function data() {
       });
     } else if (action === "delete") {
       setOpenConfirmation(true);
-      console.log(openConfirmation);
+  
     }
   };
 
-  const handleOpenMenu = (event, email) => {
+  const handleOpenMenu = (event, email, employee) => {
     setOpenMenu(event.currentTarget);
     setSelectedEmail(email);
+    setSelectedEmployee(employee);
+  
   };
 
   const handleCloseMenu = () => {
@@ -156,10 +149,10 @@ export default function data() {
     setSelectedEmail(null);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async ( id ) => {
     try {
-      await axios.delete(`http://localhost:4000/employee/${selectedEmail}`);
-      const updatedRows = rows.filter((row) => row.Email.props.email !== selectedEmail);
+      await axios.delete(`employee/${id}`);
+      const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
 
       handleCloseMenu();
@@ -176,9 +169,10 @@ export default function data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/employees");
+        const response = await axios.get("employees");
         const donneesReponse = response.data.employees;
         const tableau = donneesReponse.map((donnee, index) => ({
+          id: donnee.id,
           Employee: <Employee fullName={donnee.fullName} />,
           Email: <Email email={donnee.email} />,
           PhoneNumber: <PhoneNumber phoneNumber={donnee.phoneNumber} />,
@@ -199,10 +193,9 @@ export default function data() {
             <LastNegotiationDate lastNegotiationDate={donnee.lastNegotiationDate} />
           ),
           Rank: <Rank rank={donnee.rank} />,
-
           Action: (
             <MDBox key={index}>
-              <IconButton onClick={(event) => handleOpenMenu(event, donnee.email)}>
+              <IconButton onClick={(event) => handleOpenMenu(event, donnee.email, donnee)}>
                 <Icon fontSize="small">settings</Icon>
               </IconButton>
               <Menu
@@ -215,6 +208,7 @@ export default function data() {
                     handleMenuAction(
                       "update",
                       selectedEmail,
+                      donnee.id,
                       donnee.fullName,
                       donnee.phoneNumber,
                       donnee.civilState,
@@ -235,19 +229,24 @@ export default function data() {
                 >
                   Update
                 </MenuItem>
-                <AlertDialog handleDelete={() => handleConfirmDelete(selectedEmail)} />
+                <AlertDialog handleDelete={() => handleConfirmDelete(donnee.id)} />
               </Menu>
             </MDBox>
           ),
+          More: (
+            <MDBox key={index}>
+              <CustomizedDialogs employee={donnee} />
+            </MDBox>
+          ),
         }));
-
         setRows(tableau);
       } catch (error) {
         console.log(error);
       }
     };
+
     fetchData();
-  }, [openMenu, selectedEmail]);
+  }, [openMenu, selectedEmail, selectedEmployee]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -274,11 +273,13 @@ export default function data() {
       <MDTypography variant="caption">{formatPhoneNumber(phoneNumber)}</MDTypography>
     </MDBox>
   );
+
   const CivilState = ({ civilState }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{civilState}</MDTypography>
     </MDBox>
   );
+
   const Dependents = ({ dependents }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{dependents}</MDTypography>
@@ -296,6 +297,7 @@ export default function data() {
       <MDTypography variant="caption">{Position}</MDTypography>
     </MDBox>
   );
+
   const EmployedAt = ({ entryDate }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{formatDate(entryDate)}</MDTypography>
@@ -337,6 +339,7 @@ export default function data() {
       <MDTypography variant="caption">{leaveBalance}</MDTypography>
     </MDBox>
   );
+
   const LastNegotiationDate = ({ lastNegotiationDate }) => (
     <MDBox display="flex" aligcItems="center" lineHeight={1}>
       <MDTypography variant="caption">{formatDate(lastNegotiationDate)}</MDTypography>
@@ -350,24 +353,6 @@ export default function data() {
   );
 
   return {
-    // columns: [
-    //   { Header: "Employee", accessor: "Employee", width: "30%", align: "left" },
-    //   { Header: "Email", accessor: "Email", align: "left" },
-    //   { Header: "Phone Number", accessor: "PhoneNumber", align: "center" },
-    //   { Header: "Civil State", accessor: "CivilState", align: "center" },
-    //   { Header: "Dependents", accessor: "Dependents", align: "center" },
-    //   { Header: "Contract", accessor: "Contract", align: "center" },
-    //   { Header: "Position", accessor: "Position", align: "center" },
-    //   { Header: "Employed At", accessor: "EmployedAt", align: "center" },
-    //   { Header: "Salary", accessor: "Salary", align: "center" },
-    //   { Header: "RIB", accessor: "RIB", align: "center" },
-    //   { Header: "Cnss Number", accessor: "CnssNumber", align: "center" },
-    //   { Header: "Emergency Number", accessor: "EmergencyNumber", align: "center" },
-    //   { Header: "Leave Balance", accessor: "LeaveBalance", align: "center" },
-    //   { Header: "Last Negotiation", accessor: "LastNegotiationDate", align: "center" },
-    //   { Header: "Rank", accessor: "Rank", align: "center" },
-    //   { Header: "Action", accessor: "Action", width: "10%", align: "center" },
-    // ],
     columns,
     rows,
     confirmationDialog: (

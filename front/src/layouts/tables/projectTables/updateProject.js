@@ -26,15 +26,18 @@ const UpdateProject = () => {
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [id, setId] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.state) {
-      const { label, description } = location.state;
+      const { id,label, description } = location.state;
+      setId(id);
       setLabel(label);
       setDescription(description);
     }
+
   }, [location]);
 
   const handleSubmit = async () => {
@@ -43,7 +46,7 @@ const UpdateProject = () => {
         setError("All fields are required.");
         return;
       }
-      await axios.put(`http://localhost:4000/project/${label}`, { label, description });
+      await axios.put(`project/${id}`, { label, description });
       navigate("/projects");
     } catch (error) {
       console.error("Error adding agent:", error);

@@ -36,7 +36,7 @@ function NewPassword() {
     }
     console.log('token',token);
     try {
-      const response = await axios.post(`http://localhost:4000/auth/NewPassword/${token}`, {
+      const response = await axios.post(`auth/NewPassword/${token}`, {
         email,
         password,
       });
