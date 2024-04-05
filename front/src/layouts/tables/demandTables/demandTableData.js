@@ -53,7 +53,11 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`demands`);
+        const response = await axios.get(`demands`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const donneesReponse = response.data.Demands;
         console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
@@ -109,7 +113,11 @@ export default function Data() {
 
   const handleDeleteDemand = async (id) => {
     try {
-      await axios.delete(`demand/${id}`);
+      await axios.delete(`demand/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
       handleCloseMenu();

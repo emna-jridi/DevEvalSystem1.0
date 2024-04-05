@@ -19,7 +19,6 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 
-
 const styles = `
 .textarea-style {
   width: 100%;
@@ -56,13 +55,24 @@ const CreateProject = () => {
         return;
       }
 
-      const response = await axios.get(`projectExists/${label}`);
+      const response = await axios.get(`projectExists/${label}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.exists === true) {
         setError("This project already exists.");
         return;
       }
-
-      await axios.post("project", { label, description });
+      await axios.post(
+        "project",
+        { label, description },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       navigate("/projects");
     } catch (error) {
@@ -109,14 +119,14 @@ const CreateProject = () => {
                     />
                   </FormControl>
                   <FormControl fullWidth margin="normal">
-          <textarea
-            className="textarea-style"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
-            rows={4}
-          />
-        </FormControl>
+                    <textarea
+                      className="textarea-style"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Description"
+                      rows={4}
+                    />
+                  </FormControl>
 
                   {error && (
                     <MDTypography variant="body2" color="error">

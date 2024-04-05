@@ -40,7 +40,7 @@ const updateEmployee = () => {
   const civilStates = ["Single", "Married", "Divorced", "Widowed"];
   const contractTypes = ["CDI", "CDD", "Stage", "Internship", "Freelance", "Seasonal Contract"];
   const location = useLocation();
-
+  const token = localStorage.getItem("accessToken");
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -113,7 +113,7 @@ const updateEmployee = () => {
         setError("Please enter a valid full name.");
         return;
       }
-      await axios.put(`employee/${id}`, {
+      await axios.put(`employee/${id}`,  {
         fullName,
         email,
         phoneNumber,
@@ -130,7 +130,12 @@ const updateEmployee = () => {
         leaveBalance,
         lastNegotiationDate,
         rank,
-      });
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      );
       navigate("/employees");
     } catch (error) {
       console.error("Error adding agent:", error);
@@ -438,7 +443,7 @@ const updateEmployee = () => {
                       }}
                       onClick={handleSubmit}
                     >
-                      Add
+                     Edit
                     </Button>
                   </MDBox>
                 </form>

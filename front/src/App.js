@@ -52,15 +52,17 @@ import { useNavigate } from 'react-router-dom';
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import axios from "axios";
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor, transparentSidenav, whiteSidenav, darkMode } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [showSidenav, setShowSidenav] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
+  const [role, setRole]= useState("")
   const navigate = useNavigate();
   const location = useLocation(); 
-
+  const token = localStorage.getItem('accessToken');
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",
@@ -113,7 +115,22 @@ export default function App() {
       setShowSidenav(true);
     }
   }, [location.pathname, navigate]); 
-
+  useEffect(() => {
+    const fetchUserDetails = async (token) => {
+      try {
+        const response = await axios.get('userDetails', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const role = response.data.role;
+        setRole(role);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchUserDetails(token);
+  }, [token]);
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
@@ -139,10 +156,12 @@ export default function App() {
       {layout === "dashboard" && showSidenav && (
         <Sidenav
           color={sidenavColor}
-          brandName="DevEval"
+          brandName="DevEvalSystem"
           routes={routes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
+          role={role}
+ 
         />
       )}
       {layout === "vr" && <Configurator />}

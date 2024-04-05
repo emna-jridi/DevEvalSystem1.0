@@ -55,7 +55,7 @@ const createEmployee = () => {
   const [error, setError] = useState("");
   const civilStates = ["Single", "Married", "Divorced", "Widowed"];
   const contractTypes = ["CDI", "CDD", "Stage", "Internship", "Freelance", "Seasonal Contract"];
-
+  const token = localStorage.getItem("accessToken");
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -98,7 +98,12 @@ const createEmployee = () => {
           setError("Please enter a valid salary.");
           return;
       }
-      const response = await axios.get(`auth/emailExist/${email}`);
+      const response = await axios.get(`auth/emailExist/${email}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },);
       if (response.data.exists) {
         setError("This email already exists. Please use a different email address.");
         return;
@@ -121,7 +126,12 @@ const createEmployee = () => {
         leaveBalance,
         lastNegotiationDate,
         rank,
-      });
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },);
       navigate("/employees");
     } catch (error) {
       console.error("Error adding employee:", error);

@@ -22,6 +22,7 @@ const createDemand = () => {
   const [selectedRelease, setSelectedRelease] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     fetchData();
@@ -86,16 +87,24 @@ const createDemand = () => {
         setError("End date must be after the start date.");
         return;
       }
-      await axios.post("demand", {
-        title,
-        description,
-        start_date,
-        end_date,
-        estimation,
-        release: {
-          name: selectedRelease,
+      await axios.post(
+        "demand",
+        {
+          title,
+          description,
+          start_date,
+          end_date,
+          estimation,
+          release: {
+            name: selectedRelease,
+          },
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/demand");
     } catch (error) {
       console.error("Error adding demand:", error);
@@ -107,7 +116,11 @@ const createDemand = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`releases`);
+      const response = await axios.get(`releases`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const releasesData = response.data.Releases.map((release) => release.name);
 
       setReleases(releasesData);

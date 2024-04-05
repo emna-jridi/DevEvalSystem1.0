@@ -27,6 +27,7 @@
     const navigate = useNavigate();
     const location = useLocation();
 
+    const token = localStorage.getItem("accessToken");
     useEffect(() => {
       console.log(location.state);
       if (location.state) {
@@ -98,7 +99,11 @@
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`releases`);
+        const response = await axios.get(`releases`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const releasesData = response.data.Releases.map((release) => release.name);
 
         setReleases(releasesData);
@@ -127,16 +132,24 @@
     end_date,
     estimation,
     selectedRelease,);
-        await axios.put(`demand/${id}`, {
-          title,
-          description,
-          start_date,
-          end_date,
-          estimation,
-          release: {
-            name: selectedRelease,
-          },
-        });
+    await axios.put(
+      `demand/${id}`,
+      {
+        title,
+        description,
+        start_date,
+        end_date,
+        estimation,
+        release: {
+          name: selectedRelease,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
         navigate("/demand");
       } catch (error) {
         console.error("Error adding Demand:", error);

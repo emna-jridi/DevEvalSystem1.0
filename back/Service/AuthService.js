@@ -39,6 +39,7 @@ const authorization = (roles) => async (req, res, next) => {
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "No token provided" });
     }
+    
 const token = authHeader.split(" ")[1];
     // Verify and decode token
     const decoded = jwt.verify(token, Config.secret);
@@ -61,7 +62,38 @@ const token = authHeader.split(" ")[1];
   }
 };
 
-
+const authorizationTwoRoles = (role1, role2) => async (req, res, next) => {
+  try {
+    // Extract token from authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    // Verify and decode token
+    const decoded = jwt.verify(token, Config.secret);
+    const { id, role } = decoded;
+    // Check if user type matches one of the required roles
+    if (role !== role1 && role !== role2) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "You are not authorized to access this resource." });
+    }
+    // Set user information in request object
+    req.user = { userId: id, role };
+    // Call next middleware
+    next();
+  } catch (error) {
+    console.error(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error during the authentication." });
+  }
+};
+const authorizationAdminOrRPA= authorizationTwoRoles(ROLES.RA, ROLES.RPA)
+const authorizationAdminOrRTA = authorizationTwoRoles(ROLES.RA, ROLES.RTA);
 const authorizationAdmin = authorization(ROLES.RA);
 const authorizationRTA = authorization(ROLES.RTA);
 const authorizationRPA = authorization(ROLES.RPA);
@@ -71,10 +103,11 @@ module.exports = {
   passwordIsValid,
   validUserType,
   generateToken,
- 
+  authorizationAdminOrRPA,
   authorizationAdmin,
   authorizationRTA,
   authorizationRPA,
   authorizationAllRoles,
+  authorizationAdminOrRTA,
 
 };

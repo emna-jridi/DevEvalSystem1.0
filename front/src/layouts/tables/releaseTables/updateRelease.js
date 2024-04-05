@@ -33,10 +33,10 @@ const UpdateRelease = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-
+  const token = localStorage.getItem("accessToken");
   useEffect(() => {
     if (location.state) {
-      const {id ,  name, description, start_date, end_date, project  } = location.state;
+      const { id, name, description, start_date, end_date, project } = location.state;
       setId(id);
       setName(name);
       setDescription(description);
@@ -47,12 +47,15 @@ const UpdateRelease = () => {
     fetchData();
   }, [location]);
 
-  
   const fetchData = async () => {
     try {
-      const response = await axios.get(`projects`);
+      const response = await axios.get(`projects`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const projectsData = response.data.Projects.map((project) => project.label);
- 
+
       setProjects(projectsData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -79,15 +82,24 @@ const UpdateRelease = () => {
         setError("End date must be after the start date.");
         return;
       }
-      await axios.put(`release/${id}`, {
-        name,
-        description,
-        start_date,
-        end_date,
-        assignedProject: {
-          label: selectedProject,
+      await axios.put(
+        `release/${id}`,
+        {
+          name,
+          description,
+          start_date,
+          end_date,
+          assignedProject: {
+            label: selectedProject,
+          },
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        
+      );
 
       navigate("/release");
     } catch (error) {
@@ -138,7 +150,7 @@ const UpdateRelease = () => {
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
                       rows={4}
-                      multiline 
+                      multiline
                     />
                   </FormControl>
                   <MDBox display="flex" width="100%">
@@ -164,7 +176,7 @@ const UpdateRelease = () => {
                     </FormControl>
                   </MDBox>
                   <FormControl fullWidth margin="normal">
-                  <InputLabel >Project</InputLabel>
+                    <InputLabel>Project</InputLabel>
                     <Select
                       labelId="project-label"
                       id="project"

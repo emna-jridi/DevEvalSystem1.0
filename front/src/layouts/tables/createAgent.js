@@ -34,7 +34,7 @@ const CreateAgent = () => {
   const [error, setError] = useState("");
   const [state, setState] = useState(false);
   const navigate = useNavigate();
-
+  const token = localStorage.getItem("accessToken");
   const handleStateChange = (event) => {
     setState(event.target.value);
   };
@@ -63,12 +63,26 @@ const CreateAgent = () => {
         setError("Passwords do not match.");
         return;
       }
-      const response = await axios.get(`auth/emailExist/${email}`);
+      const response = await axios.get(`auth/emailExist/${email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.exists) {
         setError("This email already exists. Please use a different email address.");
         return;
       }
-      await axios.post("Agent", { fullName, email, role, password, state });
+      await axios.post("Agent", {
+        fullName,
+        email,
+        role,
+        password,
+        state
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       navigate("/agents");
     } catch (error) {
       console.error("Error adding agent:", error);

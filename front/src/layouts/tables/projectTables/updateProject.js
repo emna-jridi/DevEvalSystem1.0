@@ -29,15 +29,14 @@ const UpdateProject = () => {
   const [id, setId] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-
+  const token = localStorage.getItem("accessToken");
   useEffect(() => {
     if (location.state) {
-      const { id,label, description } = location.state;
+      const { id, label, description } = location.state;
       setId(id);
       setLabel(label);
       setDescription(description);
     }
-
   }, [location]);
 
   const handleSubmit = async () => {
@@ -46,7 +45,15 @@ const UpdateProject = () => {
         setError("All fields are required.");
         return;
       }
-      await axios.put(`project/${id}`, { label, description });
+      await axios.put(
+        `project/${id}`,
+        { label, description },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/projects");
     } catch (error) {
       console.error("Error adding agent:", error);
@@ -76,7 +83,7 @@ const UpdateProject = () => {
                 justifyContent="space-between"
               >
                 <MDTypography variant="h6" color="white">
-                 Edit Project
+                  Edit Project
                 </MDTypography>
               </MDBox>
               <MDBox pt={3} px={1.5}>
@@ -100,7 +107,7 @@ const UpdateProject = () => {
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
                       rows={4}
-                      multiline 
+                      multiline
                     />
                   </FormControl>
 

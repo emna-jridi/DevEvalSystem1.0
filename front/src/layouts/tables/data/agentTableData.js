@@ -56,7 +56,11 @@ import AlertDialog from "./AlertDialog";
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`Agents`);
+          const response = await axios.get(`Agents`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           const donneesReponse = response.data.agents;
           const tableau = donneesReponse.map((donnee, index) => {
             return {
@@ -106,7 +110,11 @@ import AlertDialog from "./AlertDialog";
 
     const handleConfirmDelete  = async ( id ) => {
       try {
-        await axios.delete(`agent/${id}`);
+        await axios.delete(`agent/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const updatedRows = rows.filter((row) => row.id !== id);
         setRows(updatedRows);
         handleCloseMenu();

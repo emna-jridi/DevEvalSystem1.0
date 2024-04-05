@@ -33,6 +33,9 @@ import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
 import CustomizedDialogs from "../demandTables/CustomizedDialogs";
+import config from "../../../config.json"
+//import conste from "shared/ConstConfig"
+
 
 export default function Data() {
   const [rows, setRows] = useState([]);
@@ -57,11 +60,7 @@ export default function Data() {
 
   fetchUserDetails(token);
 
-  const ROLES = {
-    RA: "ROLE_ADMIN",
-    RTA: "ROLE_TECHNICAL_AGENT",
-    RPA: "ROLE_PSYCHOTECHNICAL_AGENT",
-  };
+
 
   function formatPhoneNumber(phoneNumber) {
     phoneNumber = phoneNumber.toString();
@@ -81,7 +80,7 @@ export default function Data() {
     { Header: "Rank", accessor: "Rank", align: "center" },
   ];
 
-  if (role === ROLES.RTA) {
+  if (role === config.ROLES.RTA) {
   } else {
     columns.push(
       { Header: "More", accessor: "More", align: "center" },
@@ -151,7 +150,11 @@ export default function Data() {
 
   const handleConfirmDelete = async ( id ) => {
     try {
-      await axios.delete(`employee/${id}`);
+      await axios.delete(`employee/${id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
 
@@ -169,7 +172,11 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("employees");
+        const response = await axios.get("employees",{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+    });
         const donneesReponse = response.data.employees;
         const tableau = donneesReponse.map((donnee, index) => ({
           id: donnee.id,

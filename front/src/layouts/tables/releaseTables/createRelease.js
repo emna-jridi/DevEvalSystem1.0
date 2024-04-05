@@ -58,21 +58,33 @@ const CreateRelease = () => {
         setError("End date must be after the start date.");
         return;
       }
-      const response = await axios.get(`releaseExists/${name}`);
+      const response = await axios.get(`releaseExists/${name}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.exists === true) {
         setError("This release already exists.");
         return;
       }
 
-      await axios.post("release", {
-        name,
-        description,
-        start_date,
-        end_date,
-        assignedProject: {
-          label: selectedProject,
+      await axios.post(
+        "release",
+        {
+          name,
+          description,
+          start_date,
+          end_date,
+          assignedProject: {
+            label: selectedProject,
+          },
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/release");
     } catch (error) {
       console.error("Error adding Release :", error);
@@ -80,14 +92,17 @@ const CreateRelease = () => {
     }
   };
 
-
   const handleCancel = () => {
     navigate("/release");
   };
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`projects`);
+      const response = await axios.get(`projects`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const projectsData = response.data.Projects.map((project) => project.label);
       setProjects(projectsData);
     } catch (error) {
@@ -136,7 +151,7 @@ const CreateRelease = () => {
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
                       rows={4}
-                      multiline 
+                      multiline
                     />
                   </FormControl>
                   <MDBox display="flex" width="100%">
@@ -165,7 +180,7 @@ const CreateRelease = () => {
                     {/* <MDBox mb={2}>
                       <MDTypography variant="h6"> Project :</MDTypography>
                     </MDBox> */}
-                    <InputLabel >Project</InputLabel>
+                    <InputLabel>Project</InputLabel>
                     <Select
                       labelId="project-label"
                       id="project"

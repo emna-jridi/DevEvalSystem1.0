@@ -68,12 +68,8 @@ import Icon from "@mui/material/Icon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WebIcon from "@mui/icons-material/Web";
 import SendTimeExtensionIcon from "@mui/icons-material/SendTimeExtension";
+import config from './config.json';
 
-const ROLES = {
-  RA: "ROLE_ADMIN",
-  RTA: "ROLE_TECHNICAL_AGENT",
-  RPA: "ROLE_PSYCHOTECHNICAL_AGENT",
-};
 const routes = [
   {
     type: "collapse",
@@ -98,7 +94,7 @@ const routes = [
     key: "agent",
     icon: <Icon>business_center</Icon>,
     route: "/Agents",
-    allowedRoles: [ROLES.RA],
+    allowedRoles: [config.ROLES.RA],
     component: <AgentTables />,
   },
   {
@@ -107,7 +103,7 @@ const routes = [
     key: "employee",
     icon: <Icon>group</Icon>,
     route: "/Employees",
-    allowedRoles: [ROLES.RA, ROLES.RPA, ROLES.RTA],
+    allowedRoles: [config.ROLES.RA, config.ROLES.RPA, config.ROLES.RTA],
     component: <EmployeeTables />,
   },
   {
@@ -195,7 +191,7 @@ const routes = [
     key: "project",
     icon: <WebIcon />,
     route: "/projects",
-    allowedRoles: [ROLES.RA, ROLES.RTA],
+    allowedRoles: [config.ROLES.RA, config.ROLES.RTA],
     component: <ProjectTables />,
   },
   {
@@ -204,7 +200,7 @@ const routes = [
     key: "release",
     icon: <Icon>code</Icon>,
     route: "/release",
-    allowedRoles: [ROLES.RTA],
+    allowedRoles: [config.ROLES.RTA],
     component: <ReleaseTables />,
   },
 
@@ -214,7 +210,7 @@ const routes = [
     key: "demand",
     icon: <SendTimeExtensionIcon />,
     route: "/demand",
-    allowedRoles: [ROLES.RTA],
+    allowedRoles: [config.ROLES.RTA],
     component: <DemandTables />,
   },
   {
@@ -236,14 +232,14 @@ const routes = [
     name: "ForgotPassword",
     key: "rest",
     route: "/authentication/reset-password",
-    allowedRoles: [ROLES.RTA, ROLES.RA , ROLES.RPA],
+    allowedRoles: [config.ROLES.RTA, config.ROLES.RA , config.ROLES.RPA],
     component: <Reset />,
   },
   {
     name: "NewPassword",
     key: "newPassword",
     route: "/Newpassword/:token",
-    allowedRoles: [ROLES.RTA, ROLES.RA , ROLES.RPA],
+    allowedRoles: [config.ROLES.RTA, config.ROLES.RA , config.ROLES.RPA],
     component: <NewPassword />,
   },
 ];

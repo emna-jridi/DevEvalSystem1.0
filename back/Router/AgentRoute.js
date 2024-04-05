@@ -4,9 +4,9 @@ const { authorizationAdmin, authorization ,authorizationRPA , authorizationAllRo
 const { createAgent, getAllAgent, updateAgent, deleteAgent, getUserDetails } = require('../Controller/AgentController')
 
 
-router.route('/Agent').post(createAgent)
-router.route('/Agents').get( getAllAgent)
-router.route('/agent/:id').put(updateAgent).delete(deleteAgent)
+router.route('/Agent').post(authorizationAdmin,createAgent)
+router.route('/Agents').get( authorizationAdmin,authorizationAdmin, getAllAgent)
+router.route('/agent/:id').put(authorizationAdmin, updateAgent).delete(authorizationAdmin,deleteAgent)
 router.route('/userDetails').get(authorizationAllRoles,getUserDetails)
 
 

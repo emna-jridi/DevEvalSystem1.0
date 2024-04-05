@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { Pagination, PaginationItem, TablePagination } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
+import config from "../../config.json"
 function EmployeesTables() {
     const { columns: pColumns, rows: pRows } = employeeTableData();
     const [role , setRole] = useState("")
@@ -35,11 +35,7 @@ function EmployeesTables() {
     const entriesPerPage = 10;
     const navigate = useNavigate();
 
-    const ROLES = {
-        RA: "ROLE_ADMIN",
-        RTA: "ROLE_TECHNICAL_AGENT",
-        RPA: "ROLE_PSYCHOTECHNICAL_AGENT",
-      };
+    
     const token = localStorage.getItem('accessToken');
     const handleAddEmployee = () => {
         navigate('/employees/create');
@@ -94,7 +90,7 @@ function EmployeesTables() {
                                 <MDTypography variant="h6" color="white">
                                     Employees Table
                                 </MDTypography>
-                                {(role === ROLES.RPA ||role === ROLES.RA  )&& (
+                                {(role === config.ROLES.RPA ||role === config.ROLES.RA  )&& (
                         <IconButton onClick={handleAddEmployee} color="white">
                             <Icon fontSize="medium">person_add</Icon>
                         </IconButton>

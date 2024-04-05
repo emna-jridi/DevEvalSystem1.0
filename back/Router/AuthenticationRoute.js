@@ -5,11 +5,11 @@ const { authorizationAllRoles} = require("../Service/AuthService")
 
 
 router.route('/login').post(login)
-router.route('/logout').post(logout)
+router.route('/logout').post(authorizationAllRoles,logout)
 
-router.route('/emailExist/:email').get(emailExist)
-router.route('/forgotPassword').post(forgotPassword)
-router.route('/NewPassword/:token').post(createNewPwd)
+router.route('/emailExist/:email').get(authorizationAllRoles,emailExist)
+router.route('/forgotPassword').post(authorizationAllRoles,forgotPassword)
+router.route('/NewPassword/:token').post(authorizationAllRoles,createNewPwd)
 
 
 module.exports = router 
