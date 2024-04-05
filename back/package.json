@@ -5,7 +5,12 @@
   "main": "app.js",
   "scripts": {
     "test": "npm test",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "start-server":"cd backend && node app.js",
+    "install-client":"cd front && npm install",
+    "build-client":"cd front && npm run build",
+    "start-client":"cd front && npm run start"
+
   },
   "author": "FULLSTACK TEAM",
   "license": "ISC",
