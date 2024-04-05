@@ -57,6 +57,7 @@ import UpdateEmployee from "layouts/tables/updateEmployee";
 import CreateProject from "layouts/tables/projectTables/createProject";
 import UpdateProject from "layouts/tables/projectTables/updateProject";
 
+
 import CreateRelease from "layouts/tables/releaseTables/createRelease";
 import UpdateRelease from "layouts/tables/releaseTables/updateRelease";
 
@@ -170,7 +171,7 @@ const routes = [
     component: <UpdateProject />,
     route: "/projects/edit",
   },
- 
+  
   {
     //type: "collapse",
     name: CreateRelease,

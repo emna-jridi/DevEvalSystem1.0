@@ -7,7 +7,7 @@ const handleLogout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const logout = async () => {
+const logout = async () => {
             try {
                 // Call the logout API
                 await axios.post("/logout",{
@@ -16,11 +16,11 @@ const handleLogout = () => {
                     },
                   });
 
-                // Remove the authentication token
-                localStorage.removeItem("accessToken");
+        // Remove the authentication token
+        localStorage.removeItem("accessToken");
 
-                // Redirect the user to the login page
-                navigate("/authentication/sign-in");
+        // Redirect the user to the login page
+        navigate("/authentication/sign-in");
             } catch (error) {
                 console.error("Error during logout:", error);
             }
@@ -30,7 +30,7 @@ const handleLogout = () => {
         logout();
     }, [navigate]);
 
-    // Return null since this component doesn't render anything
+   // Return null since this component doesn't render anything
     return null;
 };
 

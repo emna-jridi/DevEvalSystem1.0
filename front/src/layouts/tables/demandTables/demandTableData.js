@@ -7,7 +7,7 @@ import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
-
+import { formatDate } from '../utils';
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedTitle, setSelectedTitle] = useState(null);
@@ -21,13 +21,7 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedTitle(title);
   };
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
+
   const handleMenuAction = (
     action,
     selectedTitle,

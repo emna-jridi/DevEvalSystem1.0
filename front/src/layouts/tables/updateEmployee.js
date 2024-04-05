@@ -15,6 +15,7 @@ import { useLocation } from "react-router-dom";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import CurrencyInput from "react-currency-input-field";
+import { format } from "date-fns";
 const positions = ["Developer", "Tester"];
 
 const updateEmployee = () => {
@@ -25,14 +26,14 @@ const updateEmployee = () => {
   const [dependents, setDependents] = useState(0);
   const [contract, setContract] = useState("");
   const [position, setPosition] = useState("");
-  const [entryDate, setEntryDate] = useState(formatDate(new Date()));
+  const [entryDate, setEntryDate] = useState(format(new Date(), "dd-MM-yyyy"));
   const [salary, setSalary] = useState("");
   const [RIB, setRIB] = useState("");
   const [cnssNumber, setCnssNumber] = useState("");
   const [emergencyNumber, setEmergencyNumber] = useState("");
   const [hierarchicalSuperior, setHierarchicalSuperior] = useState("");
   const [leaveBalance, setLeaveBalance] = useState(0);
-  const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
+  const [lastNegotiationDate, setLastNegotiationDate] = useState(format(new Date(), "dd-MM-yyyy"));
   const [rank, setRank] = useState(0);
   const [id, setId] = useState("");
   const navigate = useNavigate();
@@ -41,13 +42,6 @@ const updateEmployee = () => {
   const contractTypes = ["CDI", "CDD", "Stage", "Internship", "Freelance", "Seasonal Contract"];
   const location = useLocation();
   const token = localStorage.getItem("accessToken");
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
 
   useEffect(() => {
     console.log(location.state);
@@ -113,28 +107,31 @@ const updateEmployee = () => {
         setError("Please enter a valid full name.");
         return;
       }
-      await axios.put(`employee/${id}`,  {
-        fullName,
-        email,
-        phoneNumber,
-        civilState,
-        dependents,
-        contract,
-        position,
-        entryDate,
-        salary,
-        RIB,
-        cnssNumber,
-        emergencyNumber,
-        hierarchicalSuperior,
-        leaveBalance,
-        lastNegotiationDate,
-        rank,
-      },{
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.put(
+        `employee/${id}`,
+        {
+          fullName,
+          email,
+          phoneNumber,
+          civilState,
+          dependents,
+          contract,
+          position,
+          entryDate,
+          salary,
+          RIB,
+          cnssNumber,
+          emergencyNumber,
+          hierarchicalSuperior,
+          leaveBalance,
+          lastNegotiationDate,
+          rank,
         },
-      },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       navigate("/employees");
     } catch (error) {
@@ -293,7 +290,7 @@ const updateEmployee = () => {
                       <TextField
                         label="Entry Date"
                         type="date"
-                        value={formatDate(entryDate)}
+                        value={format(entryDate, "dd-MM-yyyy")}
                         onChange={(e) => setEntryDate(new Date(e.target.value))}
                         fullWidth
                       />
@@ -396,7 +393,7 @@ const updateEmployee = () => {
                         label="Last Negotiation : 
                         "
                         type="date"
-                        value={formatDate(lastNegotiationDate)}
+                        value={format(lastNegotiationDate, "dd-MM-yyyy")}
                         onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
                         fullWidth
                       />
@@ -443,7 +440,7 @@ const updateEmployee = () => {
                       }}
                       onClick={handleSubmit}
                     >
-                     Edit
+                      Edit
                     </Button>
                   </MDBox>
                 </form>

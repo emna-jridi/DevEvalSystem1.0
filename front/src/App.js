@@ -59,10 +59,10 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [showSidenav, setShowSidenav] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
-  const [role, setRole]= useState("")
+const [role, setRole]= useState("")
   const navigate = useNavigate();
   const location = useLocation(); 
-  const token = localStorage.getItem('accessToken');
+const token = localStorage.getItem('accessToken');
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",
@@ -115,7 +115,7 @@ export default function App() {
       setShowSidenav(true);
     }
   }, [location.pathname, navigate]); 
-  useEffect(() => {
+useEffect(() => {
     const fetchUserDetails = async (token) => {
       try {
         const response = await axios.get('userDetails', {
@@ -160,7 +160,7 @@ export default function App() {
           routes={routes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
-          role={role}
+role={role}
  
         />
       )}

@@ -14,7 +14,8 @@ import { useNavigate } from "react-router-dom";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import CurrencyInput from "react-currency-input-field";
-
+import { formatDate } from './utils';
+import { format } from "date-fns";
 const CustomInput = React.forwardRef((props, ref) => {
   return (
     <TextField
@@ -42,27 +43,20 @@ const createEmployee = () => {
   const [dependents, setDependents] = useState(0);
   const [contract, setContract] = useState("");
   const [position, setPosition] = useState("");
-  const [entryDate, setEntryDate] = useState(formatDate(new Date()));
+  const [entryDate, setEntryDate] =  useState(format(new Date(), "dd-MM-yyyy"));
   const [salary, setSalary] = useState("");
   const [RIB, setRIB] = useState("");
   const [cnssNumber, setCnssNumber] = useState("");
   const [emergencyNumber, setEmergencyNumber] = useState("");
   const [hierarchicalSuperior, setHierarchicalSuperior] = useState("");
   const [leaveBalance, setLeaveBalance] = useState(0);
-  const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
+  const [lastNegotiationDate, setLastNegotiationDate] =  useState(format(new Date(), "dd-MM-yyyy"));
   const [rank, setRank] = useState(0);
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const civilStates = ["Single", "Married", "Divorced", "Widowed"];
   const contractTypes = ["CDI", "CDD", "Stage", "Internship", "Freelance", "Seasonal Contract"];
   const token = localStorage.getItem("accessToken");
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
  
   const handlePositionChange = (event) => {
     setPosition(event.target.value);
@@ -295,7 +289,7 @@ const createEmployee = () => {
                       <TextField
                         label="Entry Date"
                         type="date"
-                        value={formatDate(entryDate)}
+                        value={format(entryDate, "dd-MM-yyyy")}
                         onChange={(e) => setEntryDate(new Date(e.target.value))}
                         fullWidth
                       />
@@ -398,7 +392,7 @@ const createEmployee = () => {
                         label="Last Negotiation : 
                         "
                         type="date"
-                        value={formatDate(lastNegotiationDate)}
+                        value={format(lastNegotiationDate, "dd-MM-yyyy")}
                         onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
                         fullWidth
                       />

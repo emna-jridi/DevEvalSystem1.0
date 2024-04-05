@@ -164,7 +164,7 @@ import AlertDialog from "./AlertDialog";
         handleClose={() => setOpenConfirmation(false)}
         handleAgree={handleConfirmDelete}
         title="Confirm Delete"
-        description="Are you sure you want to delete this item?"
+        //description="Are you sure you want to delete this Agent?"
       />
     ),
   };

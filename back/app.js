@@ -9,7 +9,10 @@ const agent =  require('./Router/AgentRoute')
 const employee =  require('./Router/EmployeeRoute')
 
 const cors = require('cors');
-app.use(cors());
+const corsOptions = {
+    origin: 'https://DevEvalSystem.onrender.com' 
+  };
+app.use(cors(corsOptions));
 
 
 //app.use(cookieParser());

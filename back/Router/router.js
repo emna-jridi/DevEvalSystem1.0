@@ -11,7 +11,7 @@ router.route('/project').post(authorizationAdminOrRTA,createProject)
 router.route('/projects').get(authorizationAdminOrRTA,getAllProject)
 router.route('/project/:id').put(authorizationAdminOrRTA,updateProject)
     .delete(authorizationAdminOrRTA,deleteProject)
-  
+    
 router.route('/projectExists/:label').get(projectExists)
 
 //Release Crud 
@@ -19,7 +19,7 @@ router.route('/release').post(authorizationRTA,createRelease)
 router.route('/releases').get(authorizationRTA,getAllReleases)
 router.route('/release/:id').put(authorizationRTA,updateRelease)
     .delete(authorizationRTA,deleteRelease)
-router.route('/releaseExists/:name').get(authorizationRTA,releaseExists)
+    router.route('/releaseExists/:name').get(authorizationRTA,releaseExists)
 
 //demand crud 
 router.route('/demand').post(authorizationRTA,createDemand)

@@ -39,7 +39,7 @@ const authorization = (roles) => async (req, res, next) => {
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "No token provided" });
     }
-    
+
 const token = authHeader.split(" ")[1];
     // Verify and decode token
     const decoded = jwt.verify(token, Config.secret);
@@ -103,11 +103,11 @@ module.exports = {
   passwordIsValid,
   validUserType,
   generateToken,
-  authorizationAdminOrRPA,
+ authorizationAdminOrRPA,
   authorizationAdmin,
   authorizationRTA,
   authorizationRPA,
   authorizationAllRoles,
-  authorizationAdminOrRTA,
+authorizationAdminOrRTA,
 
 };

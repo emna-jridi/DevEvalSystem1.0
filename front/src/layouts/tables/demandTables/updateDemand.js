@@ -13,6 +13,8 @@
   import { useNavigate } from "react-router-dom";
   import { useLocation } from "react-router-dom";
 
+  import { format } from 'date-fns';
+
   const UpdateDemand = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -87,16 +89,6 @@
       calculateEstimation();
     };  
 
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-
     const fetchData = async () => {
       try {
         const response = await axios.get(`releases`, {
@@ -126,12 +118,7 @@
           setError("End date must be after the start date.");
           return;
         }
-  console.log(  title,
-    description,
-    start_date,
-    end_date,
-    estimation,
-    selectedRelease,);
+
     await axios.put(
       `demand/${id}`,
       {
@@ -207,7 +194,7 @@
                         <TextField
                           label="Start Date"
                           type="date"
-                          value={formatDate(start_date)}
+                          value={format(start_date, 'dd-MM-yyyy')}
                           onChange={handleStartDateChange}
                           fullWidth
                           style={{ marginTop: "8px" }}
@@ -217,7 +204,7 @@
                         <TextField
                           label="End Date"
                           type="date"
-                          value={formatDate(end_date)}
+                          value={format(start_date, 'dd-MM-yyyy')}
                           onChange={handleEndDateChange}
                           fullWidth
                           style={{ marginTop: "8px" }}

@@ -16,6 +16,7 @@ const createAgent = async (req, res) => {
     }
     // Creating a new Agent instance with data from the request body
     const agent = new Agent({
+    
       fullName: req.body.fullName,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
@@ -65,13 +66,13 @@ const getAllAgent = async (req, res) => {
 const updateAgent = async (req, res) => {
   try {
     
-   // Checking if all required properties are provided in the request body
+    // Checking if all required properties are provided in the request body
     if (!req.body.email || !req.body.role || !req.body.fullName
-     ) {
-        return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({ message: "Please provide a full Name ,an email and role !" });
-     }
+    ) {
+    return res
+    .status(StatusCodes.BAD_REQUEST)
+    .json({ message: "Please provide a full Name ,an email and role !" });
+    }
     // Creating an update object with data from the request body
     const update = {
       fullName: req.body.fullName,
@@ -82,7 +83,7 @@ const updateAgent = async (req, res) => {
       //Add tables for agents and employees in admin interfacepassword: req.body.password,
       updatedAt: new Date(),
     };
-    // Finding and updating the Agent with the provided email
+        // Finding and updating the Agent with the provided email
     const updatedAgent = await Agent.findByIdAndUpdate(
       req.params.id,
       update,
@@ -106,7 +107,6 @@ const updateAgent = async (req, res) => {
 // Function to delete an Agent
 const deleteAgent = async (req, res) => {
   try {
-
     // Checking if the Agent email is provided
     const agentId = req.params.id;
   

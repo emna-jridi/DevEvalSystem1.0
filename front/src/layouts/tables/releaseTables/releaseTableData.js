@@ -7,7 +7,7 @@ import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
-
+import { formatDate } from "../utils";
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedName, setSelectedName] = useState(null);
@@ -21,13 +21,23 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedName(name);
   };
-  const handleMenuAction = (action,selectedName,id, name, description, start_date,end_date, project ) => {
+  const handleMenuAction = (
+    action,
+    selectedName,
+    id,
+    name,
+    description,
+    start_date,
+    end_date,
+    project
+  ) => {
     if (action === "update") {
-      navigate("/release/edit", { state: { id, name, description , start_date , end_date,project  } });
+      navigate("/release/edit", {
+        state: { id, name, description, start_date, end_date, project },
+      });
     } else if (action === "delete") {
       setOpenConfirmation(true);
     }
-   
   };
   const handleCloseMenu = () => {
     setOpenMenu(null);
@@ -41,15 +51,15 @@ export default function Data() {
             Authorization: `Bearer ${token}`,
           },
         });
-        const donneesReponse = response.data.Releases;                   
+        const donneesReponse = response.data.Releases;
         const tableau = donneesReponse.map((donnee, index) => {
           return {
-            id : donnee.id,
+            id: donnee.id,
             Release: <Release name={donnee.name} />,
             Description: <Description description={donnee.description} />,
-            StartDate : <StartDate  startDate= {donnee.start_date}/>,
-            EndDate : <EndDate  endDate= {donnee.end_date}/>,
-            AssignedTo:<AssignedTo AssignedTo= {donnee.assignedProject}/>,
+            StartDate: <StartDate startDate={donnee.start_date} />,
+            EndDate: <EndDate endDate={donnee.end_date} />,
+            AssignedTo: <AssignedTo AssignedTo={donnee.assignedProject} />,
             Action: (
               <MDBox key={index}>
                 <IconButton onClick={(event) => handleOpenMenu(event, donnee.name)}>
@@ -62,14 +72,21 @@ export default function Data() {
                 >
                   <MenuItem
                     onClick={() =>
-                      handleMenuAction("update", selectedName,donnee.id
-                , donnee.name, donnee.description , donnee.start_date, donnee.end_date ,donnee.assignedProject)
+                      handleMenuAction(
+                        "update",
+                        selectedName,
+                        donnee.id,
+                        donnee.name,
+                        donnee.description,
+                        donnee.start_date,
+                        donnee.end_date,
+                        donnee.assignedProject
+                      )
                     }
                   >
                     Update
                   </MenuItem>
                   <AlertDialog handleDelete={() => handleDeleteRelease(donnee.id)} />
-        
                 </Menu>
               </MDBox>
             ),
@@ -82,11 +99,6 @@ export default function Data() {
     };
     fetchData();
   }, [openMenu, selectedName]);
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const formattedDate = new Date(dateString).toLocaleDateString("en-US", options);
-    return formattedDate;
-  };
 
   const handleDeleteRelease = async (id) => {
     try {
@@ -116,30 +128,30 @@ export default function Data() {
     </MDBox>
   );
 
-    const StartDate = ({ startDate}) => (
-      <MDBox display="flex" alignItems="center" lineHeight={1}>
-        <MDTypography variant="caption">{formatDate(startDate)}</MDTypography>
-      </MDBox>
-    );
+  const StartDate = ({ startDate }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{formatDate(startDate)}</MDTypography>
+    </MDBox>
+  );
 
-    const EndDate = ({endDate}) => (
-      <MDBox display="flex" alignItems="center" lineHeight={1}>
-        <MDTypography variant="caption">{formatDate(endDate)}</MDTypography>
-      </MDBox>
-    );
-    const AssignedTo = ({ AssignedTo }) => (
-      <MDBox display="flex" alignItems="center" lineHeight={1}>
-        <MDTypography variant="caption">{AssignedTo}</MDTypography>
-      </MDBox>
-    );
+  const EndDate = ({ endDate }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{formatDate(endDate)}</MDTypography>
+    </MDBox>
+  );
+  const AssignedTo = ({ AssignedTo }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{AssignedTo}</MDTypography>
+    </MDBox>
+  );
 
   return {
     columns: [
       { Header: "Release", accessor: "Release", width: "20%", align: "left" },
       { Header: "Description", accessor: "Description", width: "30%", align: "left" },
-       { Header: "Start At", accessor: "StartDate", width: "15%", align: "left" },
-       { Header: "End At", accessor: "EndDate", width: "15%", align: "left" },
-       { Header: "Project", accessor: "AssignedTo", width: "20%", align: "center" },
+      { Header: "Start At", accessor: "StartDate", width: "15%", align: "left" },
+      { Header: "End At", accessor: "EndDate", width: "15%", align: "left" },
+      { Header: "Project", accessor: "AssignedTo", width: "20%", align: "center" },
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,

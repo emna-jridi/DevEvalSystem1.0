@@ -21,6 +21,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { format } from 'date-fns';
 
 const UpdateRelease = () => {
   const [name, setName] = useState("");
@@ -61,13 +62,6 @@ const UpdateRelease = () => {
       console.error("Error fetching data:", error);
     }
   };
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
   const handleProjectChange = (event) => {
     setSelectedProject(event.target.value);
   };
@@ -158,7 +152,7 @@ const UpdateRelease = () => {
                       <TextField
                         label="Start Date"
                         type="date"
-                        value={formatDate(start_date)}
+                        value={format(start_date, 'dd-MM-yyyy')}
                         onChange={(e) => setstart_date(new Date(e.target.value))}
                         fullWidth
                         style={{ marginTop: "8px" }}
@@ -168,7 +162,7 @@ const UpdateRelease = () => {
                       <TextField
                         label="End Date"
                         type="date"
-                        value={formatDate(end_date)}
+                        value={format(start_date, 'dd-MM-yyyy')}
                         onChange={(e) => setEnd_date(new Date(e.target.value))}
                         fullWidth
                         style={{ marginTop: "8px" }}

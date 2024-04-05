@@ -11,6 +11,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import colors from "assets/theme/base/colors";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from '../utils';
 
 const createDemand = () => {
   const [title, setTitle] = useState("");
@@ -65,14 +66,6 @@ const createDemand = () => {
     setEnd_date(newEndDate);
     calculateEstimation();
   };
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
 
   const handleReleaseChange = (event) => {
     setSelectedRelease(event.target.value);

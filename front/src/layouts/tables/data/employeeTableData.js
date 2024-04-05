@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
 import CustomizedDialogs from "../demandTables/CustomizedDialogs";
 import config from "../../../config.json"
+import { formatDate } from '../utils';
 //import conste from "shared/ConstConfig"
 
 
@@ -254,12 +255,6 @@ export default function Data() {
 
     fetchData();
   }, [openMenu, selectedEmail, selectedEmployee]);
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const formattedDate = new Date(dateString).toLocaleDateString("en-US", options);
-    return formattedDate;
-  };
 
   const Employee = ({ fullName }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
