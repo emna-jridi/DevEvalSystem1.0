@@ -27,6 +27,9 @@ app.use('/', agent)
 app.use('/', employee)
 app.use('/', router)
 
+app.use('/', (req,res)=>{
+    res.json("hello")
+})
 //port
 const port = 4000;
 
