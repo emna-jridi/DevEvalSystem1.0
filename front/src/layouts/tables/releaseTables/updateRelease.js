@@ -21,7 +21,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { format } from 'date-fns';
+import { formatDate } from '../utils';
 
 const UpdateRelease = () => {
   const [name, setName] = useState("");
@@ -152,7 +152,7 @@ const UpdateRelease = () => {
                       <TextField
                         label="Start Date"
                         type="date"
-                        value={format(start_date, 'dd-MM-yyyy')}
+                        value={formatDate(start_date)}
                         onChange={(e) => setstart_date(new Date(e.target.value))}
                         fullWidth
                         style={{ marginTop: "8px" }}
@@ -162,7 +162,7 @@ const UpdateRelease = () => {
                       <TextField
                         label="End Date"
                         type="date"
-                        value={format(start_date, 'dd-MM-yyyy')}
+                        value={formatDate(end_date)}
                         onChange={(e) => setEnd_date(new Date(e.target.value))}
                         fullWidth
                         style={{ marginTop: "8px" }}

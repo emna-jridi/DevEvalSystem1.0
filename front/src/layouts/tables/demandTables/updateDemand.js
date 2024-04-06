@@ -12,8 +12,7 @@
   import MDTypography from "components/MDTypography";
   import { useNavigate } from "react-router-dom";
   import { useLocation } from "react-router-dom";
-
-  import { format } from 'date-fns';
+  import { formatDate } from '../utils';
 
   const UpdateDemand = () => {
     const [title, setTitle] = useState("");
@@ -194,7 +193,7 @@
                         <TextField
                           label="Start Date"
                           type="date"
-                          value={format(start_date, 'dd-MM-yyyy')}
+                          value={formatDate(start_date)}
                           onChange={handleStartDateChange}
                           fullWidth
                           style={{ marginTop: "8px" }}
@@ -204,7 +203,7 @@
                         <TextField
                           label="End Date"
                           type="date"
-                          value={format(start_date, 'dd-MM-yyyy')}
+                          value={formatDate(end_date)}
                           onChange={handleEndDateChange}
                           fullWidth
                           style={{ marginTop: "8px" }}

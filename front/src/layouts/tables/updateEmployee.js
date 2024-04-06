@@ -15,7 +15,8 @@ import { useLocation } from "react-router-dom";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import CurrencyInput from "react-currency-input-field";
-import { format } from "date-fns";
+
+import { formatDate } from "./utils";
 const positions = ["Developer", "Tester"];
 
 const updateEmployee = () => {
@@ -26,14 +27,14 @@ const updateEmployee = () => {
   const [dependents, setDependents] = useState(0);
   const [contract, setContract] = useState("");
   const [position, setPosition] = useState("");
-  const [entryDate, setEntryDate] = useState(format(new Date(), "dd-MM-yyyy"));
+  const [entryDate, setEntryDate] = useState(formatDate(new Date()));
   const [salary, setSalary] = useState("");
   const [RIB, setRIB] = useState("");
   const [cnssNumber, setCnssNumber] = useState("");
   const [emergencyNumber, setEmergencyNumber] = useState("");
   const [hierarchicalSuperior, setHierarchicalSuperior] = useState("");
   const [leaveBalance, setLeaveBalance] = useState(0);
-  const [lastNegotiationDate, setLastNegotiationDate] = useState(format(new Date(), "dd-MM-yyyy"));
+  const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
   const [rank, setRank] = useState(0);
   const [id, setId] = useState("");
   const navigate = useNavigate();
@@ -290,7 +291,7 @@ const updateEmployee = () => {
                       <TextField
                         label="Entry Date"
                         type="date"
-                        value={format(entryDate, "dd-MM-yyyy")}
+                        value={formatDate(entryDate)}
                         onChange={(e) => setEntryDate(new Date(e.target.value))}
                         fullWidth
                       />
@@ -393,7 +394,7 @@ const updateEmployee = () => {
                         label="Last Negotiation : 
                         "
                         type="date"
-                        value={format(lastNegotiationDate, "dd-MM-yyyy")}
+                        value={formatDate(lastNegotiationDate)}
                         onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
                         fullWidth
                       />

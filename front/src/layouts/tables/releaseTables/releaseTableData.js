@@ -7,7 +7,7 @@ import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
-import { formatDate } from "../utils";
+import { formatDate } from '../utils';
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedName, setSelectedName] = useState(null);

@@ -15,7 +15,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import CurrencyInput from "react-currency-input-field";
 import { formatDate } from './utils';
-import { format } from "date-fns";
+
 const CustomInput = React.forwardRef((props, ref) => {
   return (
     <TextField
@@ -43,14 +43,14 @@ const createEmployee = () => {
   const [dependents, setDependents] = useState(0);
   const [contract, setContract] = useState("");
   const [position, setPosition] = useState("");
-  const [entryDate, setEntryDate] =  useState(format(new Date(), "dd-MM-yyyy"));
+  const [entryDate, setEntryDate] = useState(formatDate(new Date()));
   const [salary, setSalary] = useState("");
   const [RIB, setRIB] = useState("");
   const [cnssNumber, setCnssNumber] = useState("");
   const [emergencyNumber, setEmergencyNumber] = useState("");
   const [hierarchicalSuperior, setHierarchicalSuperior] = useState("");
   const [leaveBalance, setLeaveBalance] = useState(0);
-  const [lastNegotiationDate, setLastNegotiationDate] =  useState(format(new Date(), "dd-MM-yyyy"));
+  const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
   const [rank, setRank] = useState(0);
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -289,7 +289,7 @@ const createEmployee = () => {
                       <TextField
                         label="Entry Date"
                         type="date"
-                        value={format(entryDate, "dd-MM-yyyy")}
+                        value={formatDate(entryDate)}
                         onChange={(e) => setEntryDate(new Date(e.target.value))}
                         fullWidth
                       />
@@ -392,7 +392,7 @@ const createEmployee = () => {
                         label="Last Negotiation : 
                         "
                         type="date"
-                        value={format(lastNegotiationDate, "dd-MM-yyyy")}
+                        value={formatDate(lastNegotiationDate)}
                         onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
                         fullWidth
                       />
