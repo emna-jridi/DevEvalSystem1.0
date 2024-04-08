@@ -101,7 +101,7 @@ function DefaultNavbar({ transparent, light, action }) {
       >
         <MDBox
           component={Link}
-          to="/"
+          to="/dashboard"
           py={transparent ? 1.5 : 0.75}
           lineHeight={1}
           pl={{ xs: 0, lg: 1 }}
@@ -122,7 +122,7 @@ function DefaultNavbar({ transparent, light, action }) {
           <DefaultNavbarLink
             icon="key"
             name="sign in"
-            route="/authentication/sign-in"
+            route="/"
             light={light}
           />
          

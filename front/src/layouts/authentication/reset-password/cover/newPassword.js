@@ -42,7 +42,7 @@ function NewPassword() {
       });
 console.log(response.status);
       if (response.status === 200) {
-        navigate("/authentication/sign-in");
+        navigate("/");
       }
     } catch (error) {
       console.error(error);

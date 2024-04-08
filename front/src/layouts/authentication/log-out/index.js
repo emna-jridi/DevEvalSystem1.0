@@ -20,7 +20,7 @@ const logout = async () => {
         localStorage.removeItem("accessToken");
 
         // Redirect the user to the login page
-        navigate("/authentication/sign-in");
+        navigate("/");
             } catch (error) {
                 console.error("Error during logout:", error);
             }

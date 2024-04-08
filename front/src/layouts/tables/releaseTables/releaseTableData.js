@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, styled  } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MDBox from "components/MDBox";
@@ -8,6 +8,18 @@ import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
 import { formatDate } from '../utils';
+
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "#ECEEFF",
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedName, setSelectedName] = useState(null);
@@ -122,11 +134,27 @@ export default function Data() {
     </MDBox>
   );
 
-  const Description = ({ description }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
+  const Description = ({ description }) => {
+    const MAX_DISPLAY_LENGTH = 50;
+    let truncatedDescription = description;
+    if (description.length > MAX_DISPLAY_LENGTH) {
+      truncatedDescription = description.substring(0, MAX_DISPLAY_LENGTH);
+      const lastSpaceIndex = truncatedDescription.lastIndexOf(" ");
+      if (lastSpaceIndex !== -1) {
+        truncatedDescription = truncatedDescription.substring(0, lastSpaceIndex);
+      }
+  
+      truncatedDescription += "...";
+    }
+    return (
+      <LightTooltip title={description} arrow={false} disableInteractive>
+        <MDBox display="flex" alignItems="center" lineHeight={1}>
+          <MDTypography variant="caption">{truncatedDescription}
+          </MDTypography>
+        </MDBox>
+      </LightTooltip>
+    );
+  };
 
   const StartDate = ({ startDate }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>

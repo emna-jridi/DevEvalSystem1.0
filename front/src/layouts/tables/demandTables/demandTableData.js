@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, styled } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MDBox from "components/MDBox";
@@ -7,7 +7,20 @@ import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
-import { formatDate } from '../utils';
+import { formatDate } from "../utils";
+
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "#ECEEFF",
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 export default function Data() {
   const [rows, setRows] = useState([]);
   const [selectedTitle, setSelectedTitle] = useState(null);
@@ -25,7 +38,7 @@ export default function Data() {
   const handleMenuAction = (
     action,
     selectedTitle,
-    id, 
+    id,
     title,
     description,
     start_date,
@@ -34,8 +47,9 @@ export default function Data() {
     releaseName
   ) => {
     if (action === "update") {
-      navigate("/demand/edit", { state: { id,title, description, start_date, end_date, estimation , releaseName } });
-      
+      navigate("/demand/edit", {
+        state: { id, title, description, start_date, end_date, estimation, releaseName },
+      });
     } else if (action === "delete") {
       setOpenConfirmation(true);
     }
@@ -56,14 +70,14 @@ export default function Data() {
         console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
           return {
-            id : donnee.id, 
+            id: donnee.id,
             Demand: <Demand title={donnee.title} />,
             Description: <Description description={donnee.description} />,
             StartDate: <StartDate startDate={donnee.start_date} />,
             EndDate: <EndDate endDate={donnee.end_date} />,
             Estimation: <Estimation estimation={donnee.estimation} />,
             Release: <Release release={donnee.release.name} />,
-            Project: <Project project={donnee.release.assignedProject.label} />,  
+            Project: <Project project={donnee.release.assignedProject.label} />,
             Action: (
               <MDBox key={index}>
                 <IconButton onClick={(event) => handleOpenMenu(event, donnee.title)}>
@@ -85,7 +99,7 @@ export default function Data() {
                         donnee.start_date,
                         donnee.end_date,
                         donnee.estimation,
-                        donnee.release.name,
+                        donnee.release.name
                       )
                     }
                   >
@@ -127,11 +141,26 @@ export default function Data() {
     </MDBox>
   );
 
-  const Description = ({ description }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
+  const Description = ({ description }) => {
+    const MAX_DISPLAY_LENGTH = 50;
+    let truncatedDescription = description;
+    if (description.length > MAX_DISPLAY_LENGTH) {
+      truncatedDescription = description.substring(0, MAX_DISPLAY_LENGTH);
+      const lastSpaceIndex = truncatedDescription.lastIndexOf(" ");
+      if (lastSpaceIndex !== -1) {
+        truncatedDescription = truncatedDescription.substring(0, lastSpaceIndex);
+      }
+
+      truncatedDescription += "...";
+    }
+    return (
+      <LightTooltip title={description} arrow={false} disableInteractive>
+        <MDBox display="flex" alignItems="center" lineHeight={1}>
+          <MDTypography variant="caption">{truncatedDescription}</MDTypography>
+        </MDBox>
+      </LightTooltip>
+    );
+  };
   const StartDate = ({ startDate }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{formatDate(startDate)}</MDTypography>

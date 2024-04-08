@@ -70,7 +70,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     // Remove the authentication token
     localStorage.removeItem('accessToken');
     // Redirect the user to the login page
-    navigate('/authentication/sign-in');
+    navigate('/');
   };
   useEffect(() => {
     const token = localStorage.getItem('accessToken');

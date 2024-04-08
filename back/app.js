@@ -2,7 +2,7 @@ const config = require('./Config/AppConfig')
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express();
-const cookieParser = require('cookie-parser');
+
 const router = require('./Router/router')
 const auth = require('./Router/AuthenticationRoute')
 const agent =  require('./Router/AgentRoute')
@@ -10,12 +10,11 @@ const employee =  require('./Router/EmployeeRoute')
 
 const cors = require('cors');
 const corsOptions = {
-    origin: 'https://dev-eval-system1.vercel.app/' 
+    origin: 'https://devevalsystem1-0-1.onrender.com'
+
   };
 app.use(cors(corsOptions));
 
-
-//app.use(cookieParser());
 
 //middleware 
 app.use(express.json())

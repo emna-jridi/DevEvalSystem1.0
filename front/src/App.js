@@ -45,7 +45,6 @@ import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
-import SignInComponent from "layouts/authentication/sign-in/index"
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import { useNavigate } from 'react-router-dom';
@@ -57,7 +56,7 @@ export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor, transparentSidenav, whiteSidenav, darkMode } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [showSidenav, setShowSidenav] = useState(false);
+  const [showSidenav, setShowSidenav] = useState(true);
   const [rtlCache, setRtlCache] = useState(null);
 const [role, setRole]= useState("")
   const navigate = useNavigate();
@@ -85,7 +84,6 @@ const token = localStorage.getItem('accessToken');
     }
   };
 
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -107,14 +105,14 @@ const token = localStorage.getItem('accessToken');
       return null;
     });
 
-  useEffect(() => {
-    if (location.pathname === "/") { 
-      setShowSidenav(false);
-      navigate("/authentication/sign-in");
-    } else {
-      setShowSidenav(true);
-    }
-  }, [location.pathname, navigate]); 
+  // useEffect(() => {
+  //   if (location.pathname === "/") { 
+  //     setShowSidenav(false);
+  //     navigate("/authentication/sign-in");
+  //   } else {
+  //     setShowSidenav(true);
+  //   }
+  // }, [location.pathname, navigate]); 
 useEffect(() => {
     const fetchUserDetails = async (token) => {
       try {

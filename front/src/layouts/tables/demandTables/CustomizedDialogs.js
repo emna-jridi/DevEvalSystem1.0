@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as React from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
@@ -8,13 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
 import MDTypography from "components/MDTypography";
-import { Grid } from "@mui/material";
 import { blueGrey } from "@mui/material/colors";
-import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import { Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -24,15 +20,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+
 export default function CustomizedDialogs(employee) {
-  
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -41,6 +30,7 @@ export default function CustomizedDialogs(employee) {
   const handleClose = () => {
     setOpen(false);
   };
+
   function formatPhoneNumber(phoneNumber) {
     phoneNumber = phoneNumber.toString();
     if (phoneNumber.startsWith("216")) {
@@ -48,41 +38,31 @@ export default function CustomizedDialogs(employee) {
     }
     return phoneNumber;
   }
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     const formattedDate = new Date(dateString).toLocaleDateString("en-US", options);
     return formattedDate;
   };
+
   return (
     <React.Fragment>
-      {/* <Button
-        variant="outlined"
+      <Button
         onClick={handleClickOpen}
+        variant="button"
+        fontWeight="medium"
+        ml={1}
+        lineHeight={1}
         sx={{
-          backgroundColor: "#3A4B8A",
-          color: "#fff",
-          marginLeft: "8px",
-          "&:hover": {
-            backgroundColor: "#3A4B8A",
-            color: "#fff",
-          },
+          textDecoration: "underline",
+          color: "#7E65F5",
+          cursor: "pointer",
+          lineHeight: 1,
+          textTransform: "lowercase",
         }}
       >
-        More
-      </Button> */}
-   <Button
-  onClick={handleClickOpen}
-  variant="button" fontWeight="medium"ml={1} lineHeight={1}
-  sx={{
-    textDecoration: 'underline',
-    color: '#7E65F5',
-    cursor: 'pointer',
-    lineHeight: 1,
-    textTransform: 'lowercase',
-  }}
->
- show  More
-</Button>
+        Show More
+      </Button>
       <BootstrapDialog
         onClose={handleClose}
         maxWidth="md"
@@ -106,92 +86,124 @@ export default function CustomizedDialogs(employee) {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          {/* <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}> */}
-              <Stack direction="column" justifyContent="center" alignItems="stretch" spacing={0.5}>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Name: {employee.employee.fullName}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Email: {employee.employee.email}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Phone Number: {formatPhoneNumber(employee.employee.phoneNumber)}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Civil State: {employee.employee.civilState}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Dependents: {employee.employee.dependents}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Contract: {employee.employee.contract}
-                  </MDTypography>{" "}
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Position: {employee.employee.position}
-                  </MDTypography>{" "}
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Employed At: {formatDate(employee.employee.entryDate)}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Salary: {employee.employee.salary}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    RIB: {employee.employee.RIB}
-                  </MDTypography>{" "}
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Cnss Number: {employee.employee.cnssNumber}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Emergency Number: {formatPhoneNumber(employee.employee.emergencyNumber)}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Hierarchical Superior: {employee.employee.hierarchicalSuperior}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Leave Balance: {employee.employee.leaveBalance}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Last Negotiation: {formatDate(employee.employee.lastNegotiationDate)}
-                  </MDTypography>
-                </Item>
-                <Item>
-                  <MDTypography variant="h6" gutterBottom>
-                    Rank: {employee.employee.rank}
-                  </MDTypography>
-                </Item>
-              </Stack>
-            {/* </Grid>
-          </Grid> */}
+          <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableBody>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2">Name :</MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.fullName}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Email :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.email}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Phone Number :</MDTypography>
+                  </TableCell>
+                  <TableCell>{formatPhoneNumber(employee.employee.phoneNumber)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Civil State :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.civilState}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Dependents :</MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.dependents}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Contract :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.contract}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Position :</MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.position}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Employed At :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{formatDate(employee.employee.entryDate)}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Salary :</MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.salary}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      RIB :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.RIB}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Cnss Number :</MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.cnssNumber}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Emergency Number :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{formatPhoneNumber(employee.employee.emergencyNumber)}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Hierarchical Superior :</MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.hierarchicalSuperior}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Leave Balance :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.leaveBalance}</TableCell>
+                </TableRow>
+                <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <MDTypography variant="body2"> Last Negotiation :</MDTypography>
+                  </TableCell>
+                  <TableCell>{formatDate(employee.employee.lastNegotiationDate)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <MDTypography variant="body2" color="balck">
+                      Rank :
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell>{employee.employee.rank}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
