@@ -10,8 +10,7 @@ const employee =  require('./Router/EmployeeRoute')
 
 const cors = require('cors');
 const corsOptions = {
-    origin: 'https://devevalsystem1-0-1.onrender.com'
-
+    origin: 'https://dev-eval-system1.vercel.app/' 
   };
 app.use(cors(corsOptions));
 
