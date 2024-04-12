@@ -2,15 +2,17 @@ const User = require("../Model/UserModel");
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const crypto = require("crypto");
+const config = require("../Config/AppConfig");
+const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const ROLES = require("../Config/ConstConfig");
 const {
   passwordIsValid,
   validUserType,
   generateToken,
+  genrateRefreshToken,
 } = require("../Service/AuthService");
 const Employee = require("../Model/EmployeeModel");
-const cookieParser = require("cookie-parser");
 
 // Login controller
 const login = async (req, res) => {
@@ -30,7 +32,11 @@ const login = async (req, res) => {
     }
 
     // Validate password
-    if (!passwordIsValid(req.body.password, foundUser.password)) {
+    const passwordIsValid = await bcrypt.compare(
+      req.body.password,
+      foundUser.password
+    );
+    if (!passwordIsValid) {
       return res.status(StatusCodes.FORBIDDEN).send({
         accessToken: null,
         message: "Invalid Password!",
@@ -46,13 +52,12 @@ const login = async (req, res) => {
     }
     // Generate token and send response
     const accessToken = generateToken(foundUser.id, foundUser.role);
-    //const refreshToken = generateRefreshToken(foundUser.id, foundUser.role)
-    // res.cookie('accessToken', accessToken, { maxAge: 86400  })
-    //res.cookie('refreshToken', refreshToken, { maxAge: 604800, httpOnly: true, secure: true, sameSite: 'strict' })
-
+    //create secure cookie with refresh token
+    const refreshToken = genrateRefreshToken(foundUser.id, foundUser.role);
     res.status(StatusCodes.ACCEPTED).json({
       message: "User logged in successfully.",
       accessToken: accessToken,
+      refreshToken: refreshToken,
       state: foundUser.state,
     });
   } catch (error) {
@@ -61,6 +66,31 @@ const login = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error during the authentication." });
   }
+};
+
+const token = (req, res) => {
+  const { refreshToken } = req.body;
+
+  // if refresh token is not provided, send error response
+  if (!refreshToken) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "Refresh token is required" });
+  }
+
+  // verify refresh token
+  jwt.verify(refreshToken, jwtSecret, (err, decoded) => {
+    if (err) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "Invalid refresh token" });
+    }
+
+    // generate new access token
+    const accessToken = generateToken(foundUser.id, foundUser.role);
+    // send new access token
+    return res.json({ accessToken });
+  });
 };
 
 // reateNewPwd controller
@@ -98,7 +128,6 @@ const createNewPwd = async (req, res) => {
       .json({ message: "Error resetting password." });
   }
 };
-
 
 const forgotPassword = async (req, res) => {
   try {
@@ -164,13 +193,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
-  return res
-    .clearCookie("access_token")
-    .status(StatusCodes.ACCEPTED)
-    .json({ message: "Successfully logged out " });
-};
-
+const logout = async (req, res, next) => {};
 const adminExists = async (req, res) => {
   try {
     const adminUser = await User.findOne({ role: ROLES.RA });
@@ -202,7 +225,7 @@ const emailExist = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
- 
+
 module.exports = {
   login,
   createNewPwd,
@@ -210,4 +233,5 @@ module.exports = {
   adminExists,
   emailExist,
   forgotPassword,
+  token,
 };

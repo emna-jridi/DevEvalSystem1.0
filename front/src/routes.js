@@ -46,17 +46,16 @@ import Logout from "layouts/authentication/log-out";
 import ProjectTables from "layouts/tables/projectTables/projectTable";
 import ReleaseTables from "layouts/tables/releaseTables/releaseTable";
 import DemandTables from "layouts/tables/demandTables/demandTable";
-import Reset from "layouts/authentication/reset-password/cover"
+import Reset from "layouts/authentication/reset-password/cover";
 import NewPassword from "layouts/authentication/reset-password/cover/newPassword";
 import CreateAgent from "layouts/tables/createAgent";
 import UpdateAgent from "layouts/tables/updateAgent";
 
 import CreateEmployee from "layouts/tables/createEmployee";
 import UpdateEmployee from "layouts/tables/updateEmployee";
-
+import EmployeeDetails from "layouts/tables/employeeDetails";
 import CreateProject from "layouts/tables/projectTables/createProject";
 import UpdateProject from "layouts/tables/projectTables/updateProject";
-
 
 import CreateRelease from "layouts/tables/releaseTables/createRelease";
 import UpdateRelease from "layouts/tables/releaseTables/updateRelease";
@@ -69,7 +68,7 @@ import Icon from "@mui/material/Icon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WebIcon from "@mui/icons-material/Web";
 import SendTimeExtensionIcon from "@mui/icons-material/SendTimeExtension";
-import config from './config.json';
+import config from "./config.json";
 
 const routes = [
   {
@@ -94,7 +93,7 @@ const routes = [
     name: "Agents",
     key: "agent",
     icon: <Icon>business_center</Icon>,
-    route: "/Agents",
+    route: "/agents",
     allowedRoles: [config.ROLES.RA],
     component: <AgentTables />,
   },
@@ -103,7 +102,7 @@ const routes = [
     name: "Employees",
     key: "employee",
     icon: <Icon>group</Icon>,
-    route: "/Employees",
+    route: "/employees",
     allowedRoles: [config.ROLES.RA, config.ROLES.RPA, config.ROLES.RTA],
     component: <EmployeeTables />,
   },
@@ -117,16 +116,6 @@ const routes = [
     //component: <EmployeeTables />
   },
 
-  // {
-  //   type: "collapse",
-  //   name: "logout",
-  //   key: "logout",
-  //   icon: <Icon fontSize="small">logout</Icon>,
-  //   route: "/authentication/log-out",
-  //   component: <Logout />,
-  //   onClick: handleLogout,
-
-  // },
   {
     //type: "collapse",
     name: CreateAgent,
@@ -141,8 +130,14 @@ const routes = [
     component: <UpdateAgent />,
     route: "/agents/edit",
   },
+  {
+    //type: "collapse",
+    name: EmployeeDetails,
+    key: "employeeDetails",
+    component: <EmployeeDetails />,
+    route: "/employees/details",
+  },
 
- 
   {
     //type: "collapse",
     name: CreateEmployee,
@@ -171,7 +166,7 @@ const routes = [
     component: <UpdateProject />,
     route: "/projects/edit",
   },
-  
+
   {
     //type: "collapse",
     name: CreateRelease,
@@ -229,18 +224,17 @@ const routes = [
     route: "/demand/edit",
   },
   {
-    
     name: "ForgotPassword",
     key: "rest",
     route: "/authentication/reset-password",
-    allowedRoles: [config.ROLES.RTA, config.ROLES.RA , config.ROLES.RPA],
+    allowedRoles: [config.ROLES.RTA, config.ROLES.RA, config.ROLES.RPA],
     component: <Reset />,
   },
   {
     name: "NewPassword",
     key: "newPassword",
     route: "/Newpassword/:token",
-    allowedRoles: [config.ROLES.RTA, config.ROLES.RA , config.ROLES.RPA],
+    allowedRoles: [config.ROLES.RTA, config.ROLES.RA, config.ROLES.RPA],
     component: <NewPassword />,
   },
 ];

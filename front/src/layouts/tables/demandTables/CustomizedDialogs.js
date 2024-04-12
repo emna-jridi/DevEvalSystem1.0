@@ -97,7 +97,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Email :
                     </MDTypography>
                   </TableCell>
@@ -111,7 +111,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Civil State :
                     </MDTypography>
                   </TableCell>
@@ -125,7 +125,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Contract :
                     </MDTypography>
                   </TableCell>
@@ -139,7 +139,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Employed At :
                     </MDTypography>
                   </TableCell>
@@ -153,7 +153,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       RIB :
                     </MDTypography>
                   </TableCell>
@@ -167,7 +167,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Emergency Number :
                     </MDTypography>
                   </TableCell>
@@ -181,7 +181,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Leave Balance :
                     </MDTypography>
                   </TableCell>
@@ -195,7 +195,7 @@ export default function CustomizedDialogs(employee) {
                 </TableRow>
                 <TableRow>
                   <TableCell component="th" scope="row">
-                    <MDTypography variant="body2" color="balck">
+                    <MDTypography variant="body2" color="inherit">
                       Rank :
                     </MDTypography>
                   </TableCell>

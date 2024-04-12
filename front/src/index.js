@@ -25,7 +25,7 @@ import { from } from "stylis";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
-axios.defaults.baseURL = "https://devevalsystemback.onrender.com";
+axios.defaults.baseURL = "http://localhost:4000";
 root.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>

@@ -156,7 +156,8 @@ const UpdateAgent = () => {
                         color: "#15192B",
                         width: "100%",
                         fontSize: "1.1rem",
-                        paddingTop: "14px",
+                        paddingTop: "10px",
+                        paddingBottom:"10px",
                       }}
                     >
                       {roles.map((role) => (

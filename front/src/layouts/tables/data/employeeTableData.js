@@ -33,10 +33,10 @@ import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
 import CustomizedDialogs from "../demandTables/CustomizedDialogs";
-import config from "../../../config.json"
-import { formatDate } from '../utils';
+import config from "../../../config.json";
+import { formatDate } from "../utils";
+import { Link } from "react-router-dom";
 //import conste from "shared/ConstConfig"
-
 
 export default function Data() {
   const [rows, setRows] = useState([]);
@@ -60,8 +60,6 @@ export default function Data() {
   };
 
   fetchUserDetails(token);
-
-
 
   function formatPhoneNumber(phoneNumber) {
     phoneNumber = phoneNumber.toString();
@@ -133,7 +131,6 @@ export default function Data() {
       });
     } else if (action === "delete") {
       setOpenConfirmation(true);
-  
     }
   };
 
@@ -141,7 +138,6 @@ export default function Data() {
     setOpenMenu(event.currentTarget);
     setSelectedEmail(email);
     setSelectedEmployee(employee);
-  
   };
 
   const handleCloseMenu = () => {
@@ -149,9 +145,9 @@ export default function Data() {
     setSelectedEmail(null);
   };
 
-  const handleConfirmDelete = async ( id ) => {
+  const handleConfirmDelete = async (id) => {
     try {
-      await axios.delete(`employee/${id}`,{
+      await axios.delete(`employee/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -173,11 +169,11 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("employees",{
+        const response = await axios.get("employees", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-    });
+        });
         const donneesReponse = response.data.employees;
         const tableau = donneesReponse.map((donnee, index) => ({
           id: donnee.id,
@@ -243,7 +239,21 @@ export default function Data() {
           ),
           More: (
             <MDBox key={index}>
-              <CustomizedDialogs employee={donnee} />
+              {/* <CustomizedDialogs employee={donnee} /> */}
+              <button
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  font: "inherit",
+                  color: "blue",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/employees/details", { state: { employee: donnee } })}
+              >
+                Show more
+              </button>
             </MDBox>
           ),
         }));
@@ -319,31 +329,31 @@ export default function Data() {
   );
 
   const CnssNumber = ({ cnssNumber }) => (
-    <MDBox display="flex" aligcItems="center" lineHeight={1}>
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{cnssNumber}</MDTypography>
     </MDBox>
   );
 
   const EmergencyNumber = ({ emergencyNumber }) => (
-    <MDBox display="flex" aligcItems="center" lineHeight={1}>
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{formatPhoneNumber(emergencyNumber)}</MDTypography>
     </MDBox>
   );
 
   const HierarchicalSuperior = ({ hierarchicalSuperior }) => (
-    <MDBox display="flex" aligcItems="center" lineHeight={1}>
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{hierarchicalSuperior}</MDTypography>
     </MDBox>
   );
 
   const LeaveBalance = ({ leaveBalance }) => (
-    <MDBox display="flex" aligcItems="center" lineHeight={1}>
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{leaveBalance}</MDTypography>
     </MDBox>
   );
 
   const LastNegotiationDate = ({ lastNegotiationDate }) => (
-    <MDBox display="flex" aligcItems="center" lineHeight={1}>
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{formatDate(lastNegotiationDate)}</MDTypography>
     </MDBox>
   );

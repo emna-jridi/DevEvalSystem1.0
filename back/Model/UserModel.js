@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const roles = require("../Config/ConstConfig");
 const { userValidationSchema } = require("../Config/ValidatorConfig");
+const { required } = require("joi");
 const userSchema = new mongoose.Schema(
   {
     fullName: {
@@ -25,9 +26,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       enum: {
         values: [roles.RA, roles.RPA, roles.RTA],
-        message: `{value} does not have permission to connect`,
       },
     },
+    tokens: [
+      {
+        token: { type: String },
+      },
+    ],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
   },

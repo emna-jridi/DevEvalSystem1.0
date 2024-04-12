@@ -47,28 +47,31 @@ import createCache from "@emotion/cache";
 import routes from "routes";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import axios from "axios";
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, direction, layout, openConfigurator, sidenavColor, transparentSidenav, whiteSidenav, darkMode } = controller;
+  const {
+    miniSidenav,
+    direction,
+    layout,
+  
+    sidenavColor,
+    transparentSidenav,
+    whiteSidenav,
+    darkMode,
+  } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [showSidenav, setShowSidenav] = useState(true);
+  const [showSidenav, setShowSidenav] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
-const [role, setRole]= useState("")
-  const navigate = useNavigate();
-  const location = useLocation(); 
-const token = localStorage.getItem('accessToken');
-  useMemo(() => {
-    const cacheRtl = createCache({
-      key: "rtl",
-      stylisPlugins: [rtlPlugin],
-    });
-    setRtlCache(cacheRtl);
-  }, []);
+  const [role, setRole] = useState("");
+ 
+  const location = useLocation();
+  const token = localStorage.getItem("accessToken");
+ 
 
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
@@ -85,14 +88,11 @@ const token = localStorage.getItem('accessToken');
   };
 
 
-  useEffect(() => {
-    document.body.setAttribute("dir", direction);
-  }, [direction]);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-  }, [location.pathname]); 
+  }, [location.pathname]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -105,18 +105,18 @@ const token = localStorage.getItem('accessToken');
       return null;
     });
 
-  // useEffect(() => {
-  //   if (location.pathname === "/") { 
-  //     setShowSidenav(false);
-  //     navigate("/authentication/sign-in");
-  //   } else {
-  //     setShowSidenav(true);
-  //   }
-  // }, [location.pathname, navigate]); 
-useEffect(() => {
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setShowSidenav(false);
+
+    } else {
+      setShowSidenav(true);
+    }
+  }, [location.pathname ]);
+  useEffect(() => {
     const fetchUserDetails = async (token) => {
       try {
-        const response = await axios.get('userDetails', {
+        const response = await axios.get("userDetails", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -124,7 +124,7 @@ useEffect(() => {
         const role = response.data.role;
         setRole(role);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
     fetchUserDetails(token);
@@ -158,8 +158,7 @@ useEffect(() => {
           routes={routes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
-role={role}
- 
+          role={role}
         />
       )}
       {layout === "vr" && <Configurator />}

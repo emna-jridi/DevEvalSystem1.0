@@ -17,7 +17,7 @@ import PhoneInput from "react-phone-number-input";
 import CurrencyInput from "react-currency-input-field";
 
 import { formatDate } from "./utils";
-const positions = ["Developer", "Tester"];
+const positions = [" Web Developer", "Mobile Developer","Tester"];
 
 const updateEmployee = () => {
   const [fullName, setFullName] = useState("");
@@ -168,23 +168,25 @@ const updateEmployee = () => {
               </MDBox>
               <MDBox pt={3} px={1.5}>
                 <form onSubmit={handleSubmit}>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Full Name"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Full Name"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
 
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
                   <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       {/* <PhoneInput
@@ -219,11 +221,12 @@ const updateEmployee = () => {
                           color: "#15192B",
                           width: "100%",
                           fontSize: "1rem",
-                          paddingTop: "14px",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
                         }}
                       >
                         {civilStates.map((state) => (
-                          <MenuItem key={state} value={state}>
+                          <MenuItem key={state} value={state} sx={{ textAlign: "center" }}>
                             {state}
                           </MenuItem>
                         ))}
@@ -251,7 +254,8 @@ const updateEmployee = () => {
                           color: "#15192B",
                           width: "100%",
                           fontSize: "1rem",
-                          paddingTop: "14px",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
                         }}
                       >
                         {contractTypes.map((type) => (
@@ -275,8 +279,9 @@ const updateEmployee = () => {
                         sx={{
                           color: "#15192B",
                           width: "100%",
-                          fontSize: "1.22rem",
-                          paddingTop: "14px",
+                          fontSize: "1rem",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
                         }}
                       >
                         {positions.map((position) => (
@@ -298,8 +303,7 @@ const updateEmployee = () => {
                     </FormControl>
                   </MDBox>
 
-                  <FormControl fullWidth margin="normal">
-                    {/*         
+                  {/*         
                     <CurrencyInput
                       name="salary"
                       placeholder="Enter salary"
@@ -319,15 +323,18 @@ const updateEmployee = () => {
                         height: "56px",
                       }}
                     /> */}
-                    <TextField
-                      label="Salary"
-                      value={salary}
-                      onChange={(e) => setSalary(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+
                   <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Salary"
+                        value={salary}
+                        onChange={(e) => setSalary(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+
+                    <FormControl fullWidth margin="normal" >
                       <TextField
                         label="RIB"
                         value={RIB}
@@ -335,7 +342,8 @@ const updateEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
                         label="Cnss Number"
@@ -345,9 +353,8 @@ const updateEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+
+                    <FormControl fullWidth margin="normal" >
                       {/* <PhoneInput
                         placeholder="Enter Emergency Number"
                         value={emergencyNumber}
@@ -370,7 +377,9 @@ const updateEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                    <FormControl fullWidth margin="normal">
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal"  sx={{ marginRight: "16px" }} >
                       <TextField
                         label="Hierarchical Superior"
                         value={hierarchicalSuperior}
@@ -378,9 +387,8 @@ const updateEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                  
+                    <FormControl fullWidth margin="normal" >
                       <TextField
                         label="Leave Balance"
                         type="number"
@@ -389,18 +397,20 @@ const updateEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                    <FormControl fullWidth margin="normal">
-                      <TextField
-                        label="Last Negotiation : 
-                        "
-                        type="date"
-                        value={formatDate(lastNegotiationDate)}
-                        onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
-                        fullWidth
-                      />
-                    </FormControl>
                   </MDBox>
+                  <MDBox display="flex" width="100%">
                   <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                    <TextField
+                      label="Last Negotiation : 
+                        "
+                      type="date"
+                      value={formatDate(lastNegotiationDate)}
+                      onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
+                      fullWidth
+                    />
+                  </FormControl>
+
+                  <FormControl fullWidth margin="normal" >
                     <TextField
                       label="Rank"
                       type="number"
@@ -409,6 +419,7 @@ const updateEmployee = () => {
                       variant="outlined"
                     />
                   </FormControl>
+                  </MDBox>
                   {error && (
                     <MDTypography variant="body2" color="error">
                       {error}

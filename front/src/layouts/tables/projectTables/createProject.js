@@ -119,12 +119,13 @@ const CreateProject = () => {
                     />
                   </FormControl>
                   <FormControl fullWidth margin="normal">
-                    <textarea
-                      className="textarea-style"
+                    <TextField
+                      label="Description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Description"
+                      variant="outlined"
                       rows={4}
+                      multiline
                     />
                   </FormControl>
 
