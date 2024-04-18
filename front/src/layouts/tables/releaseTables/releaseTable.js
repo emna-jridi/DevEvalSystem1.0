@@ -13,6 +13,9 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+
 // Data
 import releaseTableData from "layouts/tables/releaseTables/releaseTableData";
 import { useNavigate } from "react-router-dom";
@@ -22,12 +25,14 @@ import { Pagination, PaginationItem, TablePagination } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useLoading } from "../LoadingContext";
 
 function ReleaseTables() {
   const { columns, rows } = releaseTableData();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 10;
+  const { loading } = useLoading();
 
   const handleAddRelease = () => {
     navigate("/release/create");
@@ -53,6 +58,17 @@ function ReleaseTables() {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
+            {loading ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    p: 3,
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              ) : (
               <MDBox
                 mx={2}
                 mt={-3}
@@ -73,14 +89,16 @@ function ReleaseTables() {
                   <AddCircleOutlineIcon fontSize="medium"></AddCircleOutlineIcon>
                 </IconButton>
               </MDBox>
+               )}
               <MDBox pt={3}>
+              {!loading && (
                 <DataTable
                   table={{ columns, rows: getCurrentPageEntries() }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
-                />
+                />)}
               </MDBox>
             </Card>
           </Grid>

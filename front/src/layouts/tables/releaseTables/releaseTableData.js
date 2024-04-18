@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { IconButton, Menu, MenuItem, styled  } from "@mui/material";
+import { IconButton, Menu, MenuItem, styled } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MDBox from "components/MDBox";
@@ -7,57 +7,40 @@ import MDTypography from "components/MDTypography";
 import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
-import { formatDate } from '../utils';
+import { formatDate } from "../utils";
+import { useLoading } from "../LoadingContext";
 
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: "#ECEEFF",
-    color: 'rgba(0, 0, 0, 0.87)',
+    color: "rgba(0, 0, 0, 0.87)",
     boxShadow: theme.shadows[1],
     fontSize: 11,
   },
 }));
 export default function Data() {
   const [rows, setRows] = useState([]);
-  const [selectedName, setSelectedName] = useState(null);
-  const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [deletedItemId, setDeletedItemId] = useState(null);
 
+  const { setLoading } = useLoading();
   const token = localStorage.getItem("accessToken");
 
-  const handleOpenMenu = (event, name) => {
-    setOpenMenu(event.currentTarget);
-    setSelectedName(name);
+  const handleUpdate = (id, name, description, start_date, end_date, project) => {
+    navigate("/release/edit", {
+      state: { id, name, description, start_date, end_date, project },
+    });
   };
-  const handleMenuAction = (
-    action,
-    selectedName,
-    id,
-    name,
-    description,
-    start_date,
-    end_date,
-    project
-  ) => {
-    if (action === "update") {
-      navigate("/release/edit", {
-        state: { id, name, description, start_date, end_date, project },
-      });
-    } else if (action === "delete") {
-      setOpenConfirmation(true);
-    }
-  };
-  const handleCloseMenu = () => {
-    setOpenMenu(null);
-    setSelectedName(null);
-  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+
         const response = await axios.get(`releases`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,43 +57,35 @@ export default function Data() {
             AssignedTo: <AssignedTo AssignedTo={donnee.assignedProject} />,
             Action: (
               <MDBox key={index}>
-                <IconButton onClick={(event) => handleOpenMenu(event, donnee.name)}>
-                  <Icon fontSize="small">settings</Icon>
-                </IconButton>
-                <Menu
-                  anchorEl={openMenu}
-                  open={Boolean(openMenu && selectedName === donnee.name)}
-                  onClose={handleCloseMenu}
+                <IconButton
+                  onClick={() =>
+                    handleUpdate(
+                      donnee.id,
+                      donnee.name,
+                      donnee.description,
+                      donnee.start_date,
+                      donnee.end_date,
+                      donnee.assignedProject
+                    )
+                  }
                 >
-                  <MenuItem
-                    onClick={() =>
-                      handleMenuAction(
-                        "update",
-                        selectedName,
-                        donnee.id,
-                        donnee.name,
-                        donnee.description,
-                        donnee.start_date,
-                        donnee.end_date,
-                        donnee.assignedProject
-                      )
-                    }
-                  >
-                    Update
-                  </MenuItem>
+                  <Icon fontSize="small">edit</Icon>
+                </IconButton>
+                <IconButton onClick={() => setOpenConfirmation(true)}>
                   <AlertDialog handleDelete={() => handleDeleteRelease(donnee.id)} />
-                </Menu>
+                </IconButton>
               </MDBox>
             ),
           };
         });
         setRows(tableau);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, [openMenu, selectedName]);
+  }, [deletedItemId]);
 
   const handleDeleteRelease = async (id) => {
     try {
@@ -121,7 +96,8 @@ export default function Data() {
       });
       const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
-      handleCloseMenu();
+      setOpenConfirmation(false);
+      setDeletedItemId(id);
     } catch (error) {
       console.log(error);
     }
@@ -143,14 +119,13 @@ export default function Data() {
       if (lastSpaceIndex !== -1) {
         truncatedDescription = truncatedDescription.substring(0, lastSpaceIndex);
       }
-  
+
       truncatedDescription += "...";
     }
     return (
       <LightTooltip title={description} arrow={false} disableInteractive>
         <MDBox display="flex" alignItems="center" lineHeight={1}>
-          <MDTypography variant="caption">{truncatedDescription}
-          </MDTypography>
+          <MDTypography variant="caption">{truncatedDescription}</MDTypography>
         </MDBox>
       </LightTooltip>
     );

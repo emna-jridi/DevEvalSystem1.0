@@ -45,9 +45,9 @@ const createDemand = async (req, res) => {
         },
       },
     });
-    if (releaseFound.end_date < demand.end_date){
-      releaseFound.end_date = demand.end_date; 
-     await releaseFound.save();
+    if (releaseFound.end_date < demand.end_date) {
+      releaseFound.end_date = demand.end_date;
+      await releaseFound.save();
     }
 
     // Saving the new demand to the database
@@ -105,7 +105,6 @@ const getAllDemand = async (req, res) => {
 };
 const updateDemand = async (req, res) => {
   try {
- 
     if (
       !req.body.title ||
       !req.body.description ||
@@ -142,7 +141,6 @@ const updateDemand = async (req, res) => {
       },
     };
 
-
     if (new Date(releaseFound.end_date) < new Date(update.end_date)) {
       const releaseUpdated = await Release.findOneAndUpdate(
         { name: req.body.release.name },
@@ -155,7 +153,6 @@ const updateDemand = async (req, res) => {
           .json({ message: "Failed to update associated release." });
       }
     }
-
 
     const updatedDemand = await Demand.findByIdAndUpdate(
       req.params.id,

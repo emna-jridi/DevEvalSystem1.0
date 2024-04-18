@@ -24,7 +24,7 @@ router.route('/release/:id').put(authorizationRTA,updateRelease)
 //demand crud 
 router.route('/demand').post(authorizationRTA,createDemand)
 router.route('/demands').get(authorizationRTA,getAllDemand)
-router.route('/demand/:id').put(authorizationRTA,updateDemand).delete(authorizationRTA,updateDemand)
+router.route('/demand/:id').put(authorizationRTA,updateDemand).delete(authorizationRTA,deleteDemand)
 
 
 module.exports = router 

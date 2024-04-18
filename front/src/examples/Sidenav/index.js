@@ -82,7 +82,15 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         console.error('Error :', error);
       }
     };
+
+    const token = localStorage.getItem('accessToken');
+  const isLoggedIn = token !== null;
+
+  if (!isLoggedIn) {
+    setRole("");
+  } else {
     fetchUserDetails(token);
+  }
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);

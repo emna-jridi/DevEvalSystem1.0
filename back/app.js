@@ -10,7 +10,8 @@ const employee = require("./Router/EmployeeRoute");
 
 const cors = require("cors");
 const corsOptions = {
-    origin: 'https://devevalsystem1-0-1.onrender.com'
+   // origin: 'https://devevalsystem1-0-1.onrender.com'
+   origin: "http://localhost:3000",
  
 };
 app.use(cors(corsOptions));

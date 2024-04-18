@@ -36,7 +36,7 @@ import CustomizedDialogs from "../demandTables/CustomizedDialogs";
 import config from "../../../config.json";
 import { formatDate } from "../utils";
 import { Link } from "react-router-dom";
-//import conste from "shared/ConstConfig"
+import { useLoading } from "../LoadingContext";
 
 export default function Data() {
   const [rows, setRows] = useState([]);
@@ -46,6 +46,8 @@ export default function Data() {
   const navigate = useNavigate();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const { setLoading } = useLoading();
+
   const token = localStorage.getItem("accessToken");
 
   const fetchUserDetails = async (token) => {
@@ -87,8 +89,7 @@ export default function Data() {
     );
   }
 
-  const handleMenuAction = (
-    action,
+  const handleUpdate = (
     email,
     id,
     fullName,
@@ -107,42 +108,27 @@ export default function Data() {
     lastNegotiationDate,
     rank
   ) => {
-    if (action === "update") {
-      navigate("/employees/edit", {
-        state: {
-          email,
-          id,
-          fullName,
-          phoneNumber,
-          civilState,
-          dependents,
-          contract,
-          position,
-          entryDate,
-          salary,
-          RIB,
-          cnssNumber,
-          emergencyNumber,
-          hierarchicalSuperior,
-          leaveBalance,
-          lastNegotiationDate,
-          rank,
-        },
-      });
-    } else if (action === "delete") {
-      setOpenConfirmation(true);
-    }
-  };
-
-  const handleOpenMenu = (event, email, employee) => {
-    setOpenMenu(event.currentTarget);
-    setSelectedEmail(email);
-    setSelectedEmployee(employee);
-  };
-
-  const handleCloseMenu = () => {
-    setOpenMenu(null);
-    setSelectedEmail(null);
+    navigate("/employees/edit", {
+      state: {
+        email,
+        id,
+        fullName,
+        phoneNumber,
+        civilState,
+        dependents,
+        contract,
+        position,
+        entryDate,
+        salary,
+        RIB,
+        cnssNumber,
+        emergencyNumber,
+        hierarchicalSuperior,
+        leaveBalance,
+        lastNegotiationDate,
+        rank,
+      },
+    });
   };
 
   const handleConfirmDelete = async (id) => {
@@ -154,21 +140,16 @@ export default function Data() {
       });
       const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
-
-      handleCloseMenu();
+      setOpenMenu(null);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleCancelDelete = () => {
-    setSelectedEmail(null);
-    setOpenConfirmation(false);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await axios.get("employees", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -199,42 +180,34 @@ export default function Data() {
           Rank: <Rank rank={donnee.rank} />,
           Action: (
             <MDBox key={index}>
-              <IconButton onClick={(event) => handleOpenMenu(event, donnee.email, donnee)}>
-                <Icon fontSize="small">settings</Icon>
-              </IconButton>
-              <Menu
-                anchorEl={openMenu}
-                open={Boolean(openMenu && selectedEmail === donnee.email)}
-                onClose={handleCloseMenu}
+              <IconButton
+                onClick={() =>
+                  handleUpdate(
+                    donnee.email,
+                    donnee.id,
+                    donnee.fullName,
+                    donnee.phoneNumber,
+                    donnee.civilState,
+                    donnee.dependents,
+                    donnee.contract,
+                    donnee.position,
+                    donnee.entryDate,
+                    donnee.salary,
+                    donnee.RIB,
+                    donnee.cnssNumber,
+                    donnee.emergencyNumber,
+                    donnee.hierarchicalSuperior,
+                    donnee.leaveBalance,
+                    donnee.lastNegotiationDate,
+                    donnee.rank
+                  )
+                }
               >
-                <MenuItem
-                  onClick={() => {
-                    handleMenuAction(
-                      "update",
-                      selectedEmail,
-                      donnee.id,
-                      donnee.fullName,
-                      donnee.phoneNumber,
-                      donnee.civilState,
-                      donnee.dependents,
-                      donnee.contract,
-                      donnee.position,
-                      donnee.entryDate,
-                      donnee.salary,
-                      donnee.RIB,
-                      donnee.cnssNumber,
-                      donnee.emergencyNumber,
-                      donnee.hierarchicalSuperior,
-                      donnee.leaveBalance,
-                      donnee.lastNegotiationDate,
-                      donnee.rank
-                    );
-                  }}
-                >
-                  Update
-                </MenuItem>
+                <Icon fontSize="small">edit</Icon>
+              </IconButton>
+              <IconButton onClick={() => setOpenConfirmation(true)}>
                 <AlertDialog handleDelete={() => handleConfirmDelete(donnee.id)} />
-              </Menu>
+              </IconButton>
             </MDBox>
           ),
           More: (
@@ -258,13 +231,14 @@ export default function Data() {
           ),
         }));
         setRows(tableau);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchData();
-  }, [openMenu, selectedEmail, selectedEmployee]);
+  }, [, selectedEmployee]);
 
   const Employee = ({ fullName }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>

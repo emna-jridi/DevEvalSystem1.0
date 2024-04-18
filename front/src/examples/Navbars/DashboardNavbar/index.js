@@ -85,7 +85,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
         setFullName(response.data.fullName);
       } catch (error) {
-        console.error('Erreur lors de la récupération des détails de l\'utilisateur :', error);
+        console.error('Error retrieving user details. :', error);
       }
     };
     fetchUserDetails(token);

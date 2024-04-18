@@ -22,10 +22,14 @@ import { Pagination, PaginationItem, TablePagination } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { useLoading } from "../LoadingContext";
 
 function ProjectTables() {
   const { columns, rows } = projectTableData();
   const navigate = useNavigate();
+  const { loading } = useLoading();
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 10;
 
@@ -53,6 +57,17 @@ function ProjectTables() {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
+            {loading ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    p: 3,
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              ) : (
               <MDBox
                 mx={2}
                 mt={-3}
@@ -73,14 +88,16 @@ function ProjectTables() {
                   <AddCircleOutlineIcon fontSize="medium"></AddCircleOutlineIcon>
                 </IconButton>
               </MDBox>
+              )}
               <MDBox pt={3}>
+              {!loading && (
                 <DataTable
                   table={{ columns, rows: getCurrentPageEntries() }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
-                />
+                />)}
               </MDBox>
             </Card>
           </Grid>

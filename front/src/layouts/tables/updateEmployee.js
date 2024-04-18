@@ -45,7 +45,7 @@ const updateEmployee = () => {
   const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    console.log(location.state);
+   
     if (location.state) {
       const {
         id,
@@ -84,8 +84,7 @@ const updateEmployee = () => {
       setLastNegotiationDate(lastNegotiationDate);
       setRank(rank);
     }
-    console.log(location.state);
-    // console.log(fullName, email, position,rank, entryDate);
+  
   }, [location]);
 
   const handlePositionChange = (event) => {
@@ -226,7 +225,7 @@ const updateEmployee = () => {
                         }}
                       >
                         {civilStates.map((state) => (
-                          <MenuItem key={state} value={state} sx={{ textAlign: "center" }}>
+                          <MenuItem key={state} value={state} >
                             {state}
                           </MenuItem>
                         ))}
@@ -275,7 +274,7 @@ const updateEmployee = () => {
                         value={position}
                         onChange={handlePositionChange}
                         label="Position"
-                        alignItems="center"
+                    x
                         sx={{
                           color: "#15192B",
                           width: "100%",

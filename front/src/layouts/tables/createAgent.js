@@ -176,7 +176,7 @@ const CreateAgent = () => {
                       value={role}
                       onChange={handleRoleChange}
                       label="Role"
-                      alignItems="center"
+                     
                       sx={{
                         color: "#15192B",
                         width: "100%",

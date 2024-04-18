@@ -28,101 +28,85 @@ import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
 
-  export default function Data() {
-    const [rows, setRows] = useState([]);
-    const [selectedEmail, setSelectedEmail] = useState(null);
-    const [openMenu, setOpenMenu] = useState(null);
-    const navigate = useNavigate();
-    const [openConfirmation, setOpenConfirmation] = useState(false);
-    const [confirmationData, setConfirmationData] = useState({});
+import { useLoading } from "../LoadingContext";
 
-    const token = localStorage.getItem("accessToken");
+export default function Data() {
+  const [rows, setRows] = useState([]);
+  const navigate = useNavigate();
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [deletedItemId, setDeletedItemId] = useState(null);
+  const { setLoading } = useLoading();
+  const token = localStorage.getItem("accessToken");
 
-    const handleOpenMenu = (event, email) => {
-      setOpenMenu(event.currentTarget);
-      setSelectedEmail(email);
-    };
-    const handleMenuAction = (action, selectedEmail, id,fullName, email, role, state) => {
-      if (action === "update") {
-        navigate("/agents/edit", { state: { id, fullName, email, role, state } });
-      } else if (action === "delete") {
-        setOpenConfirmation(true);
-      }
-    };
-    const handleCloseMenu = () => {
-      setOpenMenu(null);
-      setSelectedEmail(null);
-    };
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(`Agents`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const donneesReponse = response.data.agents;
-          const tableau = donneesReponse.map((donnee, index) => {
-            return {
-              id: donnee.id,
-              Agent: <Agent fullName={donnee.fullName} />,
-              Email: <Email email={donnee.email} />,
-              Role: <Role role={donnee.role} />,
-              State: <State state={donnee.state} />,
-              Action: (
-                <MDBox key={index}>
-                  <IconButton onClick={(event) => handleOpenMenu(event, donnee.email)}>
-                    <Icon fontSize="small">settings</Icon>
-                  </IconButton>
-                  <Menu
-                    anchorEl={openMenu}
-                    open={Boolean(openMenu && selectedEmail === donnee.email)}
-                    onClose={handleCloseMenu}
-                  >
-                    <MenuItem
-                      onClick={() =>
-                        handleMenuAction(
-                          "update",
-                          selectedEmail,
-                          donnee.id,
-                          donnee.fullName,
-                          donnee.email,
-                          donnee.role,
-                          donnee.state
-                        )
-                      }
-                    >
-                      Update
-                    </MenuItem>
-                    <AlertDialog handleDelete={() => handleConfirmDelete (  donnee.id)} />
-                  </Menu>
-                </MDBox>
-              ),
-            };
-          });
-          setRows(tableau);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchData();
-    }, [openMenu, selectedEmail]);
+  const handleUpdate = (id, fullName, email, role, state) => {
+    navigate("/agents/edit", { state: { id, fullName, email, role, state } });
+  };
 
-    const handleConfirmDelete  = async ( id ) => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        await axios.delete(`agent/${id}`, {
+        setLoading(true);
+        const response = await axios.get(`Agents`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const updatedRows = rows.filter((row) => row.id !== id);
-        setRows(updatedRows);
-        handleCloseMenu();
-        setOpenConfirmation(false);
+
+        const donneesReponse = response.data.agents;
+        const tableau = donneesReponse.map((donnee, index) => {
+          return {
+            id: donnee.id,
+            Agent: <Agent fullName={donnee.fullName} />,
+            Email: <Email email={donnee.email} />,
+            Role: <Role role={donnee.role} />,
+            State: <State state={donnee.state} />,
+            Action: (
+              <MDBox key={index}>
+                <IconButton
+                  onClick={() =>
+                    handleUpdate(
+                      donnee.id,
+                      donnee.fullName,
+                      donnee.email,
+                      donnee.role,
+                      donnee.state
+                    )
+                  }
+                >
+                  <Icon fontSize="small">edit</Icon>
+                </IconButton>
+                <IconButton onClick={() => setOpenConfirmation(true)}>
+                  <AlertDialog handleDelete={() => handleConfirmDelete(donnee.id)} />
+                </IconButton>
+              </MDBox>
+            ),
+          };
+        });
+        setRows(tableau);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
+    fetchData();
+  }, [deletedItemId]);
+
+  const handleConfirmDelete = async (id) => {
+    try {
+      await axios.delete(`agent/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const updatedRows = rows.filter((row) => row.id !== id);
+
+      setRows(updatedRows);
+      setOpenConfirmation(false);
+      setDeletedItemId(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const Agent = ({ fullName }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
@@ -157,14 +141,12 @@ import AlertDialog from "./AlertDialog";
       { Header: "Action", accessor: "Action", width: "10%", align: "center" },
     ],
     rows,
-  
     confirmationDialog: (
       <AlertDialog
         open={openConfirmation}
         handleClose={() => setOpenConfirmation(false)}
         handleAgree={handleConfirmDelete}
         title="Confirm Delete"
-        //description="Are you sure you want to delete this Agent?"
       />
     ),
   };

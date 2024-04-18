@@ -58,7 +58,6 @@ export default function App() {
     miniSidenav,
     direction,
     layout,
-  
     sidenavColor,
     transparentSidenav,
     whiteSidenav,
@@ -105,30 +104,15 @@ export default function App() {
       return null;
     });
 
-  useEffect(() => {
-    if (location.pathname === "/") {
-      setShowSidenav(false);
-
-    } else {
-      setShowSidenav(true);
-    }
-  }, [location.pathname ]);
-  useEffect(() => {
-    const fetchUserDetails = async (token) => {
-      try {
-        const response = await axios.get("userDetails", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const role = response.data.role;
-        setRole(role);
-      } catch (error) {
-        console.error("Error:", error);
+    useEffect(() => {
+     
+      if (location.pathname === "/") {
+        setShowSidenav(false);
+      } else {
+        setShowSidenav(true);
       }
-    };
-    fetchUserDetails(token);
-  }, [token]);
+    }, [location.pathname]);
+
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>

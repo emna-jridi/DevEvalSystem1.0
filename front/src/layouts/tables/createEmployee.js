@@ -275,7 +275,7 @@ const createEmployee = () => {
                         value={position}
                         onChange={handlePositionChange}
                         label="Position"
-                        alignItems="center"
+                    
                         sx={{
                           color: "#15192B",
                           width: "100%",

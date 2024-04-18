@@ -22,14 +22,18 @@ import App from "App";
 import { MaterialUIControllerProvider } from "context";
 import axios from "axios";
 import { from } from "stylis";
-
+import { LoadingProvider } from "./layouts/tables/LoadingContext";
 const container = document.getElementById("app");
 const root = createRoot(container);
-axios.defaults.baseURL = "https://devevalsystemback.onrender.com";
+//axios.defaults.baseURL = "https://devevalsystemback.onrender.com";
+axios.defaults.baseURL = "http://localhost:4000";
+
 root.render(
-  <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
-  </BrowserRouter>
+  <LoadingProvider>
+    <BrowserRouter>
+      <MaterialUIControllerProvider>
+        <App />
+      </MaterialUIControllerProvider>
+    </BrowserRouter>
+  </LoadingProvider>
 );

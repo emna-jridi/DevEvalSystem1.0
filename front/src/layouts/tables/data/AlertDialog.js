@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 export default function AlertDialog({ handleDelete }) {
   const [open, setOpen] = React.useState(false);
@@ -25,9 +26,7 @@ export default function AlertDialog({ handleDelete }) {
 
   return (
     <React.Fragment>
-      <MenuItem onClick={handleClickOpen}>
-        Delete
-      </MenuItem>
+       <DeleteIcon onClick={handleClickOpen} />
       <Dialog
         open={open}
         onClose={handleClose}

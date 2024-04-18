@@ -23,7 +23,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import config from "../../config.json"
+import config from "../../config.json";
 
 const roles = ["ROLE_TECHNICAL_AGENT", "ROLE_PSYCHOTECHNICAL_AGENT"];
 
@@ -36,7 +36,7 @@ const UpdateAgent = () => {
   const [state, setState] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   useEffect(() => {
     if (location.state) {
       const { id, email, fullName, role, state } = location.state;
@@ -71,12 +71,15 @@ const UpdateAgent = () => {
         setError("Please enter a valid email address.");
         return;
       }
-      await axios.put(`agent/${id}`, { fullName, email, role, state },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },);
+      await axios.put(
+        `agent/${id}`,
+        { fullName, email, role, state },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/agents");
     } catch (error) {
       console.error("Error adding agent:", error);
@@ -102,7 +105,6 @@ const UpdateAgent = () => {
                 borderRadius="lg"
                 coloredShadow="info"
                 display="flex"
-                alignItems="center"
                 justifyContent="space-between"
               >
                 <MDTypography variant="h6" color="white">
@@ -151,13 +153,12 @@ const UpdateAgent = () => {
                       value={role}
                       onChange={handleRoleChange}
                       label="Role"
-                      alignItems="center"
                       sx={{
                         color: "#15192B",
                         width: "100%",
-                        fontSize: "1.1rem",
+                        fontSize: "1rem",
                         paddingTop: "10px",
-                        paddingBottom:"10px",
+                        paddingBottom: "10px",
                       }}
                     >
                       {roles.map((role) => (
