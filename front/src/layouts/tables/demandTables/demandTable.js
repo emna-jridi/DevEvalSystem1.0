@@ -28,14 +28,15 @@ import Icon from "@mui/material/Icon";
 import AlertDialog from "../data/AlertDialog";
 import formatDemandRow from "./formatDemandRow";
 
-function CustomFilter({ projects, onFilterChange }) {
+function CustomFilter({ projects, onFilterChange, selectedValue }) {
   const handleFilterChange = (event) => {
     const { value } = event.target;
-    onFilterChange(value);
+ 
+    onFilterChange(value === "all" ? "" : value);
   };
   return (
     <Select
-      value=""
+      value={selectedValue}
       onChange={handleFilterChange}
       displayEmpty
       inputProps={{ "aria-label": "Select Project" }}
@@ -50,6 +51,7 @@ function CustomFilter({ projects, onFilterChange }) {
       <MenuItem value="" disabled>
         Select Project
       </MenuItem>
+      <MenuItem value="all">All</MenuItem> 
       {projects.map((project) => (
         <MenuItem key={project.id} value={project.label} sx={{ textAlign: "center" }}>
           {project.label}
@@ -58,24 +60,34 @@ function CustomFilter({ projects, onFilterChange }) {
     </Select>
   );
 }
-function CustomReleaseFilter({ releases, onFilterChange }) {
+function CustomReleaseFilter({ releases, onFilterChange, selectedValue }) {
   const handleReleaseFilterChange = (event) => {
     const { value } = event.target;
-    onFilterChange(value);
+    onFilterChange(value === "all" ? "" : value);
   };
   return (
     <Select
-      value=""
+      value={selectedValue}
       onChange={handleReleaseFilterChange}
       displayEmpty
-      inputProps={{ "aria-label": "Select Project" }}
+      inputProps={{ "aria-label": "Select Release" }}
       sx={{
         color: "#15192B",
         fontSize: "0.8rem",
         paddingTop: "10px",
         paddingBottom: "10px",
       }}
-    ></Select>
+    >
+      <MenuItem value="" disabled>
+        Select Release
+      </MenuItem>
+      <MenuItem value="all">All</MenuItem>
+      {releases.map((release) => (
+        <MenuItem key={release.id} value={release.name} sx={{ textAlign: "center" }}>
+          {release.name}
+        </MenuItem>
+      ))}
+    </Select>
   );
 }
 
@@ -85,6 +97,7 @@ const initialState = {
   currentPage: 1,
   filterValue: "",
   loading: true,
+  filterRelease: "",
   initialRows: [],
   filteredRows: [],
 };
@@ -107,7 +120,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         filterValue: action.payload.filterValue,
-        currentPage: 1, 
+        currentPage: 1,
       };
     case "SET_FILTERED_ROWS":
       return {
@@ -118,6 +131,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         currentPage: action.payload.currentPage,
+      };
+    case "SET_FILTER_RELEASE":
+      return {
+        ...state,
+        filterRelease: action.payload.filterRelease,
+        currentPage: 1,
       };
     default:
       return state;
@@ -130,6 +149,9 @@ function DemandTables() {
   const { columns, rows } = demandTableData();
   const { loading } = useLoading();
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [selectedProject, setSelectedProject] = useState("");
+  const [selectedRelease, setSelectedRelease] = useState("");
+
   const entriesPerPage = 5;
 
   const totalEntries = rows.length;
@@ -149,6 +171,7 @@ function DemandTables() {
           type: "SET_INITIAL_DATA",
           payload: { projects: projectsData, releases: releasesData },
         });
+        console.log("releases", state.releases);
       } catch (error) {
         console.error(error);
       }
@@ -215,14 +238,39 @@ function DemandTables() {
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleReleaseFilterChange = (value) => {
+    setSelectedRelease(value);
+    dispatch({ type: "SET_FILTER_RELEASE", payload: { filterRelease: value } });
+   
+    if (state.filterValue !== "") {
+      dispatch({ type: "SET_FILTER_VALUE", payload: { filterValue: "" } });
+      setSelectedProject("");
+    }
   }
-
+  useEffect(() => {
+    const filterRowsByRelease = () => {
+      const trimmedValue = state.filterRelease.trim();
+      const filterFunction = (row) => {
+        const rowReleaseName = row.release.name;
+        return rowReleaseName === trimmedValue;
+      };
+      const filteredRows = state.initialRows.filter(filterFunction);
+      dispatch({ type: "SET_FILTERED_ROWS", payload: { filteredRows } });
+    };
+  
+    filterRowsByRelease();
+  }, [state.filterRelease, state.initialRows]);
   const handlePageChange = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: { currentPage: page } });
   };
-
   const handleFilterChange = (value) => {
+    setSelectedProject(value);
     dispatch({ type: "SET_FILTER_VALUE", payload: { filterValue: value } });
+    if (state.filterRelease !== "") {
+      dispatch({ type: "SET_FILTER_RELEASE", payload: { filterRelease: "" } });
+      setSelectedRelease("");
+    }
   };
 
   const formattedFilteredRows = state.filteredRows.map((donnee, index) =>
@@ -271,10 +319,15 @@ function DemandTables() {
               <MDBox pt={2}>
                 <Stack direction="row" sx={{ marginRight: "80px" }} justifyContent="flex-end">
                   {" "}
-                  <CustomFilter projects={state.projects} onFilterChange={handleFilterChange} />
+                  <CustomFilter
+                    projects={state.projects}
+                    onFilterChange={handleFilterChange}
+                    selectedValue={selectedProject}
+                  />
                   <CustomReleaseFilter
                     releases={state.releases}
-                    onFilterChange={handleFilterChange}
+                    onFilterChange={handleReleaseFilterChange}
+                    selectedValue={selectedRelease}
                   />
                   {/* <Button size="small">Add new Demand </Button> */}
                 </Stack>
@@ -285,7 +338,7 @@ function DemandTables() {
                   <DataTable
                     table={{
                       columns,
-                      rows: state.filterValue ? formattedFilteredRows : rows,
+                      rows: state.filterValue || state.filterRelease ? formattedFilteredRows : rows,
                     }}
                     isSorted={false}
                     entriesPerPage={false}
