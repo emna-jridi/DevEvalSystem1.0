@@ -18,7 +18,7 @@ const logout = async () => {
 
         // Remove the authentication token
         localStorage.removeItem("accessToken");
-
+        localStorage.removeItem("refreshToken");
         // Redirect the user to the login page
         navigate("/");
             } catch (error) {

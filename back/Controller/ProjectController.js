@@ -7,7 +7,6 @@ const { StatusCodes } = require("http-status-codes");
 // Function to create a new demand
 const createProject = async (req, res) => {
     try {
-        console.log(req.body.label);
         const foundProject = await Project.findOne({ label: req.body.label });
         // Checking if a project with the provided label already exists
         if (foundProject) {
@@ -76,7 +75,6 @@ const updateProject = async (req, res) => {
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ message: "Please provide all project information!" });
         }
-        console.log(req.params.id);
         // Creating an update object with data from the request body
         const update = {
             label: req.body.label,

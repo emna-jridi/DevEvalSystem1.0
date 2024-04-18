@@ -48,122 +48,50 @@ const genrateRefreshToken = (userId, role) => {
 const checkAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      const token = authHeader.split(" ")[1];
-      const decodedToken  = jwt.verify(token, Config.secret, { algorithm: "HS256" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new Error("No token provided");
+    }
 
-      // Check if access token has expired
-      if (decodedToken.exp <= Date.now() / 1000) {
-        const user = await User.findById(decodedToken.sub);
-        // Check if user exists and has a refresh token
-        if (!user || !user.refreshToken) {
-          throw new Error("Unauthorized");
-        }
-        // Verify refresh token and generate new access token
-        jwt.verify(
-          user.refreshToken,
-          config.refresh_token_secret,
-          (err, decoded) => {
-            if (err) {
-              throw new Error("Unauthorized");
-            }
-            const accessToken = generateToken(user.id, user.role);
-            res.setHeader("Authorization", "Bearer " + accessToken);
-            next();
-          }
-        );
-      } else {
-        next();
+    const token = authHeader.split(" ")[1];
+    const decodedToken = jwt.verify(token, Config.secret, {
+      algorithm: "HS256",
+    });
+
+    // Check if access token has expired
+    if (decodedToken.exp <= Date.now() / 1000) {
+      const user = await User.findById(decodedToken.id);
+      if (!user || !user.refreshToken) {
+        throw new Error("Unauthorized");
       }
+
+      // Verify refresh token and generate new access token
+      jwt.verify(
+        user.refreshToken,
+        config.refresh_token_secret,
+        (err, decoded) => {
+          if (err) {
+            throw new Error("Unauthorized");
+          }
+          const accessToken = generateToken(user.id, user.role);
+          res.setHeader("Authorization", "Bearer " + accessToken);
+          req.user = { userId: user.id, role: user.role };
+          next();
+        }
+      );
     } else {
-      throw new Error("Unauthorized");
+      // Token is valid, set user information in request object
+      req.user = { userId: decodedToken.id, role: decodedToken.role };
+      next();
     }
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
 };
 
-// Middleware function to authorize user based on role
-const authorization = (roles) => async (req, res, next) => {
-  try {
-    // Extract token from authorization header
-    const authHeader = req.headers.authorization || req.headers.Authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "No token provided" }); 
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    // Verify and decode token
-    const decoded = jwt.verify(token, Config.secret, { algorithm: "HS256" });
-    const { id, role } = decoded;
-    // Check if user type matches the required role
-    if (!roles.includes(role)) {
-      return res
-        .status(StatusCodes.FORBIDDEN)
-        .json({ message: "You are not authorized to access this resource." });
-    }
-    // Set user information in request object
-    req.user = { userId: id, role };
-    // Call next middleware
-    next();
-  } catch (error) {
-    console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Error during the authentication." });
-  }
-};
-
-const authorizationTwoRoles = (role1, role2) => async (req, res, next) => {
-  try {
-    // Extract token from authorization header
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "No token provided" });
-    }
-    const token = authHeader.split(" ")[1];
-    // Verify and decode token
-    const decoded = jwt.verify(token, Config.secret, { algorithm: "HS256" });
-    const { id, role } = decoded;
-    // Check if user type matches one of the required roles
-    if (role !== role1 && role !== role2) {
-      return res
-        .status(StatusCodes.FORBIDDEN)
-        .json({ message: "You are not authorized to access this resource." });
-    }
-    // Set user information in request object
-    req.user = { userId: id, role };
-    // Call next middleware
-    next();
-  } catch (error) {
-    console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Error during the authentication." });
-  }
-};
-const authorizationAdminOrRPA = authorizationTwoRoles(ROLES.RA, ROLES.RPA);
-const authorizationAdminOrRTA = authorizationTwoRoles(ROLES.RA, ROLES.RTA);
-const authorizationAdmin = authorization(ROLES.RA);
-const authorizationRTA = authorization(ROLES.RTA);
-const authorizationRPA = authorization(ROLES.RPA);
-
-const authorizationAllRoles = authorization(Object.values(ROLES));
 module.exports = {
   passwordIsValid,
   validUserType,
   generateToken,
-  authorizationAdminOrRPA,
-  authorizationAdmin,
-  authorizationRTA,
-  authorizationRPA,
-  authorizationAllRoles,
-  authorizationAdminOrRTA,
   genrateRefreshToken,
   checkAuth,
 };

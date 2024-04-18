@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const { createEmployee, deleteEmployee, getAllEmployee, updateEmpolyee } = require('../Controller/EmployeeController')
-const { authorizationAdmin,authorizationAdminOrRPA,authorizationAllRoles } = require("../Service/AuthService")
+const { checkAuth } = require("../Service/AuthService")
 
-router.route('/employee').post(authorizationAdminOrRPA,createEmployee)
-router.route('/employees').get(authorizationAllRoles,getAllEmployee)
-router.route('/employee/:id').put(authorizationAdminOrRPA,updateEmpolyee)
-    .delete(authorizationAdminOrRPA,deleteEmployee)
+router.route('/employee').post(checkAuth,createEmployee)
+router.route('/employees').get(checkAuth,getAllEmployee)
+router.route('/employee/:id').put(checkAuth,updateEmpolyee)
+    .delete(checkAuth,deleteEmployee)
 
     module.exports = router 

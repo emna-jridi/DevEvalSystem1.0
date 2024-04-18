@@ -42,8 +42,8 @@ function Basic() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  
-  const handleLogin = async(email, password) => {
+
+  const handleLogin = async (email, password) => {
     try {
       if (!email || !password) {
         setErrorMessage("Please provide an email and password.");
@@ -51,40 +51,21 @@ function Basic() {
         return;
       }
       const response = await axios.post("auth/login", { email, password });
-     
       if (response.data && response.data.accessToken) {
         navigate("/dashboard", { replace: true });
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
       }
-      refreshAccessToken(response.data.refreshToken);
+    
     } catch (error) {
       console.error("Error during login:", error);
       setErrorMessage("Incorrect email or password.");
       if (error.response && error.response.status === 401) {
         setErrorMessage("Incorrect email or password");
-      } 
+      }
       // else {
       //   setErrorMessage("An error occurred while attempting to login. ");
       // }
-    }
-  };
-  
-
- 
-
-  const refreshAccessToken = async (refreshToken) => {
-    try {
-      const response = await axios.post("auth/refresh", { refreshToken });
-      if (response.data && response.data.accessToken) {
-        console.log(response.data);
-        localStorage.setItem("accessToken", response.data.accessToken);
-      }
-      if (response.data && response.data.refreshToken) {
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-      }
-    } catch (error) {
-      console.error("Error refreshing access token:", error);
     }
   };
 
@@ -102,13 +83,16 @@ function Basic() {
     const fetchNewAccessToken = async () => {
       try {
         const newAccessToken = await getNewAccessToken(refreshToken);
+        console.log(newAccessToken);
         setAccessToken(newAccessToken);
       } catch (error) {
         console.error(error);
       }
     };
+    const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       const { exp } = jwt.decode(accessToken);
+    console.log(exp);
       if (Date.now() >= exp * 1000) {
         fetchNewAccessToken();
       }

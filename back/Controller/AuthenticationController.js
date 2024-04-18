@@ -88,6 +88,7 @@ const token = (req, res) => {
 
     // generate new access token
     const accessToken = generateToken(foundUser.id, foundUser.role);
+
     // send new access token
     return res.json({ accessToken });
   });
@@ -105,7 +106,7 @@ const createNewPwd = async (req, res) => {
       // resetPasswordToken: token,
       // resetPasswordExpires: { $gt: Date.now() },
     });
-    console.log(foundUser);
+
     if (!foundUser) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
@@ -144,7 +145,7 @@ const forgotPassword = async (req, res) => {
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "User does not exist." });
     }
-    console.log(foundUser);
+
 
     const generatePasswordResetToken = () => {
       return crypto.randomBytes(20).toString("hex");

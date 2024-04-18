@@ -171,7 +171,7 @@ function DemandTables() {
           type: "SET_INITIAL_DATA",
           payload: { projects: projectsData, releases: releasesData },
         });
-        console.log("releases", state.releases);
+      
       } catch (error) {
         console.error(error);
       }

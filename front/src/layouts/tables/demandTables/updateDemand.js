@@ -30,7 +30,7 @@
 
     const token = localStorage.getItem("accessToken");
     useEffect(() => {
-      console.log(location.state);
+   
       if (location.state) {
         const { id , title, description, start_date, end_date, estimation, releaseName } = location.state;
         setId(id);
@@ -40,7 +40,7 @@
         setEnd_date(end_date);
         setEstimation(estimation)
         setSelectedRelease(releaseName);
-        console.log( estimation);
+       
       }
       calculateEstimation();
       fetchData();
