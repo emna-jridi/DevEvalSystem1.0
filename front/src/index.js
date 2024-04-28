@@ -21,7 +21,7 @@ import App from "App";
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
 import axios from "axios";
-
+import { AuthContextProvider } from "context";
 import { LoadingProvider } from "./layouts/tables/LoadingContext";
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -29,11 +29,13 @@ const root = createRoot(container);
 axios.defaults.baseURL = "http://localhost:4000";
 
 root.render(
-  <LoadingProvider>
-    <BrowserRouter>
-      <MaterialUIControllerProvider>
-        <App />
-      </MaterialUIControllerProvider>
-    </BrowserRouter>
-  </LoadingProvider>
+  <BrowserRouter>
+    <AuthContextProvider>
+      <LoadingProvider>
+        <MaterialUIControllerProvider>
+          <App />
+        </MaterialUIControllerProvider>
+      </LoadingProvider>
+    </AuthContextProvider>
+  </BrowserRouter>
 );

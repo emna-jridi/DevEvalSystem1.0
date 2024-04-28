@@ -18,17 +18,41 @@ Coded by www.creative-tim.com
   you can customize the states for the different components here.
 */
 
-import { createContext, useContext, useReducer, useMemo } from "react";
+import { createContext, useContext, useReducer, useMemo, useEffect } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
+// Auth context
+const AuthContext = createContext();
 
-// Setting custom name for the context which is visible on react dev tools
-MaterialUI.displayName = "MaterialUIContext";
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case "LOGIN":
+      return { accessToken: action.payload };
+    case "LOGOUT":
+      return { accessToken: null };
+    default:
+      return state;
+  }
+};
 
+const AuthContextProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, {
+    accessToken: null,
+  });
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      dispatch({ type: "LOGIN", payload: accessToken });
+    }
+  }, []);
+
+  return <AuthContext.Provider value={{ ...state, dispatch }}>{children}</AuthContext.Provider>;
+};
 // Material Dashboard 2 React reducer
 function reducer(state, action) {
   switch (action.type) {
@@ -102,12 +126,24 @@ function useMaterialUIController() {
 
   return context;
 }
+function useAuthContext() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuthContext should be used inside the AuthContextProvider.");
+  }
+
+  return context;
+}
 
 // Typechecking props for the MaterialUIControllerProvider
 MaterialUIControllerProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
+AuthContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 // Context module functions
 const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
 const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
@@ -122,7 +158,9 @@ const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
 export {
   MaterialUIControllerProvider,
+  AuthContextProvider,
   useMaterialUIController,
+  useAuthContext,
   setMiniSidenav,
   setTransparentSidenav,
   setWhiteSidenav,

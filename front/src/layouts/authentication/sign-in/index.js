@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-
+import { useAuthContext } from "../../../context/index";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -36,13 +36,13 @@ import MDAlert from "components/MDAlert";
 
 function Basic() {
   const [errorMessage, setErrorMessage] = useState("");
-  const [accessToken, setAccessToken] = useState(null);
-  const [refreshToken, setRefreshToken] = useState(null);
-
+  const { accessToken, dispatch } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  if (accessToken) {
+    navigate("/dashboard");
+  }
   const handleLogin = async (email, password) => {
     try {
       if (!email || !password) {
@@ -51,54 +51,18 @@ function Basic() {
         return;
       }
       const response = await axios.post("auth/login", { email, password });
-      if (response.data && response.data.accessToken) {
-        navigate("/dashboard", { replace: true });
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-      }
-    
-    } catch (error) {
-      console.error("Error during login:", error);
-      setErrorMessage("Incorrect email or password.");
-      if (error.response && error.response.status === 401) {
-        setErrorMessage("Incorrect email or password");
-      }
-      // else {
-      //   setErrorMessage("An error occurred while attempting to login. ");
-      // }
-    }
-  };
 
-  const getNewAccessToken = async (refreshToken) => {
-    try {
-      const response = await axios.post("/token", { refreshToken });
-      return response.data.accessToken;
+      localStorage.setItem("accessToken", response.data.accessToken);
+      dispatch({ type: "LOGIN", payload: response.data.accessToken });
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      throw error;
+      setErrorMessage(error.response.data.message);
     }
+
+    setEmail("");
+    setPassword("");
   };
-
-  useEffect(() => {
-    const fetchNewAccessToken = async () => {
-      try {
-        const newAccessToken = await getNewAccessToken(refreshToken);
-        console.log(newAccessToken);
-        setAccessToken(newAccessToken);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      const { exp } = jwt.decode(accessToken);
-    console.log(exp);
-      if (Date.now() >= exp * 1000) {
-        fetchNewAccessToken();
-      }
-    }
-  }, [accessToken, refreshToken]);
-
   return (
     <BasicLayout>
       <Card>

@@ -158,6 +158,9 @@ function DemandTables() {
   const totalPages = Math.ceil(totalEntries / entriesPerPage);
 
   useEffect(() => {
+    if (!accessToken) {
+      navigate("/");
+    }
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("accessToken");

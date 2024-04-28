@@ -1,37 +1,16 @@
 /* eslint-disable */
-import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useAuthContext } from "../../../context/index";
 
-const handleLogout = () => {
-    const navigate = useNavigate();
+const useLogout = () => {
+  const navigate = useNavigate();
+  const { dispatch } = useAuthContext();
 
-    useEffect(() => {
-const logout = async () => {
-            try {
-                // Call the logout API
-                await axios.post("/logout",{
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  });
-
-        // Remove the authentication token
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        // Redirect the user to the login page
-        navigate("/");
-            } catch (error) {
-                console.error("Error during logout:", error);
-            }
-        };
-
-        // Call the logout function
-        logout();
-    }, [navigate]);
-
-   // Return null since this component doesn't render anything
-    return null;
+  return () => {
+    localStorage.removeItem("accessToken");
+    dispatch({ type: "LOGOUT" });
+    navigate("/");
+  };
 };
 
-export default handleLogout;
+export { useLogout }; 
