@@ -41,8 +41,6 @@ import AgentTables from "layouts/tables/agentTable";
 import EmployeeTables from "layouts/tables/employeeTable";
 
 import SignIn from "layouts/authentication/sign-in";
-import handleLogout from "layouts/authentication/log-out";
-import Logout from "layouts/authentication/log-out";
 import ProjectTables from "layouts/tables/projectTables/projectTable";
 import ReleaseTables from "layouts/tables/releaseTables/releaseTable";
 import DemandTables from "layouts/tables/demandTables/demandTable";
@@ -62,13 +60,18 @@ import UpdateRelease from "layouts/tables/releaseTables/updateRelease";
 
 import CreateDemand from "layouts/tables/demandTables/createDemand";
 import UpdateDemand from "layouts/tables/demandTables/updateDemand";
-//import ConfirmDialog from "layouts/tables/confirmationDialog";
+import PerformanceTables from "layouts/tables/performance/performanceTable";
+import CreatePerformance from "layouts/tables/performance/CreatePerfermance";
+import UpdatePerformance from "layouts/tables/performance/UpdatePerformance";
+import ReportTable from "layouts/tables/reportTable/reportTable"
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WebIcon from "@mui/icons-material/Web";
 import SendTimeExtensionIcon from "@mui/icons-material/SendTimeExtension";
 import config from "./config.json";
+import DescriptionIcon from '@mui/icons-material/Description';
 
 const routes = [
   {
@@ -79,6 +82,26 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
+  {
+    name: "performance",
+    key: "performance",
+    route: "/employees/performance",
+    component: <PerformanceTables />,
+  },
+
+  {
+    name: "CreatePerformance",
+    key: "Createperformance",
+    route: "/employees/performance/create",
+    component: <CreatePerformance />,
+  },
+
+  {
+    name: "UpdatePerformance",
+    key: "UpdatePerformance",
+    route: "/employees/performance/edit",
+    component: <UpdatePerformance />,
+  },,
 
   {
     // type: "collapse",
@@ -105,15 +128,6 @@ const routes = [
     route: "/employees",
     allowedRoles: [config.ROLES.RA, config.ROLES.RPA, config.ROLES.RTA],
     component: <EmployeeTables />,
-  },
-  {
-    type: "collapse",
-    name: "Statics",
-    key: "statics",
-    icon: <ShowChartIcon />,
-    allowedRoles: [],
-    //route: "/tables/employeeTables",
-    //component: <EmployeeTables />
   },
 
   {
@@ -237,6 +251,25 @@ const routes = [
     allowedRoles: [config.ROLES.RTA, config.ROLES.RA, config.ROLES.RPA],
     component: <NewPassword />,
   },
+  {
+    type: "collapse",
+    name: "Statics",
+    key: "statics",
+    icon: <ShowChartIcon />,
+    allowedRoles: [config.ROLES.RA, config.ROLES.RTA],
+    route: "/tables/statics",
+    //component: <EmployeeTables />
+  },
+  {
+    type: "collapse",
+    name: "Report",
+    key: "report",
+    icon: <DescriptionIcon />,
+    allowedRoles: [config.ROLES.RA, config.ROLES.RTA],
+    route: "/tables/report",
+    component: <ReportTable />
+  },
+
 ];
 
 export default routes;

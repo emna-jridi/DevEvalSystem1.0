@@ -11,7 +11,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import colors from "assets/theme/base/colors";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from '../utils';
+import { formatDate } from "../utils";
 
 const createDemand = () => {
   const [title, setTitle] = useState("");
@@ -20,6 +20,7 @@ const createDemand = () => {
   const [end_date, setEnd_date] = useState(new Date());
   const [estimation, setEstimation] = useState(0);
   const [releases, setReleases] = useState([]);
+  const [code, setCode] = useState("");
   const [selectedRelease, setSelectedRelease] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -72,7 +73,7 @@ const createDemand = () => {
   };
   const handleSubmit = async () => {
     try {
-      if (!title || !description || !start_date || !end_date || !estimation) {
+      if (!title || !description || !start_date || !end_date || !estimation || !code) {
         setError("All fields are required.");
         return;
       }
@@ -83,6 +84,7 @@ const createDemand = () => {
       await axios.post(
         "demand",
         {
+          code,
           title,
           description,
           start_date,
@@ -148,14 +150,24 @@ const createDemand = () => {
               </MDBox>
               <MDBox pt={3} px={1.5}>
                 <form onSubmit={handleSubmit}>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Code "
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
                   <FormControl fullWidth margin="normal">
                     <TextField
                       label="Description"
@@ -188,43 +200,44 @@ const createDemand = () => {
                       />
                     </FormControl>
                   </MDBox>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Estimation"
-                      value={estimation}
-                      type="number"
-                      inputProps={{ min: 0 }}
-                      onChange={(e) => setEstimation(e.target.value)} // Allow manual overriding
-                      fullWidth
-                      style={{ marginTop: "8px" }}
-                      disabled // Disable manual editing if automatic calculation is desired
-                    />
-                  </FormControl>
-                  <FormControl fullWidth margin="normal">
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                     <InputLabel>Release</InputLabel>
-                    <Select
-                      labelId="release-label"
-                      id="release"
-                      value={selectedRelease}
-                      onChange={handleReleaseChange}
-                      label="Release"
-                      sx={{
-                        color: "#15192B",
-                        width: "100%",
-                        fontSize: "1.1rem",
-                        paddingTop: "10px",
-                        paddingBottom:"10px",
-                        alignItems: "center",
-                      }}
-                    >
-                      {releases.map((release) => (
-                        <MenuItem key={release} value={release}>
-                          {release}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
+                      <Select
+                        labelId="release-label"
+                        id="release"
+                        value={selectedRelease}
+                        onChange={handleReleaseChange}
+                        label="Release"
+                        sx={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1.1rem",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
+                          alignItems: "center",
+                        }}
+                      >
+                        {releases.map((release) => (
+                          <MenuItem key={release} value={release}>
+                            {release}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Estimation"
+                        value={estimation}
+                        type="number"
+                        inputProps={{ min: 0 }}
+                        onChange={(e) => setEstimation(e.target.value)} // Allow manual overriding
+                        fullWidth
+                        disabled
+                      />
+                     
+                    </FormControl>
+                  </MDBox>
                   {error && (
                     <MDTypography variant="body2" color="error">
                       {error}

@@ -34,11 +34,12 @@ const CustomInput = React.forwardRef((props, ref) => {
     />
   );
 });
-const positions = [" Web Developer", "Mobile Developer","Tester"];
+const positions = [" Web Developer", "Mobile Developer", "Tester"];
 const createEmployee = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [code, setCode] = useState("");
   const [civilState, setCivilState] = useState("");
   const [dependents, setDependents] = useState(0);
   const [contract, setContract] = useState("");
@@ -55,7 +56,7 @@ const createEmployee = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const civilStates = ["Single", "Married", "Divorced", "Widowed"];
-  const contractTypes = ["CDI", "CDD", "Stage", "Internship", "Freelance", "Seasonal Contract"];
+  const contractTypes = ["CDI", "CDD", "Internship", "Freelance", "Seasonal Contract"];
   const token = localStorage.getItem("accessToken");
 
   const handlePositionChange = (event) => {
@@ -63,7 +64,7 @@ const createEmployee = () => {
   };
   const handleSubmit = async () => {
     try {
-      if (!fullName || !email || !position || !rank || !entryDate) {
+      if (!fullName || !email || !position || !rank || !entryDate || !code) {
         setError("All fields are required.");
         return;
       }
@@ -106,6 +107,7 @@ const createEmployee = () => {
         "employee",
         {
           fullName,
+          code,
           email,
           phoneNumber,
           civilState,
@@ -184,6 +186,15 @@ const createEmployee = () => {
                   </MDBox>
                   <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Code "
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+
+                    <FormControl fullWidth margin="normal" >
                       {/* <PhoneInput
                         defaultCountry="TN"
                         value={phoneNumber}
@@ -210,8 +221,9 @@ const createEmployee = () => {
                        // enableAreaCodesList={false}
                       /> */}
                     </FormControl>
-
-                    <FormControl fullWidth margin="normal">
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }} >
                       <InputLabel>Civil State</InputLabel>
                       <Select
                         value={civilState}
@@ -232,9 +244,8 @@ const createEmployee = () => {
                         ))}
                       </Select>
                     </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+
+                    <FormControl fullWidth margin="normal">
                       <TextField
                         label="Dependents"
                         type="number"
@@ -243,8 +254,9 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-
-                    <FormControl fullWidth margin="normal">
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal"  sx={{ marginRight: "16px" }}>
                       <InputLabel>Contract Type</InputLabel>
                       <Select
                         value={contract}
@@ -265,22 +277,20 @@ const createEmployee = () => {
                         ))}
                       </Select>
                     </FormControl>
-                  </MDBox>
 
-                  <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                    <FormControl fullWidth margin="normal">
                       <InputLabel>Position </InputLabel>
                       <Select
                         id="position"
                         value={position}
                         onChange={handlePositionChange}
                         label="Position"
-                    
                         sx={{
                           color: "#15192B",
                           width: "100%",
-                          fontSize: "1.22rem",
-                          paddingTop: "14px",
+                          fontSize: "1rem",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
                         }}
                       >
                         {positions.map((position) => (
@@ -290,8 +300,9 @@ const createEmployee = () => {
                         ))}
                       </Select>
                     </FormControl>
-
-                    <FormControl fullWidth margin="normal">
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal"sx={{ marginRight: "16px" }}>
                       <TextField
                         label="Entry Date"
                         type="date"
@@ -300,9 +311,8 @@ const createEmployee = () => {
                         fullWidth
                       />
                     </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal"sx={{ marginRight: "16px" }} >
+
+                    <FormControl fullWidth margin="normal" >
                       {/*         
                     <CurrencyInput
                       name="salary"
@@ -330,8 +340,9 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-
-                    <FormControl fullWidth margin="normal" >
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
                         label="RIB"
                         value={RIB}
@@ -339,20 +350,19 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="100%" >
-                  <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
-                    <TextField
-                      label="Cnss Number"
-                      type="number"
-                      value={cnssNumber}
-                      onChange={(e) => setCnssNumber(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
 
-                 
-                    <FormControl fullWidth margin="normal" >
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Cnss Number"
+                        type="number"
+                        value={cnssNumber}
+                        onChange={(e) => setCnssNumber(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       {/* <PhoneInput
                         placeholder="Enter Emergency Number"
                         value={emergencyNumber}
@@ -375,9 +385,8 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                    </MDBox>
-                    <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+
+                    <FormControl fullWidth margin="normal">
                       <TextField
                         label="Hierarchical Superior"
                         value={hierarchicalSuperior}
@@ -385,9 +394,9 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                  
-                
-                    <FormControl fullWidth margin="normal" >
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
                         label="Leave Balance"
                         type="number"
@@ -396,9 +405,8 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                    </MDBox>
-                    <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+
+                    <FormControl fullWidth margin="normal">
                       <TextField
                         label="Last Negotiation : 
                         "
@@ -408,16 +416,17 @@ const createEmployee = () => {
                         fullWidth
                       />
                     </FormControl>
-                  
-                  <FormControl fullWidth margin="normal" >
-                    <TextField
-                      label="Rank"
-                      type="number"
-                      value={rank}
-                      onChange={(e) => setRank(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="50%" >
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "8px" }}>
+                      <TextField
+                        label="Rank"
+                        type="number"
+                        value={rank}
+                        onChange={(e) => setRank(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
                   </MDBox>
                   {error && (
                     <MDTypography variant="body2" color="error">

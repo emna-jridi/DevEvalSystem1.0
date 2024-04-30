@@ -20,8 +20,21 @@ const {
   getAllDemand,
   updateDemand,
   deleteDemand,
-  assignToRelease,
 } = require("../Controller/DemandController");
+
+const {
+  createPerformance,
+  getAllPerformanceReport,
+  updatePerformaneReport,
+  deletePerformanceReport,
+  checkPerformanceReportExists
+} = require("../Controller/PerformanceController");
+
+const {
+  calculateFinalPerformance,
+  getAllFinalPerformances,
+  updateFinalPerformance,
+} = require("../Controller/FinalPerformance");
 
 //Project Crud
 router.route("/project").post(checkAuth, createProject);
@@ -49,5 +62,20 @@ router
   .route("/demand/:id")
   .put(checkAuth, updateDemand)
   .delete(checkAuth, deleteDemand);
+
+router.route("/rating").post(checkAuth, createPerformance)
+router.route("/check").get(checkAuth,checkPerformanceReportExists)
+router.route("/ratings").get(checkAuth, getAllPerformanceReport);
+router
+  .route("/rating/:id")
+  .put(checkAuth, updatePerformaneReport)
+  .delete(checkAuth, deletePerformanceReport);
+
+router.route("/static").get(checkAuth, getAllFinalPerformances);
+router
+  .route("/statics/:releaseName")
+  .post(checkAuth,calculateFinalPerformance)
+  .put(checkAuth, updateFinalPerformance);
+
 
 module.exports = router;

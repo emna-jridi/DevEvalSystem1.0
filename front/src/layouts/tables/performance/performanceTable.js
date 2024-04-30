@@ -1,41 +1,31 @@
-/* eslint-disable */
-// @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
+import React, { useState, useEffect } from "react";
+import { Grid, Card, IconButton } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import Icon from "@mui/material/Icon";
+import { Pagination, PaginationItem } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useLoading } from "../LoadingContext";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-import IconButton from "@mui/material/IconButton";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-
-// Data
-import releaseTableData from "layouts/tables/releaseTables/releaseTableData";
-import { useNavigate } from "react-router-dom";
-import Icon from "@mui/material/Icon";
-import { useState } from "react";
-import { Pagination, PaginationItem, TablePagination } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import performanceDataTable from "layouts/tables/performance/performanceDataTable";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { useLoading } from "../LoadingContext";
 
-function ReleaseTables() {
-  const { columns, rows } = releaseTableData();
+function PerformanceTables() {
   const navigate = useNavigate();
+  const { columns, rows } = performanceDataTable();
+  const { loading } = useLoading();
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 10;
-  const { loading } = useLoading();
 
-  const handleAddRelease = () => {
-    navigate("/release/create");
+  const handleAddPerformance = () => {
+    navigate("/employees/performance/create");
   };
 
   const totalEntries = rows.length;
@@ -82,10 +72,18 @@ function ReleaseTables() {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <MDTypography variant="h6" color="white">
-                    Releases Table
+                  <MDTypography variant="h6" color="white" sx={{ fontSize: "1rem" }}>
+                    Release
                   </MDTypography>
-                  <IconButton onClick={handleAddRelease} color="white">
+                  <IconButton
+                    onClick={handleAddPerformance}
+                    color="white"
+                    sx={{
+                      flexDirection: "column",
+                      alignItems: "center",
+                      fontSize: "1rem",
+                    }}
+                  >
                     <AddCircleOutlineIcon fontSize="medium"></AddCircleOutlineIcon>
                   </IconButton>
                 </MDBox>
@@ -93,7 +91,10 @@ function ReleaseTables() {
               <MDBox pt={3}>
                 {!loading && (
                   <DataTable
-                    table={{ columns, rows: getCurrentPageEntries() }}
+                    table={{
+                      columns,
+                      rows: getCurrentPageEntries(),
+                    }}
                     isSorted={false}
                     entriesPerPage={false}
                     showTotalEntries={false}
@@ -123,4 +124,4 @@ function ReleaseTables() {
   );
 }
 
-export default ReleaseTables;
+export default PerformanceTables;

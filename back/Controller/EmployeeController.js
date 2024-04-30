@@ -15,6 +15,7 @@ const createEmployee = async (req, res) => {
     const employee = new Employee({
       fullName: req.body.fullName,
       email: req.body.email,
+      code: req.body.code,
       phoneNumber: req.body.phoneNumber,
       civilState: req.body.civilState,
       dependents: req.body.dependents,
@@ -60,6 +61,7 @@ const getAllEmployee = async (req, res) => {
       return {
         id : employee._id,
         fullName: employee.fullName,
+        code: employee.code, 
         email: employee.email,
         phoneNumber: employee.phoneNumber,
         civilState: employee.civilState,
@@ -95,10 +97,11 @@ const updateEmpolyee = async (req, res) => {
             .json({ message: "Please provide all employee information!" });
     }
     // Creating an update object with data from the request body
-    
+      
     const update = {
         fullName: req.body.fullName,
         email: req.body.email,
+        code: req.body.code,
         phoneNumber: req.body.phoneNumber,
         civilState: req.body.civilState,
         dependents: req.body.dependents,

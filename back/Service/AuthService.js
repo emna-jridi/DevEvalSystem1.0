@@ -46,9 +46,6 @@ const genrateRefreshToken = (userId, role) => {
 };
 
 const checkAuth = async (req, res, next) => {
-  if (req.path === "/") {
-    return next();
-  }
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

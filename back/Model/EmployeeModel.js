@@ -7,6 +7,10 @@ const employeeSchema = new mongoose.Schema(
         type: String,
         required: [true, "Please provide your full name"],
       },
+      code:{
+        type: String,
+        required: [true, "Please provide the Employee code!"],
+      },
       email: {
         type: String,
         required: [true, "Please provide an email!"],

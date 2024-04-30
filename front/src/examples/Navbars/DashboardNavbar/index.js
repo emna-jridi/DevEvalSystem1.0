@@ -177,7 +177,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
               >
                 <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} /> {/* Icon */}
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  Bonjour {fullName.split(" ")[0]}{" "}
+                  Hello {fullName.split(" ")[0]}{" "} 
                 </Typography>
               </MDBox>
             ) : (

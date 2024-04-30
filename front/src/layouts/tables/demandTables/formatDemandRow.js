@@ -32,19 +32,25 @@ const formatDemandRow = (donnee, index, setOpenConfirmation, handleDeleteDemand,
     }
     truncatedDescription += "...";
   }
-  const handleUpdate = (id, title, description, start_date, end_date, estimation, releaseName) => {
+  const handleUpdate = (data) => {
     navigate("/demand/edit", {
-      state: { id, title, description, start_date, end_date, estimation, releaseName },
+      state: { data },
     });
   };
 
   return {
     id: donnee.id,
-    Demand: (
+
+    Code: (
       <MDBox display="flex" alignItems="center" lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium" ml={1}>
-          {donnee.title}
+          {donnee.code}
         </MDTypography>
+      </MDBox>
+    ),
+    Demand: (
+      <MDBox display="flex" alignItems="center" lineHeight={1}>
+        <MDTypography variant="caption">{donnee.title}</MDTypography>
       </MDBox>
     ),
     Description: (
@@ -81,7 +87,7 @@ const formatDemandRow = (donnee, index, setOpenConfirmation, handleDeleteDemand,
     ),
     Action: (
       <MDBox key={index}>
-        <IconButton onClick={() => handleUpdate(donnee.id)}>
+        <IconButton onClick={() => handleUpdate(donnee)}>
           <Icon fontSize="small">edit</Icon>
         </IconButton>
         <IconButton onClick={() => setOpenConfirmation(true)}>

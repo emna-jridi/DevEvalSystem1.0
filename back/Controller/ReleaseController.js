@@ -5,7 +5,7 @@ const { StatusCodes } = require("http-status-codes");
 // Function to create a new Release
 const createRelease = async (req, res) => {
   try {
-    const { name, description, start_date, end_date } = req.body;
+    const { name, description, start_date, end_date, code } = req.body;
 
     // Check if the release already exists
     const existingRelease = await Release.findOne({ name });
@@ -17,6 +17,7 @@ const createRelease = async (req, res) => {
 
     // Check if all required fields are provided
     if (
+      !code ||
       !name ||
       !description ||
       !start_date ||
@@ -24,12 +25,10 @@ const createRelease = async (req, res) => {
       !req.body.assignedProject ||
       !req.body.assignedProject.label
     ) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({
-          message:
-            "Please provide all release information including the assigned project!",
-        });
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message:
+          "Please provide all release information including the assigned project!",
+      });
     }
 
     // Find the project with the provided label
@@ -37,11 +36,9 @@ const createRelease = async (req, res) => {
       label: req.body.assignedProject.label,
     });
     if (!projectFound) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({
-          message: `Project with label ${req.body.assignedProject.label} not found`,
-        });
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: `Project with label ${req.body.assignedProject.label} not found`,
+      });
     }
 
     // Create the new release with the assigned project
@@ -50,6 +47,7 @@ const createRelease = async (req, res) => {
       description,
       start_date,
       end_date,
+      code, 
       assignedProject: {
         id: projectFound._id,
         label: projectFound.label,
@@ -60,11 +58,9 @@ const createRelease = async (req, res) => {
     await release.save();
 
     // Send a success response
-    return res
-      .status(StatusCodes.ACCEPTED)
-      .json({
-        message: `${release.name} was registered successfully and assigned to project ${projectFound.label}!`,
-      });
+    return res.status(StatusCodes.ACCEPTED).json({
+      message: `${release.name} was registered successfully and assigned to project ${projectFound.label}!`,
+    });
   } catch (error) {
     // Send an internal server error response if an error occurs
     res
@@ -84,8 +80,9 @@ const getAllReleases = async (req, res) => {
     // Mapping the demands data to a simpler format
     const data = releases.map((release) => {
       return {
-id: release._id,
+        id: release._id,
         name: release.name,
+        code: release.code,
         description: release.description,
         start_date: release.start_date,
         end_date: release.end_date,
@@ -125,6 +122,7 @@ const updateRelease = async (req, res) => {
       description: req.body.description,
       start_date: req.body.start_date,
       end_date: req.body.end_date,
+      code: req.body.code,
       assignedProject: {
         id: projectFound._id,
         label: projectFound.label,
@@ -153,7 +151,6 @@ const updateRelease = async (req, res) => {
 // Function to delete Release
 const deleteRelease = async (req, res) => {
   try {
-
     // Finding and deleting the Release with the provided name
     const release = await Release.findByIdAndDelete(req.params.id);
     if (!release) {

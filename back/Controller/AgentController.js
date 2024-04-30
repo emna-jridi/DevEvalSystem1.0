@@ -16,7 +16,6 @@ const createAgent = async (req, res) => {
     }
     // Creating a new Agent instance with data from the request body
     const agent = new Agent({
-    
       fullName: req.body.fullName,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),

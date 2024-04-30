@@ -158,9 +158,6 @@ function DemandTables() {
   const totalPages = Math.ceil(totalEntries / entriesPerPage);
 
   useEffect(() => {
-    if (!accessToken) {
-      navigate("/");
-    }
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("accessToken");
@@ -261,7 +258,6 @@ function DemandTables() {
       const filteredRows = state.initialRows.filter(filterFunction);
       dispatch({ type: "SET_FILTERED_ROWS", payload: { filteredRows } });
     };
-  
     filterRowsByRelease();
   }, [state.filterRelease, state.initialRows]);
   const handlePageChange = (page) => {

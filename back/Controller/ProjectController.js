@@ -108,7 +108,7 @@ const deleteProject = async (req, res) => {
         if (!projectId) {
             return res
                 .status(StatusCodes.BAD_REQUEST)
-                .json({ message: "Missing project label." });
+                .json({ message: "Missing project ID." });
         }
         // Finding and deleting the project with the provided label
         const project = await Project.findByIdAndDelete(projectId);

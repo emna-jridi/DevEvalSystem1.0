@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 
 
 const releaseSchema = new mongoose.Schema({
-
+    code:{
+        type: String,
+        required: [true, "Please provide the Release code!"],
+      },
     name: {
         type: String,
         required: true,

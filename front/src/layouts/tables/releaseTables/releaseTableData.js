@@ -30,9 +30,9 @@ export default function Data() {
   const { setLoading } = useLoading();
   const token = localStorage.getItem("accessToken");
 
-  const handleUpdate = (id, name, description, start_date, end_date, project) => {
+  const handleUpdate = (id,code, name, description, start_date, end_date, project) => {
     navigate("/release/edit", {
-      state: { id, name, description, start_date, end_date, project },
+      state: { id, code,name, description, start_date, end_date, project },
     });
   };
 
@@ -50,6 +50,7 @@ export default function Data() {
         const tableau = donneesReponse.map((donnee, index) => {
           return {
             id: donnee.id,
+            Code: <Code code={donnee.code} />,
             Release: <Release name={donnee.name} />,
             Description: <Description description={donnee.description} />,
             StartDate: <StartDate startDate={donnee.start_date} />,
@@ -61,6 +62,7 @@ export default function Data() {
                   onClick={() =>
                     handleUpdate(
                       donnee.id,
+                      donnee.code,
                       donnee.name,
                       donnee.description,
                       donnee.start_date,
@@ -104,12 +106,19 @@ export default function Data() {
   };
   const Release = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+        <MDTypography variant="caption">
         {name}
       </MDTypography>
     </MDBox>
   );
 
+  const Code = ({ code }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+        {code}
+      </MDTypography>
+    </MDBox>
+  );
   const Description = ({ description }) => {
     const MAX_DISPLAY_LENGTH = 50;
     let truncatedDescription = description;
@@ -150,6 +159,7 @@ export default function Data() {
 
   return {
     columns: [
+      { Header: "Code", accessor: "Code", width: "15%", align: "left" },
       { Header: "Release", accessor: "Release", width: "20%", align: "left" },
       { Header: "Description", accessor: "Description", width: "30%", align: "left" },
       { Header: "Start At", accessor: "StartDate", width: "15%", align: "left" },

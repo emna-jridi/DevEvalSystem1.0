@@ -20,9 +20,9 @@ export default function Data() {
   const [deletedItemId, setDeletedItemId] = useState(null);
   const token = localStorage.getItem("accessToken");
 
-  const handleUpdate = (id, title, description, start_date, end_date, estimation, releaseName) => {
+  const handleUpdate = (id,code, title, description, start_date, end_date, estimation, releaseName) => {
     navigate("/demand/edit", {
-      state: { id, title, description, start_date, end_date, estimation, releaseName },
+      state: { id,code, title, description, start_date, end_date, estimation, releaseName },
     });
   };
 
@@ -66,7 +66,8 @@ export default function Data() {
 
   return {
     columns: [
-      { Header: "Demand", accessor: "Demand", width: "20%", align: "left" },
+      { Header: "Code", accessor: "Code", width: "20%", align: "left" },
+      { Header: "Demand", accessor: "Demand", width: "15%", align: "left" },
       { Header: "Description", accessor: "Description", width: "25%", align: "left" },
       { Header: "Start At", accessor: "StartDate", width: "12%", align: "center" },
       { Header: "End At", accessor: "EndDate", width: "12%", align: "center" },

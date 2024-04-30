@@ -30,6 +30,7 @@ const CreateAgent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const [state, setState] = useState(false);
@@ -72,17 +73,21 @@ const CreateAgent = () => {
         setError("This email already exists. Please use a different email address.");
         return;
       }
-      await axios.post("Agent", {
-        fullName,
-        email,
-        role,
-        password,
-        state
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        "Agent",
+        {
+          fullName,
+          email,
+          role,
+          password,
+          state,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/agents");
     } catch (error) {
       console.error("Error adding agent:", error);
@@ -120,43 +125,75 @@ const CreateAgent = () => {
 
               <MDBox pt={3} px={1.5}>
                 <form onSubmit={handleSubmit}>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Full Name"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Confirm Password"
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
-
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Full Name"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Confirm Password"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="50%">
+                 
+                    <FormControl fullWidth margin="normal"sx={{ marginRight: "8px" }}>
+                      <InputLabel>Role</InputLabel>
+                      <Select
+                        labelId="role-label"
+                        id="role"
+                        value={role}
+                        onChange={handleRoleChange}
+                        label="Role"
+                        sx={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1.1rem",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
+                        }}
+                      >
+                        {roles.map((role) => (
+                          <MenuItem key={role} value={role}>
+                            {role.split("_").join(" ")}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </MDBox>
                   <FormControl component="fieldset">
-                  <MDTypography variant="caption" fontSize={13.5} pt={2}> State :</MDTypography>
+                    <MDTypography variant="caption" fontSize={13.5} pt={2}>
+                      {" "}
+                      State :
+                    </MDTypography>
                     <RadioGroup
                       row
                       aria-label="status"
@@ -168,31 +205,7 @@ const CreateAgent = () => {
                       <FormControlLabel value={false} control={<Radio />} label="Inactive" />
                     </RadioGroup>
                   </FormControl>
-                  <FormControl fullWidth margin="normal">
-                    <InputLabel >Role</InputLabel>
-                    <Select
-                      labelId="role-label"
-                      id="role"
-                      value={role}
-                      onChange={handleRoleChange}
-                      label="Role"
-                     
-                      sx={{
-                        color: "#15192B",
-                        width: "100%",
-                        fontSize: "1.1rem",
-                        paddingTop: "10px",
-                        paddingBottom:"10px",
-                      }}
-                    >
-                      {roles.map((role) => (
-                        <MenuItem key={role} value={role}>
-                          {role.split("_").join(" ")}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
+                  
                   {error && (
                     <MDTypography variant="body2" color="error">
                       {error}

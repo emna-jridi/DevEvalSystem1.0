@@ -19,7 +19,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   IconButton,
-  Menu,
+  Select,
   MenuItem,
   Dialog,
   DialogTitle,
@@ -37,16 +37,18 @@ import config from "../../../config.json";
 import { formatDate } from "../utils";
 import { Link } from "react-router-dom";
 import { useLoading } from "../LoadingContext";
+import ReleaseSelectionDialog from "./ReleaseSelectionDialog ";
 
 export default function Data() {
   const [rows, setRows] = useState([]);
-  const [openMenu, setOpenMenu] = useState(null);
-  const [selectedEmail, setSelectedEmail] = useState(null);
+  const [releases, setReleases] = useState([]);
   const [role, setRole] = useState("");
   const navigate = useNavigate();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const { setLoading } = useLoading();
+  const [updateEmployeeFullName, setSelectedEmployeeName] = useState("");
+  const [updateReleaseName, setSelectedRelease] = useState("");
 
   const token = localStorage.getItem("accessToken");
 
@@ -72,19 +74,21 @@ export default function Data() {
   }
 
   let columns = [
-    { Header: "Employee", accessor: "Employee", width: "25%", align: "left" },
-    { Header: "Email", accessor: "Email", align: "left" },
-    { Header: "Phone Number", accessor: "PhoneNumber", align: "center" },
+    { Header: "Code", accessor: "Code", width: "15%", align: "left" },
+    { Header: "Employee", accessor: "Employee", width: "25%", align: "center" },
+    { Header: "Email", accessor: "Email", align: "center" },
     { Header: "Position", accessor: "Position", align: "center" },
-    { Header: "Employed At", accessor: "EmployedAt", align: "center" },
-    { Header: "Emergency Number", accessor: "EmergencyNumber", align: "center" },
     { Header: "Rank", accessor: "Rank", align: "center" },
+    { Header: "Performance", accessor: "Performance", align: "center" },
   ];
 
   if (role === config.ROLES.RTA) {
   } else {
     columns.push(
-      { Header: "More", accessor: "More", align: "center" },
+      { Header: "Phone Number", accessor: "PhoneNumber", align: "center" },
+      { Header: "Employed At", accessor: "EmployedAt", align: "center" },
+    
+      { Header: "More", accessor: "More", align: "center", width: "10%" },
       { Header: "Action", accessor: "Action", width: "10%", align: "center" }
     );
   }
@@ -92,6 +96,7 @@ export default function Data() {
   const handleUpdate = (
     email,
     id,
+    code,
     fullName,
     phoneNumber,
     civilState,
@@ -112,6 +117,7 @@ export default function Data() {
       state: {
         email,
         id,
+        code,
         fullName,
         phoneNumber,
         civilState,
@@ -140,13 +146,36 @@ export default function Data() {
       });
       const updatedRows = rows.filter((row) => row.id !== id);
       setRows(updatedRows);
-      setOpenMenu(null);
     } catch (error) {
       console.log(error);
     }
   };
+  const handleReleaseClick = (release, fullName) => {
+    setSelectedRelease(release);
+    setSelectedEmployeeName(fullName);
+    navigate(`/employees/performance`, { state: { release: release, employee: fullName } }); //nzidou param nom yssir alih research backend
+  };
 
   useEffect(() => {
+    const fetchReleaseData = async () => {
+      try {
+        const response = await axios.get(`releases`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const releasesData = response.data.Releases.map((release) => release.name);
+        setReleases((prevReleases) => {
+          if (JSON.stringify(prevReleases) !== JSON.stringify(releasesData)) {
+            return releasesData;
+          }
+          return prevReleases;
+        });
+      } catch (error) {
+        console.error("Error :", error);
+      }
+    };
+
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -158,6 +187,7 @@ export default function Data() {
         const donneesReponse = response.data.employees;
         const tableau = donneesReponse.map((donnee, index) => ({
           id: donnee.id,
+          Code: <Code code={donnee.code} />,
           Employee: <Employee fullName={donnee.fullName} />,
           Email: <Email email={donnee.email} />,
           PhoneNumber: <PhoneNumber phoneNumber={donnee.phoneNumber} />,
@@ -185,6 +215,7 @@ export default function Data() {
                   handleUpdate(
                     donnee.email,
                     donnee.id,
+                    donnee.code,
                     donnee.fullName,
                     donnee.phoneNumber,
                     donnee.civilState,
@@ -229,6 +260,11 @@ export default function Data() {
               </button>
             </MDBox>
           ),
+          Performance: (
+            <MDBox>
+              <ReleaseSelectionDialog  employeeName={donnee.fullName} releases={releases} handleReleaseClick={handleReleaseClick} />
+            </MDBox>
+          ),
         }));
         setRows(tableau);
         setLoading(false);
@@ -236,18 +272,22 @@ export default function Data() {
         console.log(error);
       }
     };
-
     fetchData();
-  }, [, selectedEmployee]);
+    fetchReleaseData();
+  }, [token, selectedEmployee, releases]);
 
   const Employee = ({ fullName }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDTypography variant="caption">{fullName}</MDTypography>
+    </MDBox>
+  );
+  const Code = ({ code }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-        {fullName}
+        {code}
       </MDTypography>
     </MDBox>
   );
-
   const Email = ({ email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography variant="caption">{email}</MDTypography>

@@ -1,11 +1,13 @@
 const Demand = require("../Model/DemandModel");
 const Release = require("../Model/ReleaseModel");
+
 const { StatusCodes } = require("http-status-codes");
 
 const createDemand = async (req, res) => {
   try {
     // Check if all required properties are provided
     if (
+      !req.body.code ||
       !req.body.title ||
       !req.body.description ||
       !req.body.start_date ||
@@ -32,6 +34,7 @@ const createDemand = async (req, res) => {
     // Creating a new demand instance with data from the request body
     const demand = new Demand({
       title: req.body.title,
+      code: req.body.code,
       description: req.body.description,
       start_date: req.body.start_date,
       end_date: req.body.end_date,
@@ -79,6 +82,7 @@ const getAllDemand = async (req, res) => {
       return {
         id: demand._id,
         title: demand.title,
+        code: demand.code,
         description: demand.description,
         start_date: demand.start_date,
         end_date: demand.end_date,
@@ -124,9 +128,9 @@ const updateDemand = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "Associated release not found." });
     }
-
     const update = {
       title: req.body.title,
+      code: req.body.code,
       description: req.body.description,
       start_date: req.body.start_date,
       end_date: req.body.end_date,
@@ -182,7 +186,7 @@ const deleteDemand = async (req, res) => {
     if (!demandId) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "Missing Demand Title." });
+        .json({ message: "Missing Demand id." });
     }
     // Finding and deleting the demand with the provided title
     const demand = await Demand.findByIdAndDelete(req.params.id);
@@ -202,56 +206,12 @@ const deleteDemand = async (req, res) => {
   }
 };
 
-//assign a release to a demand
-const assignToRelease = async (req, res) => {
-  try {
-    const demandTitle = req.params.title;
-    const releaseName = req.body.name;
-    // Finding release with provided name
-    const releaseFound = await Release.findOne({ name: releaseName });
-    if (!releaseFound) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: `Release with name ${releaseName} not found` });
-    }
-    //finding demand with provided title
-    demandFound = await Demand.findOne({ title: demandTitle });
-    //cheking if the demand already assigned
-    if (demandFound.release && demandFound.release.id) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        message: `${demandTitle} already assigned`,
-      });
-    }
-    // Creating an update object
-    const update = {
-      release: {
-        id: releaseFound._id,
-        name: releaseFound.name,
-        assignedProject: {
-          id: releaseFound.assignedProject.id,
-          label: releaseFound.assignedProject.label,
-        },
-      },
-    };
-    //Finding and updating the demand
-    await Demand.findOneAndUpdate({ title: demandTitle }, update, {
-      new: true,
-    });
-    // Sending a success response
-    return res.status(StatusCodes.ACCEPTED).send({
-      message: `Demand ${demandTitle} assigned to release ${releaseName} successfully`,
-    });
-  } catch (error) {
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ message: error.message });
-  }
-};
+
 
 module.exports = {
   createDemand,
   getAllDemand,
   updateDemand,
   deleteDemand,
-  assignToRelease,
+  
 };

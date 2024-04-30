@@ -21,7 +21,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { formatDate } from '../utils';
+import { formatDate } from "../utils";
 
 const UpdateRelease = () => {
   const [name, setName] = useState("");
@@ -30,6 +30,7 @@ const UpdateRelease = () => {
   const [end_date, setEnd_date] = useState(new Date());
   const [projects, setProjects] = useState([]);
   const [id, setId] = useState("");
+  const [code, setCode] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -37,8 +38,9 @@ const UpdateRelease = () => {
   const token = localStorage.getItem("accessToken");
   useEffect(() => {
     if (location.state) {
-      const { id, name, description, start_date, end_date, project } = location.state;
+      const { id, code, name, description, start_date, end_date, project } = location.state;
       setId(id);
+      setCode(code);
       setName(name);
       setDescription(description);
       setstart_date(start_date);
@@ -68,7 +70,7 @@ const UpdateRelease = () => {
 
   const handleSubmit = async () => {
     try {
-      if (!name || !description || !start_date || !end_date) {
+      if (!name || !description || !start_date || !end_date || !code) {
         setError("All fields are required.");
         return;
       }
@@ -79,6 +81,7 @@ const UpdateRelease = () => {
       await axios.put(
         `release/${id}`,
         {
+          code,
           name,
           description,
           start_date,
@@ -91,8 +94,7 @@ const UpdateRelease = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-        
+        }
       );
 
       navigate("/release");
@@ -129,14 +131,24 @@ const UpdateRelease = () => {
               </MDBox>
               <MDBox pt={3} px={1.5}>
                 <form onSubmit={handleSubmit}>
-                  <FormControl fullWidth margin="normal">
-                    <TextField
-                      label="Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      variant="outlined"
-                    />
-                  </FormControl>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Code "
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
                   <FormControl fullWidth margin="normal">
                     <TextField
                       label="Description"
@@ -169,30 +181,35 @@ const UpdateRelease = () => {
                       />
                     </FormControl>
                   </MDBox>
-                  <FormControl fullWidth margin="normal">
-                    <InputLabel>Project</InputLabel>
-                    <Select
-                      labelId="project-label"
-                      id="project"
-                      value={selectedProject}
-                      onChange={handleProjectChange}
-                      label="Project"
-                      sx={{
-                        color: "#15192B",
-                        width: "100%",
-                        fontSize: "1.1rem",
-                        paddingTop: "10px",
-                        paddingBottom:"10px",
-                        alignItems: "center",
-                      }}
-                    >
-                      {projects.map((project) => (
-                        <MenuItem key={project} value={project}>
-                          {project}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <MDBox display="flex" width="50%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "8px" }}>
+                      {/* <MDBox mb={2}>
+                      <MDTypography variant="h6"> Project :</MDTypography>
+                    </MDBox> */}
+                      <InputLabel>Project</InputLabel>
+                      <Select
+                        labelId="project-label"
+                        id="project"
+                        value={selectedProject}
+                        onChange={handleProjectChange}
+                        label="Project"
+                        sx={{
+                          color: "#15192B",
+                          width: "100%",
+                          fontSize: "1rem",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
+                          alignItems: "center",
+                        }}
+                      >
+                        {projects.map((project) => (
+                          <MenuItem key={project} value={project}>
+                            {project}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </MDBox>
                   {error && (
                     <MDTypography variant="body2" color="error">
                       {error}

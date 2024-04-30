@@ -10,8 +10,8 @@ const employee = require("./Router/EmployeeRoute");
 
 const cors = require("cors");
 const corsOptions = {
-    //origin: 'https://devevalsystem1-0-1.onrender.com'
-   origin: "http://localhost:3000",
+    origin: 'https://devevalsystem1-0-1.onrender.com'
+   //origin: "http://localhost:3000",
  
 };
 app.use(cors(corsOptions));
@@ -25,9 +25,6 @@ app.use("/", agent);
 app.use("/", employee);
 app.use("/", router);
 
-app.use("/", (req, res) => {
-  res.json("hello");
-});
 //port
 const port = 4000;
 

@@ -1,56 +1,56 @@
 /* eslint-disable */
-  import Grid from "@mui/material/Grid";
-  import Card from "@mui/material/Card";
-  import React from "react";
-  import axios from "axios";
-  import { useState } from "react";
-  import { useEffect } from "react";
-  import { FormControl, Button, TextField, MenuItem, Select, InputLabel } from "@mui/material";
-  import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-  import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-  import MDBox from "components/MDBox";
-  import MDTypography from "components/MDTypography";
-  import { useNavigate } from "react-router-dom";
-  import { useLocation } from "react-router-dom";
-  import { formatDate } from '../utils';
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import React from "react";
+import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
+import { FormControl, Button, TextField, MenuItem, Select, InputLabel } from "@mui/material";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { formatDate } from "../utils";
 
-  const UpdateDemand = () => {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [start_date, setstart_date] = useState(new Date("2024-01-01")); 
-    const [end_date, setEnd_date] = useState(new Date("2024-01-31")); 
-    const [estimation, setEstimation] = useState(0);
-    const [error, setError] = useState("");
-    const [releases, setReleases] = useState([]);
-    const [id, setId] = useState("");
+const UpdateDemand = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [start_date, setstart_date] = useState(new Date("2024-01-01"));
+  const [end_date, setEnd_date] = useState(new Date("2024-01-31"));
+  const [estimation, setEstimation] = useState(0);
+  const [error, setError] = useState("");
+  const [releases, setReleases] = useState([]);
+  const [id, setId] = useState("");
+  const [code, setCode] = useState("");
+  const [selectedRelease, setSelectedRelease] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const [selectedRelease, setSelectedRelease] = useState("");
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const token = localStorage.getItem("accessToken");
-    useEffect(() => {
-   
-      if (location.state) {
-        const { id , title, description, start_date, end_date, estimation, releaseName } = location.state;
-        setId(id);
-        setTitle(title);
-        setDescription(description);
-        setstart_date(start_date);
-        setEnd_date(end_date);
-        setEstimation(estimation)
-        setSelectedRelease(releaseName);
+  const token = localStorage.getItem("accessToken");
+  useEffect(() => {
+    if (location.state) {
+      const { data } =
+        location.state;
        
-      }
-      calculateEstimation();
-      fetchData();
+      setId(data.id);
+      setCode(data.code);
+      setTitle(data.title);
+      setDescription(data.description);
+      setstart_date(data.start_date);
+      setEnd_date(data.end_date);
+      setEstimation(data.estimation);
+      setSelectedRelease(data.release.name);
+    }
+    calculateEstimation();
+    fetchData();
+  }, [location]);
 
-    }, [location,]);
-
-    // useEffect(() => {
-    //   calculateEstimation();
-    // }, [start_date, end_date,]);
-    // Function to calculate the estimation based on start and end dates
+  // useEffect(() => {
+  //   calculateEstimation();
+  // }, [start_date, end_date,]);
+  // Function to calculate the estimation based on start and end dates
   const calculateEstimation = () => {
     if (start_date > end_date) {
       console.error("Invalid dates: Start date cannot be after end date.");
@@ -70,107 +70,109 @@
       if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
         workingDays++;
       }
-    } const estimationHours = workingDays * 8;
+    }
+    const estimationHours = workingDays * 8;
     setEstimation(estimationHours);
   };
 
-  
+  const handleStartDateChange = (e) => {
+    const newStartDate = new Date(e.target.value);
+    setstart_date(newStartDate);
+    calculateEstimation();
+  };
 
-    const handleStartDateChange =  (e) => {
-      const newStartDate = new Date(e.target.value);
-      setstart_date(newStartDate);
-      calculateEstimation();
-    };
-    
-    const handleEndDateChange = (e) => {
-      const newEndDate = new Date(e.target.value);
-      setEnd_date(newEndDate);
-      calculateEstimation();
-    };  
+  const handleEndDateChange = (e) => {
+    const newEndDate = new Date(e.target.value);
+    setEnd_date(newEndDate);
+    calculateEstimation();
+  };
 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`releases`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const releasesData = response.data.Releases.map((release) => release.name);
-
-        setReleases(releasesData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    const handleReleaseChange = (event) => {
-      setSelectedRelease(event.target.value);
-    };
-
-    const handleSubmit = async () => {
-      try {
-        if (!title || !description || !start_date || !end_date) {
-          setError("All fields are required.");
-          return;
-        }
-        if (end_date <= start_date) {
-          setError("End date must be after the start date.");
-          return;
-        }
-
-    await axios.put(
-      `demand/${id}`,
-      {
-        title,
-        description,
-        start_date,
-        end_date,
-        estimation,
-        release: {
-          name: selectedRelease,
-        },
-      },
-      {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`releases`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      });
+      const releasesData = response.data.Releases.map((release) => release.name);
+
+      setReleases(releasesData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleReleaseChange = (event) => {
+    setSelectedRelease(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (!title || !description || !start_date || !end_date || !code) {
+        setError("All fields are required.");
+        return;
       }
-    );
-        navigate("/demand");
-      } catch (error) {
-        console.error("Error adding Demand:", error);
+      if (end_date <= start_date) {
+        setError("End date must be after the start date.");
+        return;
       }
-    };
-    const handleCancel = () => {
+
+      await axios.put(
+        `demand/${id}`,
+        {
+          code,
+          title,
+          description,
+          start_date,
+          end_date,
+          estimation,
+          release: {
+            name: selectedRelease,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       navigate("/demand");
-    };
-    return (
-      <DashboardLayout>
-        <DashboardNavbar />
-        <MDBox pt={6} pb={3}>
-          <Grid container spacing={6}>
-            <Grid item xs={12}>
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Edit Release
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3} px={1.5}>
-                  <form onSubmit={handleSubmit}>
-                    <FormControl fullWidth margin="normal">
+    } catch (error) {
+      console.error("Error adding Demand:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate("/demand");
+  };
+  return (
+    <DashboardLayout>
+      <DashboardNavbar />
+      <MDBox pt={6} pb={3}>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <MDTypography variant="h6" color="white">
+                  Create Demand
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={1.5}>
+                <form onSubmit={handleSubmit}>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
                         label="Title"
                         value={title}
@@ -180,49 +182,47 @@
                     </FormControl>
                     <FormControl fullWidth margin="normal">
                       <TextField
-                        label="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        label="Code "
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
                         variant="outlined"
-                        rows={4}
-                        multiline
                       />
                     </FormControl>
-                    <MDBox display="flex" width="100%">
-                      <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
-                        <TextField
-                          label="Start Date"
-                          type="date"
-                          value={formatDate(start_date)}
-                          onChange={handleStartDateChange}
-                          fullWidth
-                          style={{ marginTop: "8px" }}
-                        />
-                      </FormControl>
-                      <FormControl fullWidth margin="normal">
-                        <TextField
-                          label="End Date"
-                          type="date"
-                          value={formatDate(end_date)}
-                          onChange={handleEndDateChange}
-                          fullWidth
-                          style={{ marginTop: "8px" }}
-                        />
-                      </FormControl>
-                    </MDBox>
-                    <FormControl fullWidth margin="normal">
+                  </MDBox>
+                  <FormControl fullWidth margin="normal">
+                    <TextField
+                      label="Description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      variant="outlined"
+                      rows={4}
+                      multiline
+                    />
+                  </FormControl>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
-                        label="Estimation"
-                        type="number"
-                        inputProps={{ min: 0 }}
-                        value={estimation}
-                        onChange={(e) => setEstimation(e.target.value)}
+                        label="Start Date"
+                        type="date"
+                        value={formatDate(start_date)}
+                        onChange={handleStartDateChange}
                         fullWidth
-                    
                         style={{ marginTop: "8px" }}
                       />
                     </FormControl>
                     <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="End Date"
+                        type="date"
+                        value={formatDate(end_date)}
+                        onChange={handleEndDateChange}
+                        fullWidth
+                        style={{ marginTop: "8px" }}
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <InputLabel>Release</InputLabel>
                       <Select
                         labelId="release-label"
@@ -235,7 +235,7 @@
                           width: "100%",
                           fontSize: "1.1rem",
                           paddingTop: "10px",
-                          paddingBottom:"10px",
+                          paddingBottom: "10px",
                           alignItems: "center",
                         }}
                       >
@@ -246,49 +246,61 @@
                         ))}
                       </Select>
                     </FormControl>
-                    {error && (
-                      <MDTypography variant="body2" color="error">
-                        {error}
-                      </MDTypography>
-                    )}
-                    <MDBox mb={2} mt={2} display="flex" justifyContent="flex-end">
-                      <Button
-                        sx={{
-                          backgroundColor: "#ccc",
-                          color: "#333",
-                          marginRight: "8px",
-                          "&:hover": {
-                            backgroundColor: "#999",
-                            color: "#fff",
-                          },
-                        }}
-                        onClick={handleCancel}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        sx={{
-                          backgroundColor: "#15192B",
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Estimation"
+                        value={estimation}
+                        type="number"
+                        inputProps={{ min: 0 }}
+                        onChange={(e) => setEstimation(e.target.value)} // Allow manual overriding
+                        fullWidth
+                        disabled
+                      />
+                    </FormControl>
+                  </MDBox>
+                  {error && (
+                    <MDTypography variant="body2" color="error">
+                      {error}
+                    </MDTypography>
+                  )}
+                  <MDBox mb={2} mt={2} display="flex" justifyContent="flex-end">
+                    <Button
+                      sx={{
+                        backgroundColor: "#ccc",
+                        color: "#333",
+                        marginRight: "8px",
+                        "&:hover": {
+                          backgroundColor: "#999",
                           color: "#fff",
-                          marginLeft: "8px",
-                          "&:hover": {
-                            backgroundColor: "#3A4B8A",
-                            color: "#fff",
-                          },
-                        }}
-                        onClick={handleSubmit}
-                      >
-                        Update
-                      </Button>
-                    </MDBox>
-                  </form>
-                </MDBox>
-              </Card>
-            </Grid>
+                        },
+                      }}
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      sx={{
+                        backgroundColor: "#15192B",
+                        color: "#fff",
+                        marginLeft: "8px",
+                        "&:hover": {
+                          backgroundColor: "#3A4B8A",
+                          color: "#fff",
+                        },
+                      }}
+                      onClick={handleSubmit}
+                    >
+                      Update
+                    </Button>
+                  </MDBox>
+                </form>
+              </MDBox>
+            </Card>
           </Grid>
-        </MDBox>
-      </DashboardLayout>
-    );
-  };
+        </Grid>
+      </MDBox>
+    </DashboardLayout>
+  );
+};
 
-  export default UpdateDemand;
+export default UpdateDemand;
