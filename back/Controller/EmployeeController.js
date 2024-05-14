@@ -16,20 +16,28 @@ const createEmployee = async (req, res) => {
       fullName: req.body.fullName,
       email: req.body.email,
       code: req.body.code,
+      nCin: req.body.nCin,
+      gender: req.body.gender,
+      birthdate: req.body.birthdate,
+      address: req.body.address,
+      city: req.body.address,
+      codePostal: req.body.codePostal,
+
       phoneNumber: req.body.phoneNumber,
       civilState: req.body.civilState,
       dependents: req.body.dependents,
       contract: req.body.contract,
       position: req.body.position,
       entryDate: req.body.entryDate,
-      salary: req.body.salary,
+      grossSalary: req.body.grossSalary,
+      netSalary: req.body.netSalary,
       RIB: req.body.RIB,
       cnssNumber: req.body.cnssNumber,
       emergencyNumber: req.body.emergencyNumber,
       hierarchicalSuperior: req.body.hierarchicalSuperior,
       leaveBalance: req.body.leaveBalance,
       lastNegotiationDate: req.body.lastNegotiationDate,
-      rank: req.body.rank,
+      experienceLevel: req.body.experienceLevel,
     });
 
     // Checking if all required properties are provided
@@ -41,7 +49,7 @@ const createEmployee = async (req, res) => {
     // Sending a success response
     res
       .status(StatusCodes.ACCEPTED)
-      .send({ message: `${employee.fullName} was registered successfully!` });
+      .send({ message: `employee was registered successfully!` });
 
     // Sending an internal server error response if an error occurs
   } catch (error) {
@@ -59,24 +67,32 @@ const getAllEmployee = async (req, res) => {
     // Mapping the employee data to a simpler format
     const data = employees.map((employee) => {
       return {
-        id : employee._id,
+        id: employee._id,
         fullName: employee.fullName,
-        code: employee.code, 
+        code: employee.code,
         email: employee.email,
+        nCin: employee.nCin,
+        gender: employee.gender,
+        birthdate: employee.birthdate,
         phoneNumber: employee.phoneNumber,
+        address:employee.address,
+        city:employee.city,
+        codePostal:employee.codePostal,
         civilState: employee.civilState,
         dependents: employee.dependents,
         contract: employee.contract,
         position: employee.position,
         entryDate: employee.entryDate,
-        salary: employee.salary,
+        grossSalary: employee.grossSalary,
+        netSalary: employee.netSalary,
         RIB: employee.RIB,
         cnssNumber: employee.cnssNumber,
         emergencyNumber: employee.emergencyNumber,
         hierarchicalSuperior: employee.hierarchicalSuperior,
         leaveBalance: employee.leaveBalance,
         lastNegotiationDate: employee.lastNegotiationDate,
-        rank: employee.rank,
+        experienceLevel: employee.experienceLevel,
+   
       };
     });
     res.status(StatusCodes.ACCEPTED).json({ employees: data });
@@ -91,32 +107,41 @@ const getAllEmployee = async (req, res) => {
 const updateEmpolyee = async (req, res) => {
   try {
     // Checking if all required properties are provided in the request body
-    if (!req.body.fullName || !req.body.position || !req.body.rank) {
-        return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({ message: "Please provide all employee information!" });
+    if (!req.body.fullName || !req.body.position || !req.body.experienceLevel) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Please provide all employee information!" });
     }
     // Creating an update object with data from the request body
-      
+
     const update = {
-        fullName: req.body.fullName,
-        email: req.body.email,
-        code: req.body.code,
-        phoneNumber: req.body.phoneNumber,
-        civilState: req.body.civilState,
-        dependents: req.body.dependents,
-        contract: req.body.contract,
-        position: req.body.position,
-        entryDate: req.body.entryDate,
-        salary: req.body.salary,
-        RIB: req.body.RIB,
-        cnssNumber: req.body.cnssNumber,
-        emergencyNumber: req.body.emergencyNumber,
-        hierarchicalSuperior: req.body.hierarchicalSuperior,
-        leaveBalance: req.body.leaveBalance,
-        lastNegotiationDate: req.body.lastNegotiationDate,
-        rank: req.body.rank,
-    };
+      fullName: req.body.fullName,
+      email: req.body.email,
+      code: req.body.code,
+      nCin: req.body.nCin,
+      gender: req.body.gender,
+      birthdate: req.body.birthdate,
+      address: req.body.address,
+      city: req.body.address,
+      codePostal: req.body.codePostal,
+      phoneNumber: req.body.phoneNumber,
+      civilState: req.body.civilState,
+      dependents: req.body.dependents,
+      contract: req.body.contract,
+      position: req.body.position,
+      entryDate: req.body.entryDate,
+      grossSalary: req.body.grossSalary,
+      netSalary: req.body.netSalary,
+      RIB: req.body.RIB,
+      cnssNumber: req.body.cnssNumber,
+      emergencyNumber: req.body.emergencyNumber,
+      hierarchicalSuperior: req.body.hierarchicalSuperior,
+      leaveBalance: req.body.leaveBalance,
+      lastNegotiationDate: req.body.lastNegotiationDate,
+      experienceLevel: req.body.experienceLevel,
+      dismess: req.body.dismess,
+      reason: req.body.reason, 
+    }; 
     // Finding and updating the employee with the provided email
     const updatedEmployee = await Employee.findByIdAndUpdate(
       req.params.id,

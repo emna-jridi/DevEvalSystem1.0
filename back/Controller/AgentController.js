@@ -27,7 +27,7 @@ const createAgent = async (req, res) => {
     // Sending a success response
     res
       .status(StatusCodes.ACCEPTED)
-      .send({ message: `${agent.fullName} was registered successfully!` });
+      .send({ message: `agent was registered successfully!` });
     // Sending an internal server error response if an error occurs
   } catch (error) {
     res
@@ -92,7 +92,7 @@ const updateAgent = async (req, res) => {
     if (!updatedAgent) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ message: "User not found." });
+        .json({ message: "Agent not found." });
     }
     // Sending a success response with the updated Agent data
     return res.status(StatusCodes.OK).json({ updatedAgent });

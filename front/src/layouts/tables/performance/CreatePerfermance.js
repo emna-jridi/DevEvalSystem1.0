@@ -72,7 +72,6 @@ const CreatePerformanceRating = () => {
   useEffect(() => {
     fetchReleasesData();
     fetchUserDetails(token);
- 
   }, []);
 
   const getAllReport = async () => {
@@ -81,14 +80,14 @@ const CreatePerformanceRating = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
       const reportsData = response.data.performanceReports.map((report) => ({
         demandTitle: report.demand.title,
         employeeFullName: report.employee.fullName,
       }));
 
       setReports(reportsData);
-      return reportsData
+      return reportsData;
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -150,20 +149,21 @@ const CreatePerformanceRating = () => {
       });
       const reportsData = await getAllReport();
       const employeesWithNoRatingOnDemand = response.data.employees
-      .filter((employee) => {
-        const hasReportForDemand = reportsData.some((report) => 
-          report.employeeFullName === employee.fullName && report.demandTitle === selectedDemand
-        );
-        return !hasReportForDemand;
-      })
-      .map((employee) => employee.fullName);
-    setEmployees(employeesWithNoRatingOnDemand);
+        .filter((employee) => {
+          const hasReportForDemand = reportsData.some(
+            (report) =>
+              report.employeeFullName === employee.fullName && report.demandTitle === selectedDemand
+          );
+          return !hasReportForDemand;
+        })
+        .map((employee) => employee.fullName);
+      setEmployees(employeesWithNoRatingOnDemand);
     } catch (error) {
       console.error("Error :", error);
     }
   };
   useEffect(() => {
-    getAllEmployees(selectedDemand); // Appel à getAllEmployees avec la demande sélectionnée
+    getAllEmployees(selectedDemand); 
   }, [selectedDemand]);
   useEffect(() => {
     calculateTotal();
@@ -264,14 +264,14 @@ const CreatePerformanceRating = () => {
           },
         }
       );
-      navigate("/tables/report");
+      navigate("/tables/statics");
     } catch (error) {
       console.error("Error adding performance Rating :", error);
       setError("Error  adding performance Rating ");
     }
   };
   const handleCancel = () => {
-    navigate("/tables/report");
+    navigate("/tables/statics");
   };
   return (
     <DashboardLayout>

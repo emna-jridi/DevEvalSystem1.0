@@ -41,7 +41,6 @@ const createPerformance = async (req, res) => {
         releaseName: demandFound.release.name,
       },
       created_At: req.body.created_At,
-      idAdmin: req.body.idAdmin,
       employee: {
         id: employeeFound.id,
         fullName: employeeFound.fullName,

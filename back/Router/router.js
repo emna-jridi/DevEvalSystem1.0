@@ -27,7 +27,7 @@ const {
   getAllPerformanceReport,
   updatePerformaneReport,
   deletePerformanceReport,
-  checkPerformanceReportExists
+  checkPerformanceReportExists,
 } = require("../Controller/PerformanceController");
 
 const {
@@ -35,6 +35,14 @@ const {
   getAllFinalPerformances,
   updateFinalPerformance,
 } = require("../Controller/FinalPerformance");
+
+const {
+  createpsychotechnicalReport,
+  getAllPsychotechnicalReports,
+  updatePsychotechnicalReport,
+  deletePsychotechnicalReport,
+  checkReportExists
+} = require("../Controller/psychotechnicalReportController");
 
 //Project Crud
 router.route("/project").post(checkAuth, createProject);
@@ -63,8 +71,8 @@ router
   .put(checkAuth, updateDemand)
   .delete(checkAuth, deleteDemand);
 
-router.route("/rating").post(checkAuth, createPerformance)
-router.route("/check").get(checkAuth,checkPerformanceReportExists)
+router.route("/rating").post(checkAuth, createPerformance);
+router.route("/check").get(checkAuth, checkPerformanceReportExists);
 router.route("/ratings").get(checkAuth, getAllPerformanceReport);
 router
   .route("/rating/:id")
@@ -74,8 +82,19 @@ router
 router.route("/static").get(checkAuth, getAllFinalPerformances);
 router
   .route("/statics/:releaseName")
-  .post(checkAuth,calculateFinalPerformance)
+  .post(checkAuth, calculateFinalPerformance)
   .put(checkAuth, updateFinalPerformance);
+
+router
+  .route("/psychotechnical-reports")
+  .get(checkAuth, getAllPsychotechnicalReports).post(checkReportExists)
+router
+  .route("/psychotechnical-report")
+  .post(checkAuth, createpsychotechnicalReport);
+router
+  .route("/psychotechnical-report/:id")
+  .put(checkAuth, updatePsychotechnicalReport)
+  .delete(checkAuth, deletePsychotechnicalReport);
 
 
 module.exports = router;

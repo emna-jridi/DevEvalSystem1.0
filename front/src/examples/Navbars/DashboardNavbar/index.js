@@ -39,6 +39,7 @@ import { Box, Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "../../../layouts/authentication/log-out";
+import DarkModeButton  from "../../../darkTheme"
 // Custom styles for DashboardNavbar
 import {
   navbar,
@@ -163,10 +164,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
-
+    
         {isMini ? null : (
           <MDBox sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
             {fullName ? (
+              
               <MDBox
                 sx={{
                   color: light ? "white" : "inherit",
@@ -175,12 +177,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   alignItems: "center",
                 }}
               >
-                <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} /> {/* Icon */}
+                    <DarkModeButton />
+                <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} /> 
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                   Hello {fullName.split(" ")[0]}{" "} 
                 </Typography>
               </MDBox>
             ) : (
+             
               <AccountCircleIcon sx={{ fontSize: 24, marginRight: 1 }} />
             )}
             <MDBox>
@@ -204,6 +208,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
               >
                 <Icon sx={iconsStyle}>logout</Icon>
               </IconButton>
+            
               {/* <IconButton
                 size="small"
                 disableRipple

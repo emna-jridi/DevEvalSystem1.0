@@ -29,11 +29,7 @@ const performCalculations = (performanceReports) => {
     totalsByEmployee[employeeId].totalDemands++;
     totalsByEmployee[employeeId].score +=
       report.autonomy +
-      report.estimation +
-      report.conformity +
-      report.total +
-      report.majorBugs +
-      report.minorBugs;
+      report.estimation + report.conformity +  report.total -    report.majorBugs - report.minorBugs;
   });
   return totalsByEmployee;
 };
@@ -186,10 +182,7 @@ console.log(foundEmployee);
     const employeeTotals = calculatedPerformance[foundEmployee._id];
     const score =
       employeeTotals.totalAutonomy +
-      employeeTotals.totalEstimation +
-      employeeTotals.totalConformity +
-      employeeTotals.totalMajorBugs +
-      employeeTotals.totalMinorBugs +
+      employeeTotals.totalEstimation +  employeeTotals.totalConformity -  employeeTotals.totalMajorBugs - employeeTotals.totalMinorBugs +
       employeeTotals.totalCodeQuality;
 
       final.score = score;

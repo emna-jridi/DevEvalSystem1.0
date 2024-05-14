@@ -63,15 +63,18 @@ import UpdateDemand from "layouts/tables/demandTables/updateDemand";
 import PerformanceTables from "layouts/tables/performance/performanceTable";
 import CreatePerformance from "layouts/tables/performance/CreatePerfermance";
 import UpdatePerformance from "layouts/tables/performance/UpdatePerformance";
-import ReportTable from "layouts/tables/reportTable/reportTable"
-
+import ReportTable from "layouts/tables/reportTable/reportTable";
+import PerformanceSelectionPage from "layouts/tables/performance/selectReease";
+import PsychotechnicalReportTable from "layouts/tables/psychotechnicalReportTables/psychotechnicalReportTable";
+import CreatePsychotechnicalReport from "layouts/tables/psychotechnicalReportTables/createPR";
+import UpdatePsychotechnicalReport from "layouts/tables/psychotechnicalReportTables/editPR";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WebIcon from "@mui/icons-material/Web";
 import SendTimeExtensionIcon from "@mui/icons-material/SendTimeExtension";
 import config from "./config.json";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
 
 const routes = [
   {
@@ -101,8 +104,9 @@ const routes = [
     key: "UpdatePerformance",
     route: "/employees/performance/edit",
     component: <UpdatePerformance />,
-  },,
+  },
 
+  ,
   {
     // type: "collapse",
     name: "Sign In",
@@ -253,12 +257,12 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Statics",
-    key: "statics",
+    name: "Performance",
+    key: "performance",
     icon: <ShowChartIcon />,
     allowedRoles: [config.ROLES.RA, config.ROLES.RTA],
-    route: "/tables/statics",
-    //component: <EmployeeTables />
+    route: "/tables/performance",
+    component: <PerformanceSelectionPage />
   },
   {
     type: "collapse",
@@ -267,9 +271,30 @@ const routes = [
     icon: <DescriptionIcon />,
     allowedRoles: [config.ROLES.RA, config.ROLES.RTA],
     route: "/tables/report",
-    component: <ReportTable />
+    component: <ReportTable />,
   },
-
+  {
+    type: "collapse",
+    name: "Psychotechnical Report",
+    key: "psychotechnicalReport",
+    icon: <DescriptionIcon />,
+    allowedRoles: [config.ROLES.RA, config.ROLES.RPA],
+    route: "/tables/psychotechnique-reports",
+    component: <PsychotechnicalReportTable />,
+  },
+  {
+    name: CreatePsychotechnicalReport,
+    key: "createPsychotechnicalReport",
+    component: <CreatePsychotechnicalReport />,
+    route: "/psychotechnique-reports/create",
+  },
+  {
+    name: UpdatePsychotechnicalReport,
+    key: "UudatePsychotechnicalReport",
+    component: <UpdatePsychotechnicalReport />,
+    route: "/psychotechnique-reports/edit",
+  },
+  
 ];
 
 export default routes;

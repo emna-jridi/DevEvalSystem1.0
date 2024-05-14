@@ -27,7 +27,7 @@ import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
+import axios from "axios";
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
@@ -35,10 +35,61 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { formatDate } from "../tables/utils";
 function Dashboard() {
+  const [numberEmployee, setNumberEmployee] = useState(0);
+  const [projectNumber, setProjectNumber] = useState(0);
+  const [closestEntryDate, setClosestEntryDate] = useState(formatDate(new Date()));
+
   const { sales, tasks } = reportsLineChartData;
+  const token = localStorage.getItem("accessToken");
+  useEffect(() => {
+    getAllEmployees();
+    fetchData();
+  }, []);
+  const getAllEmployees = async () => {
+    try {
+      const response = await axios.get("employees", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const employees = response.data.employees;
+      const numberOfEmployees = employees.length;
+      setNumberEmployee(numberOfEmployees);
+      const sortedEmployees = employees.sort((a, b) => {
+        const dateA = new Date(a.entryDate);
+        const dateB = new Date(b.entryDate);
+        return dateA - dateB;
+      });
+
+      const closestEntryDate = sortedEmployees.length > 0 ? sortedEmployees[0].entryDate : null;
+      console.log("Closest entry date:", closestEntryDate);
+
+      setClosestEntryDate(closestEntryDate);
+    } catch (error) {
+      console.error("Error :", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`projects`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const projectsData = response.data.Projects.map((project) => project.label);
+      const numberOfPrrojects = projectsData.length;
+      setProjectNumber(numberOfPrrojects);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -48,13 +99,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                icon="group"
+                title="Employees"
+                count={numberEmployee}
                 percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  color: "info",
+                  amount: formatDate(closestEntryDate),
+                  label: "   last integration",
                 }}
               />
             </MDBox>
@@ -63,13 +114,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
+                title="Projects"
+                count={projectNumber}
+                // percentage={{
+                //   color: "success",
+                //   amount: "+3%",
+                //   label: "than last month",
+                // }}
               />
             </MDBox>
           </Grid>
@@ -78,13 +129,13 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Revenue"
+                title="Conformity technique"
                 count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
+                // percentage={{
+                //   color: "success",
+                //   amount: "+1%",
+                //   label: "than yesterday",
+                // }}
               />
             </MDBox>
           </Grid>
@@ -93,13 +144,13 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Followers"
+                title="Conformity psycotechnique"
                 count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
+                // percentage={{
+                //   color: "success",
+                //   amount: "",
+                //   label: "Just updated",
+                // }}
               />
             </MDBox>
           </Grid>
@@ -145,7 +196,7 @@ function Dashboard() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox>
+        {/* <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
               <Projects />
@@ -154,7 +205,7 @@ function Dashboard() {
               <OrdersOverview />
             </Grid>
           </Grid>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
       <Footer />
     </DashboardLayout>

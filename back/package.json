@@ -6,11 +6,10 @@
   "scripts": {
     "test": "npm test",
     "start": "nodemon app.js",
-    "start-server":"cd backend && node app.js",
-    "install-client":"cd front && npm install",
-    "build-client":"cd front && npm run build",
-    "start-client":"cd front && npm run start"
-
+    "start-server": "cd backend && node app.js",
+    "install-client": "cd front && npm install",
+    "build-client": "cd front && npm run build",
+    "start-client": "cd front && npm run start"
   },
   "author": "FULLSTACK TEAM",
   "license": "ISC",
@@ -30,5 +29,9 @@
     "nodemon": "^3.0.3",
     "validator": "^13.11.0"
   },
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-mock-req-res": "^1.0.2"
+  }
 }

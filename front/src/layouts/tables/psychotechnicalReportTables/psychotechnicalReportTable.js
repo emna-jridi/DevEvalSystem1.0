@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Card, IconButton } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Icon from "@mui/material/Icon";
 import { Pagination, PaginationItem } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -14,21 +14,20 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-import performanceDataTable from "layouts/tables/performance/performanceDataTable";
+import performanceDataTable from "layouts/tables/psychotechnicalReportTables/dataTable";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-function PerformanceTables() {
+function psychotechnicalReportTable() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { columns, rows } = performanceDataTable(location.state);
+  const { columns, rows } = performanceDataTable();
   const { loading } = useLoading();
   const [currentPage, setCurrentPage] = useState(1);
-
   const entriesPerPage = 10;
 
   const handleAddPerformance = () => {
-    navigate("/employees/performance/create");
+    navigate("/psychotechnique-reports/create");
   };
+
   const totalEntries = rows.length;
   const totalPages = Math.ceil(totalEntries / entriesPerPage);
 
@@ -74,7 +73,7 @@ function PerformanceTables() {
                   justifyContent="space-between"
                 >
                   <MDTypography variant="h6" color="white" sx={{ fontSize: "1rem" }}>
-                    Release
+                    Reports
                   </MDTypography>
                   <IconButton
                     onClick={handleAddPerformance}
@@ -125,4 +124,4 @@ function PerformanceTables() {
   );
 }
 
-export default PerformanceTables;
+export default psychotechnicalReportTable;

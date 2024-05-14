@@ -4,7 +4,17 @@ import Card from "@mui/material/Card";
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { FormControl, Button, MenuItem, TextField, Select, InputLabel } from "@mui/material";
+import {
+  FormControl,
+  Button,
+  MenuItem,
+  TextField,
+  Select,
+  InputLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+} from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -39,32 +49,43 @@ const createEmployee = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [nCin, setNCin] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthdate, setBirthDate] = useState(formatDate(new Date()));
+  const [address, setAdress] = useState("");
+  const [city, setCity] = useState("");
+  const [codePostal, setCodePostal] = useState("");
   const [code, setCode] = useState("");
   const [civilState, setCivilState] = useState("");
   const [dependents, setDependents] = useState(0);
   const [contract, setContract] = useState("");
   const [position, setPosition] = useState("");
   const [entryDate, setEntryDate] = useState(formatDate(new Date()));
-  const [salary, setSalary] = useState("");
+  const [grossSalary, setGrossSalary] = useState(0);
+  const [netSalary, setNetSalary] = useState(0);
   const [RIB, setRIB] = useState("");
   const [cnssNumber, setCnssNumber] = useState("");
   const [emergencyNumber, setEmergencyNumber] = useState("");
   const [hierarchicalSuperior, setHierarchicalSuperior] = useState("");
   const [leaveBalance, setLeaveBalance] = useState(0);
   const [lastNegotiationDate, setLastNegotiationDate] = useState(formatDate(new Date()));
-  const [rank, setRank] = useState(0);
+  const [experienceLevel, setExperienceLevel] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const civilStates = ["Single", "Married", "Divorced", "Widowed"];
-  const contractTypes = ["CDI", "CDD", "Internship", "Freelance", "Seasonal Contract"];
+  const contractTypes = ["CDI", "CDD", "CIVP", "Internship", "Freelance", "Seasonal Contract"];
   const token = localStorage.getItem("accessToken");
 
   const handlePositionChange = (event) => {
     setPosition(event.target.value);
   };
+  const handleGenderChange = (event) => {
+    setGender(event.target.value);
+  };
+
   const handleSubmit = async () => {
     try {
-      if (!fullName || !email || !position || !rank || !entryDate || !code) {
+      if (!fullName || !email || !position || !experienceLevel || !entryDate || !code) {
         setError("All fields are required.");
         return;
       }
@@ -89,8 +110,17 @@ const createEmployee = () => {
         return;
       }
       const salaryPattern = /^\d+(\.\d{1,3})?$/;
-      if (!salaryPattern.test(salary)) {
+      if (!salaryPattern.test(grossSalary)) {
         setError("Please enter a valid salary.");
+        return;
+      }
+      if (RIB.length > 20) {
+        setError("RIB cannot exceed 20 digits.");
+        return;
+      }
+
+      if (cnssNumber.length > 10) {
+        setError("CNSS number cannot exceed 10 digits.");
         return;
       }
       const response = await axios.get(`auth/emailExist/${email}`, {
@@ -98,6 +128,7 @@ const createEmployee = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (response.data.exists) {
         setError("This email already exists. Please use a different email address.");
         return;
@@ -110,19 +141,26 @@ const createEmployee = () => {
           code,
           email,
           phoneNumber,
+          nCin,
+          gender,
+          birthdate,
+          address,
+          city,
+          codePostal,
           civilState,
           dependents,
           contract,
           position,
           entryDate,
-          salary,
+          grossSalary,
+          netSalary,
           RIB,
           cnssNumber,
           emergencyNumber,
           hierarchicalSuperior,
           leaveBalance,
           lastNegotiationDate,
-          rank,
+          experienceLevel,
         },
         {
           headers: {
@@ -168,18 +206,17 @@ const createEmployee = () => {
                   <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
-                        label="Full Name"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
+                        label="Code "
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
                         variant="outlined"
                       />
                     </FormControl>
-
                     <FormControl fullWidth margin="normal">
                       <TextField
-                        label="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        label="Full Name"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
                         variant="outlined"
                       />
                     </FormControl>
@@ -187,14 +224,104 @@ const createEmployee = () => {
                   <MDBox display="flex" width="100%">
                     <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
-                        label="Code "
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         variant="outlined"
                       />
                     </FormControl>
-
-                    <FormControl fullWidth margin="normal" >
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="ID Card Number"
+                        value={nCin}
+                        onChange={(e) => setNCin(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <MDBox
+                      style={{
+                        display: "flex",
+                        border: "1px solid rgba(0, 0, 0, 0.23)",
+                        borderRadius: "4px",
+                        paddingLeft: "10px",
+                        paddingRight: "10px",
+                        marginTop: "2px",
+                        width: "50%",
+                      }}
+                    >
+                      <MDTypography
+                        variant="caption"
+                        fontSize={13.5}
+                        pt={2}
+                        style={{ marginRight: "8px" }}
+                      >
+                        Gender:
+                      </MDTypography>
+                      <RadioGroup
+                        row
+                        aria-label="gender"
+                        name="gender"
+                        value={gender}
+                        onChange={handleGenderChange}
+                        margin="normal"
+                      >
+                        <FormControlLabel
+                          value="male"
+                          control={<Radio />}
+                          label="Male"
+                          style={{ margin: "4px" }}
+                        />
+                        <FormControlLabel
+                          value="female"
+                          control={<Radio />}
+                          label="Female"
+                          style={{ margin: "4px" }}
+                        />
+                      </RadioGroup>
+                    </MDBox>
+                    <FormControl
+                      fullWidth
+                      style={{ width: "50%", marginLeft: "16px", marginTop: "5px" }}
+                    >
+                      <TextField
+                        label="Birth Date "
+                        type="date"
+                        value={formatDate(birthdate)}
+                        onChange={(e) => setBirthDate(new Date(e.target.value))}
+                        fullWidth
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="address"
+                        value={address}
+                        onChange={(e) => setAdress(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="City "
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Code Postal "
+                        value={codePostal}
+                        onChange={(e) => setCodePostal(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
                       {/* <PhoneInput
                         defaultCountry="TN"
                         value={phoneNumber}
@@ -223,7 +350,7 @@ const createEmployee = () => {
                     </FormControl>
                   </MDBox>
                   <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }} >
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <InputLabel>Civil State</InputLabel>
                       <Select
                         value={civilState}
@@ -256,7 +383,7 @@ const createEmployee = () => {
                     </FormControl>
                   </MDBox>
                   <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal"  sx={{ marginRight: "16px" }}>
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <InputLabel>Contract Type</InputLabel>
                       <Select
                         value={contract}
@@ -302,17 +429,7 @@ const createEmployee = () => {
                     </FormControl>
                   </MDBox>
                   <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal"sx={{ marginRight: "16px" }}>
-                      <TextField
-                        label="Entry Date"
-                        type="date"
-                        value={formatDate(entryDate)}
-                        onChange={(e) => setEntryDate(new Date(e.target.value))}
-                        fullWidth
-                      />
-                    </FormControl>
-
-                    <FormControl fullWidth margin="normal" >
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       {/*         
                     <CurrencyInput
                       name="salary"
@@ -334,9 +451,17 @@ const createEmployee = () => {
                       }}
                     /> */}
                       <TextField
-                        label="Salary"
-                        value={salary}
-                        onChange={(e) => setSalary(e.target.value)}
+                        label="Gross Salary"
+                        value={grossSalary}
+                        onChange={(e) => setGrossSalary(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <TextField
+                        label="Net Salary"
+                        value={netSalary}
+                        onChange={(e) => setNetSalary(e.target.value)}
                         variant="outlined"
                       />
                     </FormControl>
@@ -379,14 +504,25 @@ const createEmployee = () => {
                         defaultCountry="TN"
                       /> */}
                       <TextField
-                        label="Emergency Number"
+                        label="Emergency Phone Number"
                         value={emergencyNumber}
                         onChange={(e) => setEmergencyNumber(e.target.value)}
                         variant="outlined"
                       />
                     </FormControl>
-
-                    <FormControl fullWidth margin="normal">
+                    <FormControl fullWidth margin="normal" >
+                      <TextField
+                        label="Entry Date"
+                        type="date"
+                        value={formatDate(entryDate)}
+                        onChange={(e) => setEntryDate(new Date(e.target.value))}
+                        fullWidth
+                      />
+                    </FormControl>
+                    
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                  <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
                       <TextField
                         label="Hierarchical Superior"
                         value={hierarchicalSuperior}
@@ -394,9 +530,7 @@ const createEmployee = () => {
                         variant="outlined"
                       />
                     </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="100%">
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                    <FormControl fullWidth margin="normal">
                       <TextField
                         label="Leave Balance"
                         type="number"
@@ -406,25 +540,24 @@ const createEmployee = () => {
                       />
                     </FormControl>
 
+                   
+                  </MDBox>
+                  <MDBox display="flex" width="100%">
+                    <FormControl fullWidth margin="normal" sx={{ marginRight: "16px" }}>
+                      <TextField
+                        label="Experience Level"
+                        value={experienceLevel}
+                        onChange={(e) => setExperienceLevel(e.target.value)}
+                        variant="outlined"
+                      />
+                    </FormControl>
                     <FormControl fullWidth margin="normal">
                       <TextField
-                        label="Last Negotiation : 
-                        "
+                        label="Last Approved Negotiation : "
                         type="date"
                         value={formatDate(lastNegotiationDate)}
                         onChange={(e) => setLastNegotiationDate(new Date(e.target.value))}
                         fullWidth
-                      />
-                    </FormControl>
-                  </MDBox>
-                  <MDBox display="flex" width="50%" >
-                    <FormControl fullWidth margin="normal" sx={{ marginRight: "8px" }}>
-                      <TextField
-                        label="Rank"
-                        type="number"
-                        value={rank}
-                        onChange={(e) => setRank(e.target.value)}
-                        variant="outlined"
                       />
                     </FormControl>
                   </MDBox>

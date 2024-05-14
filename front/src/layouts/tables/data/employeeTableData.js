@@ -75,11 +75,10 @@ export default function Data() {
 
   let columns = [
     { Header: "Code", accessor: "Code", width: "15%", align: "left" },
-    { Header: "Employee", accessor: "Employee", width: "25%", align: "center" },
+    { Header: "Employee", accessor: "Employee", width: "20%", align: "center" },
     { Header: "Email", accessor: "Email", align: "center" },
     { Header: "Position", accessor: "Position", align: "center" },
-    { Header: "Rank", accessor: "Rank", align: "center" },
-    { Header: "Performance", accessor: "Performance", align: "center" },
+    { Header: "Experience Level", accessor: "ExperienceLevel", align: "center" },
   ];
 
   if (role === config.ROLES.RTA) {
@@ -87,52 +86,16 @@ export default function Data() {
     columns.push(
       { Header: "Phone Number", accessor: "PhoneNumber", align: "center" },
       { Header: "Employed At", accessor: "EmployedAt", align: "center" },
-    
+
       { Header: "More", accessor: "More", align: "center", width: "10%" },
       { Header: "Action", accessor: "Action", width: "10%", align: "center" }
     );
   }
 
-  const handleUpdate = (
-    email,
-    id,
-    code,
-    fullName,
-    phoneNumber,
-    civilState,
-    dependents,
-    contract,
-    position,
-    entryDate,
-    salary,
-    RIB,
-    cnssNumber,
-    emergencyNumber,
-    hierarchicalSuperior,
-    leaveBalance,
-    lastNegotiationDate,
-    rank
-  ) => {
+  const handleUpdate = (employee) => {
     navigate("/employees/edit", {
       state: {
-        email,
-        id,
-        code,
-        fullName,
-        phoneNumber,
-        civilState,
-        dependents,
-        contract,
-        position,
-        entryDate,
-        salary,
-        RIB,
-        cnssNumber,
-        emergencyNumber,
-        hierarchicalSuperior,
-        leaveBalance,
-        lastNegotiationDate,
-        rank,
+        employee,
       },
     });
   };
@@ -149,11 +112,6 @@ export default function Data() {
     } catch (error) {
       console.log(error);
     }
-  };
-  const handleReleaseClick = (release, fullName) => {
-    setSelectedRelease(release);
-    setSelectedEmployeeName(fullName);
-    navigate(`/employees/performance`, { state: { release: release, employee: fullName } }); //nzidou param nom yssir alih research backend
   };
 
   useEffect(() => {
@@ -185,6 +143,7 @@ export default function Data() {
           },
         });
         const donneesReponse = response.data.employees;
+        console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => ({
           id: donnee.id,
           Code: <Code code={donnee.code} />,
@@ -207,33 +166,10 @@ export default function Data() {
           LastNegotiationDate: (
             <LastNegotiationDate lastNegotiationDate={donnee.lastNegotiationDate} />
           ),
-          Rank: <Rank rank={donnee.rank} />,
+          ExperienceLevel: <ExperienceLevel experienceLevel={donnee.experienceLevel} />,
           Action: (
             <MDBox key={index}>
-              <IconButton
-                onClick={() =>
-                  handleUpdate(
-                    donnee.email,
-                    donnee.id,
-                    donnee.code,
-                    donnee.fullName,
-                    donnee.phoneNumber,
-                    donnee.civilState,
-                    donnee.dependents,
-                    donnee.contract,
-                    donnee.position,
-                    donnee.entryDate,
-                    donnee.salary,
-                    donnee.RIB,
-                    donnee.cnssNumber,
-                    donnee.emergencyNumber,
-                    donnee.hierarchicalSuperior,
-                    donnee.leaveBalance,
-                    donnee.lastNegotiationDate,
-                    donnee.rank
-                  )
-                }
-              >
+              <IconButton onClick={() => handleUpdate(donnee)}>
                 <Icon fontSize="small">edit</Icon>
               </IconButton>
               <IconButton onClick={() => setOpenConfirmation(true)}>
@@ -258,11 +194,6 @@ export default function Data() {
               >
                 Show more
               </button>
-            </MDBox>
-          ),
-          Performance: (
-            <MDBox>
-              <ReleaseSelectionDialog  employeeName={donnee.fullName} releases={releases} handleReleaseClick={handleReleaseClick} />
             </MDBox>
           ),
         }));
@@ -372,9 +303,9 @@ export default function Data() {
     </MDBox>
   );
 
-  const Rank = ({ rank }) => (
+  const ExperienceLevel = ({ experienceLevel }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography variant="caption">{rank}</MDTypography>
+      <MDTypography variant="caption">{experienceLevel}</MDTypography>
     </MDBox>
   );
 

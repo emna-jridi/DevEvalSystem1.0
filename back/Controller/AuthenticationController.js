@@ -32,15 +32,9 @@ const login = async (req, res) => {
     }
 
     // Validate password
-    const passwordIsValid = await bcrypt.compare(
-      req.body.password,
-      foundUser.password
-    );
+    const passwordIsValid = await bcrypt.compare(req.body.password, foundUser.password);
     if (!passwordIsValid) {
-      return res.status(StatusCodes.FORBIDDEN).send({
-        accessToken: null,
-        message: "Invalid Password!",
-      });
+      return res.status(StatusCodes.FORBIDDEN).json({ accessToken: null, message: "Invalid Password !" });
     }
     // Check if State is valid
 

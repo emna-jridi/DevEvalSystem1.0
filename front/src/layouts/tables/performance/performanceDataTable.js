@@ -9,8 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AlertDialog from "../data/AlertDialog";
 import { useLoading } from "../LoadingContext";
 
-
-export default function Data() {
+export default function Data(locationData) {
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
   const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -23,14 +22,39 @@ export default function Data() {
   const handleUpdate = (id, rowData) => {
     navigate("/employees/performance/edit", { state: { rowData } });
   };
-  useEffect(() => {
-    if (location.state) {
-      const release = location.state.selectedRelease;
-      const employeeName = location.state.employeeName;
-      setEmployee(employeeName);
-      setReleaseName(release);
+
+  const getEstimationValue = (value) => {
+    switch (value) {
+      case 0:
+        return "Non compliant";
+      case 5:
+        return "Compliant";
+      case 10:
+        return "Super compliant";
+      default:
+        return "";
     }
-  }, [location]);
+  };
+
+  const getConformityValue = (value) => {
+    switch (true) {
+      case value === 0:
+        return "Non compliant";
+      case value > 0 && value <= 5:
+        return "Compliant";
+      case value > 5 && value <= 10:
+        return "Super compliant";
+      default:
+        return "";
+    }
+  };
+
+  useEffect(() => {
+    if (locationData) {
+      setReleaseName(locationData.release);
+      setEmployee(locationData.employee);
+    }
+  }, [locationData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +69,8 @@ export default function Data() {
         const donneesReponse = response.data.performanceReports;
         const filteredData = donneesReponse.filter(
           (donnee) =>
-            donnee.demand.releaseName === releaseName && donnee.employee.fullName === selectedEmployee
+            donnee.demand.releaseName === releaseName &&
+            donnee.employee.fullName === selectedEmployee
         );
 
         const tableau = filteredData.map((donnee, index) => {
@@ -87,7 +112,7 @@ export default function Data() {
           MinorBugs: <MDTypography variant="caption">{totalScore.MinorBugs}</MDTypography>,
           Action: null,
           sx: {
-            backgroundColor: "#f2f2f2", 
+            backgroundColor: "#f2f2f2",
           },
         };
 
@@ -144,8 +169,6 @@ export default function Data() {
     };
   };
 
-
-
   const Employee = ({ fullName }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
@@ -162,7 +185,7 @@ export default function Data() {
 
   const Estimation = ({ estimation }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography variant="caption">{estimation}</MDTypography>
+      <MDTypography variant="caption">{getEstimationValue(estimation)}</MDTypography>
     </MDBox>
   );
   const CodeQuality = ({ codeQuality }) => (
@@ -172,7 +195,7 @@ export default function Data() {
   );
   const Conformity = ({ conformity }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDTypography variant="caption">{conformity}</MDTypography>
+      <MDTypography variant="caption">{getConformityValue(conformity)}</MDTypography>
     </MDBox>
   );
 

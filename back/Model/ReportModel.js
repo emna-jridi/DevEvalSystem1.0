@@ -7,7 +7,6 @@ const reportSchema = new mongoose.Schema({
         type: Date,
         required: [true, "Please provide a creation date of the demand "],
     },
-    //andna admin we7ed why idadmin 
     idAdmin: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
@@ -25,9 +24,24 @@ const reportSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide an estimation"],
     },
+    codeOptimization: {
+        type: Number,
+        required: [true, "Please provide a code Optimization rating"],
+      },
+      perfermance: {
+        type: Number,
+        required: [true, "Please provide a code perfermance rating"],
+      },
+      commentedCode: {
+        type: Number,
+        required: [true, "Please provide a rating for code commenting"],
+      },
+      translation: {
+        type: Number,
+        required: [true, "Please provide a code translation rating"],
+      },
     codeQuality: {
         type: Number,
-        required: [true, "Please provide a code Quality rating"],
     },
     conformity: {
         type: Number,

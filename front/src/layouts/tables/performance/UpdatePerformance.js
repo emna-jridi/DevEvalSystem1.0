@@ -259,7 +259,7 @@ const UpdatePerformanceRating = () => {
         }
       );
 
-      navigate("/employees/performance");
+      navigate("/tables/performance");
     } catch (error) {
       console.error("Error Updating performance Rating :", error);
       setError("Error  Updating performance Rating ");
@@ -267,7 +267,7 @@ const UpdatePerformanceRating = () => {
   };
 
   const handleCancel = () => {
-    navigate("/employees/performance");
+    navigate("/tables/performance");
   };
   return (
     <DashboardLayout>

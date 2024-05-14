@@ -1,5 +1,6 @@
 /* eslint-disable */
 import * as React from "react";
+0;
 import { useState, useEffect } from "react";
 import { Grid, Card, IconButton, styled, TableCell } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
@@ -95,17 +96,19 @@ export default function ReportTable() {
           },
         });
         const donneesReponse = response.data.finalPerformances;
-
+        console.log(donneesReponse);
         const tableau = donneesReponse.map((donnee, index) => {
           return {
             employee: donnee.employee.fullName,
             release: donnee.release.name,
             totalDemands: donnee.totalDemands,
             autonomy: donnee.autonomy,
+            conformity: donnee.conformity,
             estimation: donnee.estimation,
             codeQuality: donnee.codeQuality,
             majorBugs: donnee.majorBugs,
             minorBugs: donnee.minorBugs,
+            score: donnee.score,
           };
         });
         setReports(tableau);
@@ -218,7 +221,7 @@ export default function ReportTable() {
                           <Grid item xs={2} className={classes.gridItem}>
                             <MDTypography variant="button">Employee</MDTypography>
                           </Grid>
-                          <Grid item xs={1} className={classes.gridItem}>
+                          <Grid item xs={1.5} className={classes.gridItem}>
                             <MDTypography variant="button">Demands</MDTypography>
                           </Grid>
                           <Grid item xs={1} className={classes.gridItem}>
@@ -227,14 +230,20 @@ export default function ReportTable() {
                           <Grid item xs={1} className={classes.gridItem}>
                             <MDTypography variant="button">Estimation</MDTypography>
                           </Grid>
+                          <Grid item xs={1} className={classes.gridItem}>
+                            <MDTypography variant="button">Conformity</MDTypography>
+                          </Grid>
                           <Grid item xs={1.5} className={classes.gridItem}>
                             <MDTypography variant="button">Code Quality</MDTypography>
                           </Grid>
-                          <Grid item xs={1.5} className={classes.gridItem}>
+                          <Grid item xs={1} className={classes.gridItem}>
                             <MDTypography variant="button">Major Bugs</MDTypography>
                           </Grid>
-                          <Grid item xs={1} className={classes.gridItem}>
+                          <Grid item xs={1.5} className={classes.gridItem}>
                             <MDTypography variant="button">Minor Bugs</MDTypography>
+                          </Grid>
+                          <Grid item xs={1.5} className={classes.gridItem}>
+                            <MDTypography variant="button">Score</MDTypography>
                           </Grid>
                         </Grid>
                         {reports
@@ -246,7 +255,7 @@ export default function ReportTable() {
                                   <MDTypography variant="button">{report.employee}</MDTypography>
                                 </TableCell>
                               </Grid>
-                              <Grid item xs={1} className={classes.gridItem}>
+                              <Grid item xs={1.5} className={classes.gridItem}>
                                 <TableCell>
                                   <MDTypography variant="button" className={classes.gridItem}>
                                     {report.totalDemands}
@@ -263,19 +272,29 @@ export default function ReportTable() {
                                   <MDTypography variant="button">{report.estimation}</MDTypography>
                                 </TableCell>
                               </Grid>
+                              <Grid item xs={1} className={classes.gridItem}>
+                                <TableCell>
+                                  <MDTypography variant="button">{report.conformity}</MDTypography>
+                                </TableCell>
+                              </Grid>
                               <Grid item xs={1.5} className={classes.gridItem}>
                                 <TableCell>
                                   <MDTypography variant="button">{report.codeQuality}</MDTypography>
                                 </TableCell>
                               </Grid>
-                              <Grid item xs={1.5} className={classes.gridItem}>
+                              <Grid item xs={1} className={classes.gridItem}>
                                 <TableCell>
                                   <MDTypography variant="button">{report.majorBugs}</MDTypography>
                                 </TableCell>
                               </Grid>
-                              <Grid item xs={1} className={classes.gridItem}>
+                              <Grid item xs={1.5} className={classes.gridItem}>
                                 <TableCell>
                                   <MDTypography variant="button">{report.minorBugs}</MDTypography>
+                                </TableCell>
+                              </Grid>
+                              <Grid item xs={1.5} className={classes.gridItem}>
+                                <TableCell>
+                                  <MDTypography variant="button">{report.score}</MDTypography>
                                 </TableCell>
                               </Grid>
                             </Grid>

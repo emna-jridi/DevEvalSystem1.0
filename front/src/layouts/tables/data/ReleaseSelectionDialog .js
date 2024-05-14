@@ -13,7 +13,7 @@ import {
 import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import { useNavigate } from "react-router-dom"
-
+import TableChartIcon from '@mui/icons-material/TableChart';
 
 export default function ReleaseSelectionDialog({ employeeName, releases, handleReleaseClick }) {
   const [open, setOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function ReleaseSelectionDialog({ employeeName, releases, handleR
   return (
     <>
       <IconButton onClick={handleClickOpen}>
-        <Icon>filter_list</Icon>
+      <TableChartIcon/>
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
